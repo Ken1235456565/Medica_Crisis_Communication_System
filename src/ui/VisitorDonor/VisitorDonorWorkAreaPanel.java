@@ -4,6 +4,9 @@
  */
 package ui.VisitorDonor;
 
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
 import ui.admin.*;
 
 /**
@@ -11,11 +14,15 @@ import ui.admin.*;
  * @author tiankaining
  */
 public class VisitorDonorWorkAreaPanel extends javax.swing.JPanel {
+    
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
 
-    /**
-     * Creates new form AdminWorkAreaPanel
-     */
-    public VisitorDonorWorkAreaPanel() {
+    public VisitorDonorWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
         initComponents();
     }
 
@@ -38,12 +45,27 @@ public class VisitorDonorWorkAreaPanel extends javax.swing.JPanel {
 
         btnViewDonationHistory.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         btnViewDonationHistory.setText("View Donation History");
+        btnViewDonationHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDonationHistoryActionPerformed(evt);
+            }
+        });
 
         btnBrowsePublicData.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         btnBrowsePublicData.setText("Browse Public Data");
+        btnBrowsePublicData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrowsePublicDataActionPerformed(evt);
+            }
+        });
 
         btnSubmitDonations.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         btnSubmitDonations.setText("Submit Donations");
+        btnSubmitDonations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitDonationsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -76,6 +98,18 @@ public class VisitorDonorWorkAreaPanel extends javax.swing.JPanel {
                 .addContainerGap(360, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSubmitDonationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitDonationsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSubmitDonationsActionPerformed
+
+    private void btnViewDonationHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDonationHistoryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnViewDonationHistoryActionPerformed
+
+    private void btnBrowsePublicDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowsePublicDataActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBrowsePublicDataActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

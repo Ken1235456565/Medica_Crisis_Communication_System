@@ -4,16 +4,20 @@
  */
 package ui.admin;
 
+import Model.Network.NetworkDirectory;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageNetwork extends javax.swing.JPanel {
+    private JPanel userProcessContainer;
+    private NetworkDirectory networkDirectory; // The directory of networks to manage
 
-    /**
-     * Creates new form ManageEnterprise
-     */
-    public ManageNetwork() {
+    public ManageNetwork(JPanel userProcessContainer, NetworkDirectory networkDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.networkDirectory = networkDirectory;
         initComponents();
     }
 
@@ -428,10 +432,11 @@ public class ManageNetwork extends javax.swing.JPanel {
                             .addComponent(jLabel19)
                             .addComponent(txtcreateNetworkName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel20)
-                            .addComponent(cmbCreateType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbViewType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbCreateType, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel20)
+                                .addComponent(cmbViewType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtviewNetworkDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

@@ -4,16 +4,27 @@
  */
 package ui.admin;
 
+import Model.Enterprise.Enterprise;
+import Model.Organization.Organization;
+import Model.Personnel.RoleDirectory;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageRoles extends javax.swing.JPanel {
+    
+    private JPanel userProcessContainer;
+    private Enterprise enterprise; 
+    private Organization organization; 
+    private RoleDirectory roleDirectory; 
 
-    /**
-     * Creates new form Manage_Roles
-     */
-    public ManageRoles() {
+    public ManageRoles(JPanel userProcessContainer, Enterprise enterprise, Organization organization, RoleDirectory roleDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.enterprise = enterprise;
+        this.organization = organization;
+        this.roleDirectory = roleDirectory;
         initComponents();
     }
 

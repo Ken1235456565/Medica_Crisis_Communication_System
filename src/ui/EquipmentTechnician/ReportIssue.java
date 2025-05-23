@@ -4,16 +4,27 @@
  */
 package ui.EquipmentTechnician;
 
+import Model.Organization.Organization;
+import Model.Supplies.EquipmentsCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ReportIssue extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ReportIssue
-     */
-    public ReportIssue() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EquipmentsCatalog equipmentsCatalog; // Catalog of equipment to report issues
+
+    public ReportIssue(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EquipmentsCatalog equipmentsCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.equipmentsCatalog = equipmentsCatalog;
         initComponents();
     }
 
@@ -287,10 +298,11 @@ public class ReportIssue extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnExportToCSV)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnSendEmail)
-                            .addComponent(btnSendEmail1))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnExportToCSV)
+                                .addComponent(btnSendEmail1)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -425,8 +437,6 @@ public class ReportIssue extends javax.swing.JPanel {
     private javax.swing.JTextField txtDonorName1;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JTextField txtItemName1;
-    private javax.swing.JTextField txtQuantity;
-    private javax.swing.JTextField txtQuantity1;
     private javax.swing.JTextField txtQuantity3;
     private javax.swing.JTextField txtQuantity4;
     // End of variables declaration//GEN-END:variables

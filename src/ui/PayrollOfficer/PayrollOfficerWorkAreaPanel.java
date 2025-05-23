@@ -4,16 +4,24 @@
  */
 package ui.PayrollOfficer;
 
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form PayrollOfficerWorkAreaPanel
-     */
-    public PayrollOfficerWorkAreaPanel() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+
+    public PayrollOfficerWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
         initComponents();
     }
 

@@ -4,28 +4,32 @@
  */
 package ui.admin;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Model.Enterprise.Enterprise;
+import Model.Enterprise.EnterpriseDirectory;
 import Model.Network.Network;
+import javax.swing.JPanel;
 /**
  *
  * @author tiankaining
  */
 public class ManageEnterprise extends javax.swing.JPanel {
 
-    private List<Enterprise> enterpriseList;
-    private Network selectedNetwork;
-    /**
-     * Creates new form ManageEnterprise
-     */
-    public ManageEnterprise() {
+    private JPanel userProcessContainer;
+    private Network network; // The network for which enterprises are managed
+    private EnterpriseDirectory enterpriseDirectory; // Directory of enterprises within the network
+
+    public ManageEnterprise(JPanel userProcessContainer, Network network) {
+        this.userProcessContainer = userProcessContainer;
+        this.network = network;
+        this.enterpriseDirectory = network.getEnterpriseDirectory(); // Assuming Network has an EnterpriseDirectory
         initComponents();
-        enterpriseList = new ArrayList<>();
-        populateTable();
+        
+        
         populateComboBoxes();
     }
+    
     
     // Method to populate comboboxes with data
     private void populateComboBoxes() {
@@ -61,43 +65,6 @@ public class ManageEnterprise extends javax.swing.JPanel {
         cmbSearch.addItem("Last 30 days");
     }
     
-    // Method to populate table with enterprise data
-    private void populateTable() {
-        DefaultTableModel model = (DefaultTableModel) tblManageEnterprise.getModel();
-        model.setRowCount(0); // Clear the table
-        
-        // Add dummy data for demonstration
-        if (enterpriseList.isEmpty()) {
-            // Add some sample enterprises for demonstration
-            Enterprise e1 = new Enterprise("ENT001", "ABC Corporation", "Technology", 
-                                         "Software solutions provider", "John Smith");
-            e1.setLocation("Boston, MA");
-            e1.setContactNumber("617-555-1234");
-            e1.setContactEmail("info@abccorp.com");
-            e1.setNetworkBelong("Network 1");
-            
-            Enterprise e2 = new Enterprise("ENT002", "MedHealth Systems", "Healthcare", 
-                                         "Healthcare services provider", "Sarah Johnson");
-            e2.setLocation("Chicago, IL");
-            e2.setContactNumber("312-555-6789");
-            e2.setContactEmail("contact@medhealth.com");
-            e2.setNetworkBelong("Network 2");
-            
-            enterpriseList.add(e1);
-            enterpriseList.add(e2);
-        }
-        
-        // Populate table with enterprise data
-        for (Enterprise enterprise : enterpriseList) {
-            Object[] row = new Object[5];
-            row[0] = enterprise.getId();
-            row[1] = enterprise.getName();
-            row[2] = enterprise.getType();
-            row[3] = enterprise.getDescription();
-            row[4] = enterprise.getManager();
-            model.addRow(row);
-        }
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -527,42 +494,7 @@ public class ManageEnterprise extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
-        // Validate input fields
-        if (txtcreateEnterpriseName.getText().isEmpty() || 
-            cmbcreateType.getSelectedIndex() <= 0 ||
-            txtcreateDescription.getText().isEmpty() ||
-            cmbcreateManager.getSelectedIndex() <= 0 ||
-            cmbcreateNetworkBelong.getSelectedIndex() <= 0) {
-            JOptionPane.showMessageDialog(this, "Please fill in all required fields", 
-                                          "Validation Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
         
-        // Create a new enterprise object
-        String enterpriseId = "ENT" + String.format("%03d", enterpriseList.size() + 1);
-        String enterpriseName = txtcreateEnterpriseName.getText();
-        String type = cmbcreateType.getSelectedItem().toString();
-        String description = txtcreateDescription.getText();
-        String manager = cmbcreateManager.getSelectedItem().toString();
-        
-        Enterprise newEnterprise = new Enterprise(enterpriseId, enterpriseName, type, description, manager);
-        newEnterprise.setLocation(txtcreateLocation.getText());
-        newEnterprise.setContactNumber(txtcreateContactNumber.getText());
-        newEnterprise.setContactEmail(txtcreateContactEmail.getText());
-        newEnterprise.setNetworkBelong(cmbcreateNetworkBelong.getSelectedItem().toString());
-        
-        // Add to the list
-        enterpriseList.add(newEnterprise);
-        
-        // Update the table
-        populateTable();
-        
-        // Clear the form
-        clearCreateForm();
-        
-        JOptionPane.showMessageDialog(this, "Enterprise has been successfully created.", 
-                                      "Success", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnSaveActionPerformed
 
     // Method to clear the create form
@@ -582,32 +514,7 @@ public class ManageEnterprise extends javax.swing.JPanel {
 
     
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = tblManageEnterprise.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select an enterprise to delete.", 
-                                          "Selection Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
         
-        // Confirm deletion
-        int confirm = JOptionPane.showConfirmDialog(this, 
-                      "Are you sure you want to delete this enterprise?", 
-                      "Confirm Deletion", JOptionPane.YES_NO_OPTION);
-        
-        if (confirm == JOptionPane.YES_OPTION) {
-            // Remove from list
-            enterpriseList.remove(selectedRow);
-            
-            // Update table
-            populateTable();
-            
-            // Clear view form
-            clearViewForm();
-            
-            JOptionPane.showMessageDialog(this, "Enterprise has been successfully deleted.", 
-                                          "Success", JOptionPane.INFORMATION_MESSAGE);
-        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void clearViewForm() {

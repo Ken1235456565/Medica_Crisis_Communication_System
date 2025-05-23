@@ -4,16 +4,27 @@
  */
 package ui.HospitalDoctor;
 
+import Model.Organization.Organization;
+import Model.Patient.PatientDirectory;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManagePatientList extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ViewPatientList
-     */
-    public ManagePatientList() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private PatientDirectory patientDirectory; // The list of patients to manage
+
+    public ManagePatientList(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.patientDirectory = patientDirectory;
         initComponents();
     }
 

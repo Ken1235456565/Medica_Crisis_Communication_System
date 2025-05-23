@@ -4,16 +4,27 @@
  */
 package ui.EmergencyResponder;
 
+import Model.Organization.Organization;
+import Model.Personnel.EmployeeDirectory;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ResponderSalaryChart extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ResponderStatsChart
-     */
-    public ResponderSalaryChart() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EmployeeDirectory employeeDirectory; // To get employee salary data
+
+    public ResponderSalaryChart(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.employeeDirectory = employeeDirectory;
         initComponents();
     }
 

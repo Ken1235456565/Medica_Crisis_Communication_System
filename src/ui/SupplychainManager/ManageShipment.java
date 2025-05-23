@@ -4,16 +4,27 @@
  */
 package ui.SupplychainManager;
 
+import Model.Organization.Organization;
+import Model.Supplies.DeliveryCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageShipment extends javax.swing.JPanel {
 
-    /**
-     * Creates new form UpdateShipment
-     */
-    public ManageShipment() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private DeliveryCatalog deliveryCatalog; // Catalog of deliveries/shipments
+
+    public ManageShipment(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DeliveryCatalog deliveryCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.deliveryCatalog = deliveryCatalog;
         initComponents();
     }
 

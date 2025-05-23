@@ -4,16 +4,30 @@
  */
 package ui.HospitalDoctor;
 
+import Model.Organization.Organization;
+import Model.Patient.PatientDirectory;
+import Model.Supplies.SupplyItemCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageMedicalRequest extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ViewMedicalOrderStatus
-     */
-    public ManageMedicalRequest() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private PatientDirectory patientDirectory; // List of patients to manage
+    private SupplyItemCatalog supplyCatalog; // To request medical supplies
+
+    public ManageMedicalRequest(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory, SupplyItemCatalog supplyCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.patientDirectory = patientDirectory;
+        this.supplyCatalog = supplyCatalog;
         initComponents();
     }
 

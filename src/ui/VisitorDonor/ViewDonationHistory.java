@@ -4,12 +4,28 @@
  */
 package ui.VisitorDonor;
 
+import Model.Organization.Organization;
+import Model.Supplies.DonationCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ViewDonationHistory extends javax.swing.JPanel {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private DonationCatalog donationCatalog; // List of donations to display
 
+    public ViewDonationHistory(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DonationCatalog donationCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.donationCatalog = donationCatalog;
+        initComponents();
+    }
     /**
      * Creates new form ViewDonationHistory
      */

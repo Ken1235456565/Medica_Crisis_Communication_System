@@ -4,16 +4,24 @@
  */
 package ui.EquipmentTechnician;
 
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class EquipmentTechnicianWorkAreaPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form EquipmentTechnicianWorkAreaPanel
-     */
-    public EquipmentTechnicianWorkAreaPanel() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+
+    public EquipmentTechnicianWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
         initComponents();
     }
 

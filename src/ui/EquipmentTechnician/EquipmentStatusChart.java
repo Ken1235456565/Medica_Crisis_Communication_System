@@ -4,16 +4,27 @@
  */
 package ui.EquipmentTechnician;
 
+import Model.Organization.Organization;
+import Model.Supplies.EquipmentsCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class EquipmentStatusChart extends javax.swing.JPanel {
 
-    /**
-     * Creates new form EquipmentStatsChart
-     */
-    public EquipmentStatusChart() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EquipmentsCatalog equipmentsCatalog; // Catalog of equipment to chart
+
+    public EquipmentStatusChart(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EquipmentsCatalog equipmentsCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.equipmentsCatalog = equipmentsCatalog;
         initComponents();
     }
 

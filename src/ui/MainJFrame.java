@@ -28,6 +28,17 @@ import Model.Personnel.Payroll;
 import Model.Personnel.Manager;
 import Model.Personnel.ResourceAnalyst;
 import Model.Personnel.Visitor;
+import java.awt.CardLayout;
+import ui.DeliveryStaff.DeliveryStaffWorkAreaPanel;
+import ui.DonationCoordinator.DonationCoordinatorWorkAreaPanel;
+import ui.EmergencyDispatcher.EmergencyDispatcherWorkAreaPanel;
+import ui.EmergencyResponder.EmergencyResponderWorkAreaPanel;
+import ui.EquipmentTechnician.EquipmentTechnicianWorkAreaPanel;
+import ui.HospitalDoctor.HospitalDoctorWorkAreaPanel;
+import ui.HospitalNurse.HospitalNurseWorkArea;
+import ui.PayrollOfficer.PayrollOfficerWorkAreaPanel;
+import ui.SupplychainManager.SupplyOfficerWorkAreaPanel;
+import ui.VisitorDonor.VisitorDonorWorkAreaPanel;
 
 /**
  *
@@ -172,116 +183,101 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {
         String username = txtUsername.getText();
-        String password = txtPassword.getText();// Get password from JPasswordField
-        
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Username and password cannot be empty!", "Login Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        String password = txtPassword.getText();
 
-        UserAccount userAccount = system.getUserAccountDirectory().authenticateUser(username, password); // Authenticate user via NetworkDirectory
+        UserAccount authenticatedUser = null;
+        Network currentNetwork = null;
+        Enterprise currentEnterprise = null;
+        Organization currentOrg = null;
 
-        if (userAccount == null) {
-            JOptionPane.showMessageDialog(this, "Invalid username or password!", "Login Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        // 1. 系统级查找
+        authenticatedUser = system.getUserAccountDirectory().authenticateUser(username, password);
 
-        Organization organization = null;
-        Enterprise enterprise = null;
-        Network network = null;
+        // 2. 逐层递归查找用户（Network → Enterprise → Organization）
+        if (authenticatedUser == null) {
+            for (Network network : system.getNetworkList()) {
+                for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+                    // Enterprise 层找
+                    authenticatedUser = enterprise.getUserAccountDirectory().authenticateUser(username, password);
+                    if (authenticatedUser != null) {
+                        currentNetwork = network;
+                        currentEnterprise = enterprise;
+                        break;
+                    }
 
-        // Step 1: Check if the user is a System Admin
-        if (userAccount.getRole() instanceof Admin) {
-            // For System Admin, the work area is typically the NetworkAdminReports or a similar overview.
-            JPanel sysAdminWorkArea = new ui.admin.NetworkAdminReports(); // Placeholder for System Admin WorkArea Panel
-            jSplitPane1.setRightComponent(sysAdminWorkArea);
-            return; // Login successful, redirect handled
-        }
-
-        // Step 2: For other roles, traverse the network, enterprise, and organization hierarchy to find the user's context
-        for (Network net : system.getNetworkList()) { // Iterate through networks in the system
-            for (Enterprise ent : net.getEnterpriseDirectory().getEnterpriseList()) { // Iterate through enterprises in each network
-                for (Organization org : ent.getOrganizations()) { // Iterate through organizations in each enterprise
-                    // Assuming employees are also UserAccounts within the Organization's employee directory for login context
-                    if (org.getEmployeeDirectory() != null) { // Check if employee directory exists
-                        for (UserAccount ua : org.getEmployeeDirectory().getEmployeeList()) { // Iterate through employees in the organization
-                            if (ua.equals(userAccount)) { // Compare found UserAccount with authenticated UserAccount
-                                organization = org;
-                                enterprise = ent;
-                                network = net;
-                                break;
-                            }
+                    // Organization 层找
+                    for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                        authenticatedUser = org.getUserAccountDirectory().authenticateUser(username, password);
+                        if (authenticatedUser != null) {
+                            currentNetwork = network;
+                            currentEnterprise = enterprise;
+                            currentOrg = org;
+                            break;
                         }
                     }
-                    if (organization != null) break;
+
+                    if (authenticatedUser != null) break;
                 }
-                if (enterprise != null) break;
+
+                if (authenticatedUser != null) break;
             }
-            if (network != null) break;
         }
 
-        if (organization == null) {
-            JOptionPane.showMessageDialog(this, "User does not belong to any organization!", "Login Error", JOptionPane.ERROR_MESSAGE);
+        // 3. 没找到：提示错误
+        if (authenticatedUser == null) {
+            JOptionPane.showMessageDialog(this, "Invalid username or password.");
             return;
         }
 
-        // Step 3: Route to the appropriate Work Area based on the user's role
-        JPanel userWorkAreaPanel = null;
-        Role userRole = userAccount.getRole(); // Get the user's role
+        // 4. 获取角色
+        Role role = authenticatedUser.getRole();
+        JPanel workAreaPanel = null;
 
-        // --- Hospital Doctor Roles ---
-        if (userRole instanceof Doctor) {
-            userWorkAreaPanel = new ui.HospitalDoctor.HospitalDoctorWorkAreaPanel();
-        } else if (userRole instanceof Nurse) {
-            userWorkAreaPanel = new ui.HospitalNurse.HospitalNurseWorkArea();
-        }
+        // 5. 分流：按角色分配界面
+        if (role instanceof Admin) {
+            if (currentOrg != null) {
+                // Organization Admin → 用户管理
+                workAreaPanel = new ManageUserAccounts(userProcessContainer, currentOrg);
+            } else if (currentEnterprise != null) {
+                // Enterprise Admin → 组织管理
+                workAreaPanel = new ManageOrganization(userProcessContainer, currentEnterprise.getOrganizationDirectory(), currentEnterprise);
+            } else if (currentNetwork != null) {
+                // Network Admin → 企业管理
+                workAreaPanel = new ManageEnterprise(userProcessContainer, currentNetwork);
+            } else {
+                JOptionPane.showMessageDialog(this, "Admin context missing.");
+                return;
+            }
 
-        // --- Emergency Service Roles ---
-        else if (userRole instanceof EmergencyDispatcher) {
-            JPanel userProcessContainer = (JPanel) jSplitPane1.getRightComponent(); 
-            userWorkAreaPanel = new ui.EmergencyDispatcher.EmergencyDispatcherWorkAreaPanel(
-                userProcessContainer,
-                userAccount,
-                organization
-            );
-        } else if (userRole instanceof EmergencyResponder) {
-            userWorkAreaPanel = new ui.EmergencyResponder.EmergencyResponderWorkAreaPanel();
-        }
-
-        // --- Logistics & Supply Chain Roles ---
-        else if (userRole instanceof LogisticsManagerRole) {
-            userWorkAreaPanel = new ui.SupplychainManager.SupplyOfficerWorkAreaPanel();
-        } else if (userRole instanceof DeliveryStaff) {
-            userWorkAreaPanel = new ui.DeliveryStaff.DeliveryStaffWorkAreaPanel();
-        }
-
-        // --- Public Health & Donation Roles ---
-        else if (userRole instanceof DonationCoordinator) {
-            userWorkAreaPanel = new ui.DonationCoordinator.DonationCoordinatorWorkAreaPanel();
-        } else if (userRole instanceof Payroll) {
-            userWorkAreaPanel = new ui.PayrollOfficer.PayrollOfficerWorkAreaPanel();
-        }
-        else if (userRole instanceof Manager) {
-            // Generic manager panel, often leads to an admin-like dashboard
-            userWorkAreaPanel = new ui.admin.NetworkAdminReports(); // Placeholder
-        }
-        else if (userRole instanceof ResourceAnalyst) {
-            // Resource Analyst work area
-            userWorkAreaPanel = new ui.EquipmentTechnician.EquipmentStatusChart(); // Placeholder for Resource Analyst WorkArea
-        }
-        else if (userRole instanceof Visitor) {
-            userWorkAreaPanel = new ui.VisitorDonor.VisitorDonorWorkAreaPanel();
-        }
-        // Handle unmapped roles or show an error
-        else {
-            JOptionPane.showMessageDialog(this, "No work area defined for this role!", "Login Error", JOptionPane.ERROR_MESSAGE);
+        } else if (role instanceof EmergencyDispatcher) {
+            workAreaPanel = new EmergencyDispatcherWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof EmergencyResponder) {
+            workAreaPanel = new EmergencyResponderWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof Doctor) {
+            workAreaPanel = new HospitalDoctorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof Nurse) {
+            workAreaPanel = new HospitalNurseWorkArea(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof LogisticsManagerRole) {
+            workAreaPanel = new SupplyOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof DonationCoordinator) {
+            workAreaPanel = new DonationCoordinatorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof Payroll) {
+            workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof DeliveryStaff) {
+            workAreaPanel = new DeliveryStaffWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof Visitor) {
+            workAreaPanel = new VisitorDonorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof ResourceAnalyst) {
+            workAreaPanel = new EquipmentTechnicianWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else {
+            JOptionPane.showMessageDialog(this, "Unrecognized role type.");
             return;
         }
 
-        if (userWorkAreaPanel != null) {
-            jSplitPane1.setRightComponent(userWorkAreaPanel);
-            // Any specific UI adjustments after login (e.g., resizing) should go here if allowed by your constraints.
-        }
+        // 6. 跳转到对应工作界面
+        userProcessContainer.add("workAreaPanel", workAreaPanel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);   
     }
 
     /**

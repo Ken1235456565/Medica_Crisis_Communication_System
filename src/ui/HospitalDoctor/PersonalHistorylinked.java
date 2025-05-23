@@ -4,16 +4,27 @@
  */
 package ui.HospitalDoctor;
 
+import Model.Organization.Organization;
+import Model.Patient.Patient;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class PersonalHistorylinked extends javax.swing.JFrame {
 
-    /**
-     * Creates new form PersonalHistory
-     */
-    public PersonalHistorylinked() {
+    private JPanel userProcessContainer; // If it's used within a JPanel hierarchy
+    private Organization organization;
+    private UserAccount userAccount;
+    private Patient selectedPatient; // The patient whose history is being viewed
+
+    public PersonalHistorylinked(JPanel userProcessContainer, Organization organization, UserAccount userAccount, Patient selectedPatient) {
+        this.userProcessContainer = userProcessContainer; // Not typically used for JFrames, but included based on previous context.
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.selectedPatient = selectedPatient;
         initComponents();
     }
 

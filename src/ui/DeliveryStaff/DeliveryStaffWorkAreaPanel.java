@@ -4,18 +4,25 @@
  */
 package ui.DeliveryStaff;
 
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class DeliveryStaffWorkAreaPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form DeliveryStaffWorkAreaPanel
-     */
-    public DeliveryStaffWorkAreaPanel() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+
+    public DeliveryStaffWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
         initComponents();
-        
     }
 
     /**

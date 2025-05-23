@@ -4,16 +4,27 @@
  */
 package ui.EmergencyResponder;
 
+import Model.Organization.Organization;
+import Model.Supplies.DeliveryCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class MissionManagement extends javax.swing.JPanel {
 
-    /**
-     * Creates new form AcceptMissions
-     */
-    public MissionManagement() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private DeliveryCatalog missionCatalog; // Catalog of missions to manage
+
+    public MissionManagement(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DeliveryCatalog missionCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.missionCatalog = missionCatalog;
         initComponents();
     }
 

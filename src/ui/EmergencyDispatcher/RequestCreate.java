@@ -4,16 +4,27 @@
  */
 package ui.EmergencyDispatcher;
 
+import Model.EcoSystem;
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class RequestCreate extends javax.swing.JPanel {
 
-    /**
-     * Creates new form TaskScheduling
-     */
-    public RequestCreate() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EcoSystem system; // For creating new requests which might be dispatched broadly
+
+    public RequestCreate(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EcoSystem system) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.system = system;
         initComponents();
     }
 

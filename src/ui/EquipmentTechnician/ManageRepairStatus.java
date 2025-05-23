@@ -4,16 +4,27 @@
  */
 package ui.EquipmentTechnician;
 
+import Model.Organization.Organization;
+import Model.Supplies.EquipmentsCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageRepairStatus extends javax.swing.JPanel {
 
-    /**
-     * Creates new form RepairStatusUpdate
-     */
-    public ManageRepairStatus() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EquipmentsCatalog equipmentsCatalog; // Catalog of equipment to manage repair status
+
+    public ManageRepairStatus(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EquipmentsCatalog equipmentsCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.equipmentsCatalog = equipmentsCatalog;
         initComponents();
     }
 
@@ -292,10 +303,11 @@ public class ManageRepairStatus extends javax.swing.JPanel {
                             .addGap(10, 10, 10)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnExportToCSV)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(btnSendEmail)
-                                .addComponent(btnSendEmail1))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnExportToCSV)
+                                    .addComponent(btnSendEmail1)))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)

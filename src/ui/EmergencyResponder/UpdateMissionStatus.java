@@ -4,16 +4,27 @@
  */
 package ui.EmergencyResponder;
 
+import Model.Organization.Organization;
+import Model.Supplies.Delivery;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class UpdateMissionStatus extends javax.swing.JPanel {
 
-    /**
-     * Creates new form UpdateMissionStatus
-     */
-    public UpdateMissionStatus() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private Delivery missionToUpdate; // The specific mission to update
+
+    public UpdateMissionStatus(JPanel userProcessContainer, Organization organization, UserAccount userAccount, Delivery missionToUpdate) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.missionToUpdate = missionToUpdate;
         initComponents();
     }
 

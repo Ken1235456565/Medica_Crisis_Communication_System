@@ -4,16 +4,27 @@
  */
 package ui.DonationCoordinator;
 
+import Model.Organization.Organization;
+import Model.Supplies.DonationCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageDonations extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ApproveDonations
-     */
-    public ManageDonations() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private DonationCatalog donationCatalog; // List of donations to manage
+
+    public ManageDonations(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DonationCatalog donationCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.donationCatalog = donationCatalog;
         initComponents();
     }
 

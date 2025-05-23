@@ -4,16 +4,27 @@
  */
 package ui.DeliveryStaff;
 
+import Model.Organization.Organization;
+import Model.Supplies.DeliveryCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageDeliveryTasks extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ViewDeliveryTasks
-     */
-    public ManageDeliveryTasks() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private DeliveryCatalog deliveryCatalog; // To manage delivery tasks
+
+    public ManageDeliveryTasks(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DeliveryCatalog deliveryCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.deliveryCatalog = deliveryCatalog;
         initComponents();
     }
 

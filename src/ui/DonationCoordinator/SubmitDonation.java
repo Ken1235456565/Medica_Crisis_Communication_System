@@ -4,6 +4,10 @@
  */
 package ui.DonationCoordinator;
 
+import Model.Organization.Organization;
+import Model.Supplies.DonationCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
 import ui.VisitorDonor.*;
 
 /**
@@ -12,10 +16,16 @@ import ui.VisitorDonor.*;
  */
 public class SubmitDonation extends javax.swing.JPanel {
 
-    /**
-     * Creates new form SubmitDonation
-     */
-    public SubmitDonation() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private DonationCatalog donationCatalog; // Where the submitted donation will be added
+
+    public SubmitDonation(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DonationCatalog donationCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.donationCatalog = donationCatalog;
         initComponents();
     }
 

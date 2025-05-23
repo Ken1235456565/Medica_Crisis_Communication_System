@@ -4,16 +4,27 @@
  */
 package ui.DeliveryStaff;
 
+import Model.Organization.Organization;
+import Model.Supplies.Delivery;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class UploadProof extends javax.swing.JPanel {
 
-    /**
-     * Creates new form UploadProof
-     */
-    public UploadProof() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private Delivery currentDelivery; // The specific delivery to upload proof for
+
+    public UploadProof(JPanel userProcessContainer, Organization organization, UserAccount userAccount, Delivery currentDelivery) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.currentDelivery = currentDelivery;
         initComponents();
     }
 

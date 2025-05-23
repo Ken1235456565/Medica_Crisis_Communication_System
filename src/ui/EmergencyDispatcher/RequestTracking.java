@@ -4,16 +4,27 @@
  */
 package ui.EmergencyDispatcher;
 
+import Model.EcoSystem;
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class RequestTracking extends javax.swing.JPanel {
 
-    /**
-     * Creates new form TaskTracking
-     */
-    public RequestTracking() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EcoSystem system; // For tracking requests globally
+
+    public RequestTracking(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EcoSystem system) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.system = system;
         initComponents();
     }
 

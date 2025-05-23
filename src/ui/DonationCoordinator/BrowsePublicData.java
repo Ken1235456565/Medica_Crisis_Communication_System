@@ -4,6 +4,10 @@
  */
 package ui.DonationCoordinator;
 
+import Model.EcoSystem;
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
 import ui.VisitorDonor.*;
 
 /**
@@ -12,10 +16,16 @@ import ui.VisitorDonor.*;
  */
 public class BrowsePublicData extends javax.swing.JPanel {
 
-    /**
-     * Creates new form BrowsePublicData
-     */
-    public BrowsePublicData() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EcoSystem system; // To access public data from the whole system
+
+    public BrowsePublicData(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EcoSystem system) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.system = system;
         initComponents();
     }
 

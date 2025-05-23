@@ -24,17 +24,17 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
-                      <Component id="jButton4" min="-2" pref="284" max="-2" attributes="0"/>
+                      <Component id="btnSubmitDonations" min="-2" pref="284" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButton5" min="-2" pref="284" max="-2" attributes="0"/>
+                      <Component id="btnViewDonationHistory" min="-2" pref="284" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButton3" min="-2" pref="284" max="-2" attributes="0"/>
+                      <Component id="btnBrowsePublicData" min="-2" pref="284" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="171" max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" pref="284" max="-2" attributes="0"/>
+                      <Component id="btnManageDonations" min="-2" pref="284" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="83" max="-2" attributes="0"/>
-                      <Component id="jButton2" min="-2" pref="284" max="-2" attributes="0"/>
+                      <Component id="btnDonationStatsChart" min="-2" pref="284" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="71" max="32767" attributes="0"/>
@@ -48,22 +48,22 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton3" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="jButton5" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="jButton4" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnBrowsePublicData" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnViewDonationHistory" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnSubmitDonations" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton2" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="jButton1" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnDonationStatsChart" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnManageDonations" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="209" max="32767" attributes="0"/>
+              <EmptySpace pref="225" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="btnDonationStatsChart">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -71,7 +71,7 @@
         <Property name="text" type="java.lang.String" value="Donation Stats Chart"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton3">
+    <Component class="javax.swing.JButton" name="btnBrowsePublicData">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -79,7 +79,7 @@
         <Property name="text" type="java.lang.String" value="Browse Public Data"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="btnManageDonations">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -87,7 +87,7 @@
         <Property name="text" type="java.lang.String" value="Manage Donations"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton4">
+    <Component class="javax.swing.JButton" name="btnSubmitDonations">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -103,7 +103,7 @@
         <Property name="text" type="java.lang.String" value="Donation Coordinator WorkArea"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton5">
+    <Component class="javax.swing.JButton" name="btnViewDonationHistory">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>

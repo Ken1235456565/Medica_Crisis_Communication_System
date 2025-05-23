@@ -14,7 +14,7 @@ public class NetworkDirectory {
     private List<Network> networkList;
     private UserAccountDirectory userAccountDirectory; // Added UserAccountDirectory
 
-    private NetworkDirectory() { // Made constructor private for Singleton pattern
+    public NetworkDirectory() { // Made constructor private for Singleton pattern
         this.networkList = new ArrayList<>();
         this.userAccountDirectory = new UserAccountDirectory(); // Initialize UserAccountDirectory
     }

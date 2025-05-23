@@ -4,18 +4,27 @@
  */
 package ui.admin;
 
+import Model.Enterprise.Enterprise;
+import Model.Organization.OrganizationDirectory;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageOrganization extends javax.swing.JPanel {
-
-    /**
-     * Creates new form ManageOrganization
-     */
-    public ManageOrganization() {
+    
+    private JPanel userProcessContainer;
+    private Enterprise enterprise;
+    private OrganizationDirectory organizationDirectory;
+    
+    public ManageOrganization(JPanel userProcessContainer, OrganizationDirectory organizationDirectory, Enterprise enterprise) {
+        this.userProcessContainer = userProcessContainer;
+        this.organizationDirectory = organizationDirectory;
+        this.enterprise = enterprise;
         initComponents();
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

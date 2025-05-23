@@ -4,16 +4,29 @@
  */
 package ui.admin;
 
+import Model.Organization.Organization;
+import Model.Personnel.EmployeeDirectory;
+import Model.Personnel.RoleDirectory;
+import Model.User.UserAccountDirectory;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageUserAccounts extends javax.swing.JPanel {
-
-    /**
-     * Creates new form ManageUserAccounts
-     */
-    public ManageUserAccounts() {
+    private JPanel userProcessContainer;
+    private Organization organization; // The organization for which user accounts are managed
+    private UserAccountDirectory userAccountDirectory; // Directory of user accounts
+    private EmployeeDirectory employeeDirectory; // To select employees for user accounts
+    private RoleDirectory roleDirectory; // To select roles for user accounts
+    
+    public ManageUserAccounts(JPanel userProcessContainer, Organization organization) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccountDirectory = organization.getUserAccountDirectory(); // Assuming Organization has a UserAccountDirectory
+        this.employeeDirectory = organization.getEmployeeDirectory(); // Assuming Organization has an EmployeeDirectory
+        this.roleDirectory = organization.getRoleDirectory(); // Assuming Organization has a RoleDirectory
         initComponents();
     }
 

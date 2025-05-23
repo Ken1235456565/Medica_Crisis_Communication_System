@@ -4,6 +4,10 @@
  */
 package ui.HospitalDoctor;
 
+import Model.Organization.Organization;
+import Model.Personnel.EmployeeDirectory;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
 import ui.HospitalNurse.*;
 
 /**
@@ -12,10 +16,16 @@ import ui.HospitalNurse.*;
  */
 public class ViewOnDutyHistory extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ExecuteOrders
-     */
-    public ViewOnDutyHistory() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EmployeeDirectory employeeDirectory; // To access on-duty history of employees
+
+    public ViewOnDutyHistory(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.employeeDirectory = employeeDirectory;
         initComponents();
     }
 

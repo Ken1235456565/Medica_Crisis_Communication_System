@@ -4,16 +4,30 @@
  */
 package ui.HospitalDoctor;
 
+import Model.Organization.Organization;
+import Model.Patient.PatientDirectory;
+import Model.Supplies.ICUbedCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageICURequest extends javax.swing.JPanel {
 
-    /**
-     * Creates new form SubmitICURequest
-     */
-    public ManageICURequest() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private PatientDirectory patientDirectory; // List of patients to manage
+    private ICUbedCatalog icuBedCatalog; // List of ICU beds to manage
+
+    public ManageICURequest(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory, ICUbedCatalog icuBedCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.patientDirectory = patientDirectory;
+        this.icuBedCatalog = icuBedCatalog;
         initComponents();
     }
 

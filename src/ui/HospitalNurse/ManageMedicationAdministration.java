@@ -4,16 +4,27 @@
  */
 package ui.HospitalNurse;
 
+import Model.Organization.Organization;
+import Model.Patient.PatientDirectory;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageMedicationAdministration extends javax.swing.JPanel {
 
-    /**
-     * Creates new form RecordVitalSigns
-     */
-    public ManageMedicationAdministration() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private PatientDirectory patientDirectory; // List of patients for medication administration
+
+    public ManageMedicationAdministration(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.patientDirectory = patientDirectory;
         initComponents();
     }
 

@@ -28,9 +28,9 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         btnManageMissions = new javax.swing.JButton();
-        btnDeliverySummary = new javax.swing.JButton();
+        btnResponderStatsChart = new javax.swing.JButton();
         btnUpdateMissionStatus = new javax.swing.JButton();
-        btnUploadProof = new javax.swing.JButton();
+        btnRequestSupplies = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Emergency Responder WorkArea");
@@ -43,11 +43,11 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
             }
         });
 
-        btnDeliverySummary.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnDeliverySummary.setText("Responder Stats Chart");
-        btnDeliverySummary.addActionListener(new java.awt.event.ActionListener() {
+        btnResponderStatsChart.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnResponderStatsChart.setText("Responder Stats Chart");
+        btnResponderStatsChart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeliverySummaryActionPerformed(evt);
+                btnResponderStatsChartActionPerformed(evt);
             }
         });
 
@@ -59,11 +59,11 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
             }
         });
 
-        btnUploadProof.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnUploadProof.setText("Request Supplies");
-        btnUploadProof.addActionListener(new java.awt.event.ActionListener() {
+        btnRequestSupplies.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnRequestSupplies.setText("Request Supplies");
+        btnRequestSupplies.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUploadProofActionPerformed(evt);
+                btnRequestSuppliesActionPerformed(evt);
             }
         });
 
@@ -80,9 +80,9 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
                     .addGap(174, 174, 174)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnUploadProof, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRequestSupplies, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnDeliverySummary, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnResponderStatsChart, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(btnManageMissions, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(92, 92, 92)
@@ -103,8 +103,8 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
                         .addComponent(btnUpdateMissionStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGap(79, 79, 79)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnDeliverySummary, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnUploadProof, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnResponderStatsChart, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnRequestSupplies, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addContainerGap(223, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -113,24 +113,24 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnManageMissionsActionPerformed
 
-    private void btnDeliverySummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeliverySummaryActionPerformed
+    private void btnResponderStatsChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResponderStatsChartActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnDeliverySummaryActionPerformed
+    }//GEN-LAST:event_btnResponderStatsChartActionPerformed
 
     private void btnUpdateMissionStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateMissionStatusActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnUpdateMissionStatusActionPerformed
 
-    private void btnUploadProofActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadProofActionPerformed
+    private void btnRequestSuppliesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRequestSuppliesActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnUploadProofActionPerformed
+    }//GEN-LAST:event_btnRequestSuppliesActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDeliverySummary;
     private javax.swing.JButton btnManageMissions;
+    private javax.swing.JButton btnRequestSupplies;
+    private javax.swing.JButton btnResponderStatsChart;
     private javax.swing.JButton btnUpdateMissionStatus;
-    private javax.swing.JButton btnUploadProof;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

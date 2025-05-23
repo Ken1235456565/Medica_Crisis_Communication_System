@@ -3,6 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package ui.HospitalNurse;
+import Model.Organization.Organization;
+import Model.Patient.PatientDirectory;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
 import ui.HospitalDoctor.*;
 
 /**
@@ -11,10 +15,16 @@ import ui.HospitalDoctor.*;
  */
 public class ManagePatientCarePlans extends javax.swing.JFrame {
 
-    /**
-     * Creates new form PersonalHistory
-     */
-    public ManagePatientCarePlans() {
+    private JPanel userProcessContainer; // Not typically used for JFrames, but included based on previous context.
+    private Organization organization;
+    private UserAccount userAccount;
+    private PatientDirectory patientDirectory; // List of patients to manage care plans
+
+    public ManagePatientCarePlans(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.patientDirectory = patientDirectory;
         initComponents();
     }
 

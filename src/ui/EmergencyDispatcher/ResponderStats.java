@@ -4,16 +4,27 @@
  */
 package ui.EmergencyDispatcher;
 
+import Model.EcoSystem;
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ResponderStats extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ResponderStatsChart
-     */
-    public ResponderStats() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EcoSystem system; // For system-wide responder stats
+
+    public ResponderStats(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EcoSystem system) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.system = system;
         initComponents();
     }
 

@@ -4,16 +4,27 @@
  */
 package ui.PayrollOfficer;
 
+import Model.Organization.Organization;
+import Model.Personnel.EmployeeDirectory;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class GeneratePayrolls extends javax.swing.JPanel {
 
-    /**
-     * Creates new form GeneratePayrolls
-     */
-    public GeneratePayrolls() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EmployeeDirectory employeeDirectory; // List of employees for payroll generation
+
+    public GeneratePayrolls(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.employeeDirectory = employeeDirectory;
         initComponents();
     }
 

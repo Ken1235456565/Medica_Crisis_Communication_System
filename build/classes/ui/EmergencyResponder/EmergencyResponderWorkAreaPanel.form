@@ -26,9 +26,9 @@
                   <EmptySpace min="-2" pref="174" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="btnUploadProof" min="-2" pref="284" max="-2" attributes="0"/>
+                          <Component id="btnRequestSupplies" min="-2" pref="284" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="btnDeliverySummary" min="-2" pref="284" max="-2" attributes="0"/>
+                          <Component id="btnResponderStatsChart" min="-2" pref="284" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnManageMissions" min="-2" pref="284" max="-2" attributes="0"/>
@@ -57,8 +57,8 @@
                   </Group>
                   <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btnDeliverySummary" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                      <Component id="btnUploadProof" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                      <Component id="btnResponderStatsChart" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                      <Component id="btnRequestSupplies" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="223" max="32767" attributes="0"/>
               </Group>
@@ -86,7 +86,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageMissionsActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnDeliverySummary">
+    <Component class="javax.swing.JButton" name="btnResponderStatsChart">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -94,7 +94,7 @@
         <Property name="text" type="java.lang.String" value="Responder Stats Chart"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeliverySummaryActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnResponderStatsChartActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnUpdateMissionStatus">
@@ -108,7 +108,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateMissionStatusActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnUploadProof">
+    <Component class="javax.swing.JButton" name="btnRequestSupplies">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -116,7 +116,7 @@
         <Property name="text" type="java.lang.String" value="Request Supplies"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUploadProofActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRequestSuppliesActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

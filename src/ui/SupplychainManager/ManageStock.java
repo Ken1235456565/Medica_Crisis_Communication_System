@@ -4,16 +4,27 @@
  */
 package ui.SupplychainManager;
 
+import Model.Organization.Organization;
+import Model.Supplies.SupplyItemCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageStock extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ManageStock
-     */
-    public ManageStock() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private SupplyItemCatalog supplyCatalog; // Catalog of supplies (inventory)
+
+    public ManageStock(JPanel userProcessContainer, Organization organization, UserAccount userAccount, SupplyItemCatalog supplyCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.supplyCatalog = supplyCatalog;
         initComponents();
     }
 

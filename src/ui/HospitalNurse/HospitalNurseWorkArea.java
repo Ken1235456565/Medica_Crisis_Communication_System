@@ -4,16 +4,28 @@
  */
 package ui.HospitalNurse;
 
+import Model.Organization.Organization;
+import Model.Personnel.Nurse;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class HospitalNurseWorkArea extends javax.swing.JPanel {
 
-    /**
-     * Creates new form HospitalNurseWorkArea
-     */
-    public HospitalNurseWorkArea() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private Nurse nurse; // The logged-in nurse
+
+    public HospitalNurseWorkArea(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        // Assuming the UserAccount holds the specific Nurse object
+        // this.nurse = (Nurse) userAccount.getEmployee(); // Or similar logic to get the nurse object
         initComponents();
     }
 

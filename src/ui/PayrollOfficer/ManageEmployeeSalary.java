@@ -4,16 +4,27 @@
  */
 package ui.PayrollOfficer;
 
+import Model.Organization.Organization;
+import Model.Personnel.EmployeeDirectory;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageEmployeeSalary extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ViewSalary
-     */
-    public ManageEmployeeSalary() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private EmployeeDirectory employeeDirectory; // List of employees for salary management
+
+    public ManageEmployeeSalary(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.employeeDirectory = employeeDirectory;
         initComponents();
     }
 

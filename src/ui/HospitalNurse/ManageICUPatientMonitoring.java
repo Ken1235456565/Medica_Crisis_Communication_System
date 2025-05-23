@@ -4,16 +4,30 @@
  */
 package ui.HospitalNurse;
 
+import Model.Organization.Organization;
+import Model.Patient.PatientDirectory;
+import Model.Supplies.ICUbedCatalog;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class ManageICUPatientMonitoring extends javax.swing.JPanel {
 
-    /**
-     * Creates new form HospitalNurseWorkAreaPanel
-     */
-    public ManageICUPatientMonitoring() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+    private PatientDirectory patientDirectory; // List of patients to monitor
+    private ICUbedCatalog icuBedCatalog; // Catalog of ICU beds for monitoring
+
+    public ManageICUPatientMonitoring(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory, ICUbedCatalog icuBedCatalog) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
+        this.patientDirectory = patientDirectory;
+        this.icuBedCatalog = icuBedCatalog;
         initComponents();
     }
 
