@@ -1,22 +1,28 @@
 // Model/personnel/roles/DeliveryStaffRole.java
 package Model.Personnel;
 
-import Model.Role.Role;
+import Model.Role.DeliveryStaffRole;
+import Model.User.UserAccount;
 
-public class DeliveryStaff extends Role {
+public class DeliveryStaff extends UserAccount {
     private String vehicleType;
     private String licenseNumber;
 
-    public DeliveryStaff() {
-        super("DELIVERYSTAFF", "Delivery Staff", false, "Staff responsible for deliveries"); // Added line
-    }
-
-    public DeliveryStaff(String id, String name, boolean isAdmin, String description, String vehicleType, String licenseNumber) {
-        super(id, name, isAdmin, description);
+    public DeliveryStaff(String vehicleType, String licenseNumber,
+                         String id, String name, String gender, int age, String dateOfBirth,
+                         String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new DeliveryStaffRole(), organization, contactInfo);
         this.vehicleType = vehicleType;
         this.licenseNumber = licenseNumber;
     }
 
+    public DeliveryStaff() {
+        super();
+    }
+
+    // Getters and Setters
     public String getVehicleType() {
         return vehicleType;
     }

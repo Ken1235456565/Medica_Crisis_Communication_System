@@ -1,19 +1,26 @@
 // Model/personnel/roles/NurseRole.java
 package Model.Personnel;
 
-import Model.Role.Role;
+import Model.Person.ContactInfo;
+import Model.Role.NurseRole;
+import Model.User.UserAccount;
 
-public class Nurse extends Role {
+public class Nurse extends UserAccount {
     private String nurseType;
     private String licenseNumber;
 
-    public Nurse() {
-    }
-
-    public Nurse(String id, String name, boolean isAdmin, String description, String nurseType, String licenseNumber) {
-        super(id, name, isAdmin, description);
+    public Nurse(String nurseType, String licenseNumber,
+                 String id, String name, String gender, int age, String dateOfBirth,
+                 String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new NurseRole(), organization, contactInfo);
         this.nurseType = nurseType;
         this.licenseNumber = licenseNumber;
+    }
+
+    public Nurse() {
+        super();
     }
 
     public String getNurseType() {

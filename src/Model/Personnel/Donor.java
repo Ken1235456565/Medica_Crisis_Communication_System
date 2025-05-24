@@ -2,25 +2,30 @@
 package Model.Personnel;
 
 import Model.Person.ContactInfo;
+import Model.Role.VisitorRole;
 import Model.Supplies.Donation;
+import Model.User.UserAccount;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Donor {
+public class Donor extends UserAccount {
     private String donorId;
-    private String name;
-    private ContactInfo contactInfo;
     private List<Donation> donationHistory;
 
-    public Donor() {
+    public Donor(String donorId,
+                 String id, String name, String gender, int age, String dateOfBirth,
+                 String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new VisitorRole(), 
+              organization, contactInfo);
+        this.donorId = donorId;
         this.donationHistory = new ArrayList<>();
     }
 
-    public Donor(String donorId, String name, ContactInfo contactInfo) {
-        this();
-        this.donorId = donorId;
-        this.name = name;
-        this.contactInfo = contactInfo;
+    public Donor() {
+        super();
+        this.donationHistory = new ArrayList<>();
     }
 
     public String getDonorId() {
@@ -39,14 +44,6 @@ public class Donor {
         this.name = name;
     }
 
-    public ContactInfo getContactInfo() {
-        return contactInfo;
-    }
-
-    public void setContactInfo(ContactInfo contactInfo) {
-        this.contactInfo = contactInfo;
-    }
-
     public List<Donation> getDonationHistory() {
         return donationHistory;
     }
@@ -60,10 +57,8 @@ public class Donor {
     }
     
     public double getTotalDonationAmount() {
-    return donationHistory.stream()
-           .mapToDouble(Donation::getAmount)
-           .sum();
-}
-
-
+        return donationHistory.stream()
+               .mapToDouble(Donation::getAmount)
+               .sum();
+    }
 }

@@ -8,8 +8,8 @@ package Model.Role;
  *
  * @author tiankaining
  */
-public class PayrollRole extends Role {
-    public PayrollRole() {
+public class PayrollStaffRole extends Role {
+    public PayrollStaffRole() {
         super("PAYROLL", "Payroll Officer", false, "Manages payroll and financial compensation.");
     }
 }

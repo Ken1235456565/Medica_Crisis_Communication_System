@@ -1,20 +1,27 @@
 // Model/personnel/roles/DonationCoordinatorRole.java
 package Model.Personnel;
 
-import Model.Role.Role;
+import Model.Person.ContactInfo;
+import Model.Role.DonationCoordinatorRole;
+import Model.User.UserAccount;
 
-public class DonationCoordinator extends Role {
+public class DonationCoordinator extends UserAccount {
     private String region;
 
-    public DonationCoordinator() {
-        super("DONATIONCOORD", "Donation Coordinator", false, "Coordinates donation activities"); // Added line
-    }
-
-    public DonationCoordinator(String id, String name, boolean isAdmin, String description, String region) {
-        super(id, name, isAdmin, description);
+    public DonationCoordinator(String region,
+                               String id, String name, String gender, int age, String dateOfBirth,
+                               String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new DonationCoordinatorRole(), organization, contactInfo);
         this.region = region;
     }
 
+    public DonationCoordinator() {
+        super();
+    }
+
+    // Getter and Setter
     public String getRegion() {
         return region;
     }

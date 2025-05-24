@@ -1,20 +1,27 @@
 // Model/personnel/roles/EmergencyDispatcherRole.java
 package Model.Personnel;
 
+import Model.Person.ContactInfo;
+import Model.Role.EmergencyDispatcherRole;
 import Model.Role.Role;
+import Model.User.UserAccount;
 
-public class EmergencyDispatcher extends Role {
+public class EmergencyDispatcher extends UserAccount {
     private String dispatchZone;
     private String certificationLevel;
 
-    public EmergencyDispatcher() {
-        super("EMERGENCYDISPATCHER", "Emergency Dispatcher", false, "Dispatches emergency services"); // Added line
-    }
-
-    public EmergencyDispatcher(String id, String name, boolean isAdmin, String description, String dispatchZone, String certificationLevel) {
-        super(id, name, isAdmin, description);
+    public EmergencyDispatcher(String dispatchZone, String certificationLevel,
+                               String id, String name, String gender, int age, String dateOfBirth,
+                               String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new EmergencyDispatcherRole(), organization, contactInfo);
         this.dispatchZone = dispatchZone;
         this.certificationLevel = certificationLevel;
+    }
+
+    public EmergencyDispatcher() {
+        super();
     }
 
     public String getDispatchZone() {

@@ -2,24 +2,31 @@
 // Model/personnel/roles/EmergencyResponderRole.java
 package Model.Personnel;
 
-import Model.Role.Role;
+import Model.Person.ContactInfo;
+import Model.Role.EmergencyResponderRole;
+import Model.User.UserAccount;
 
-public class EmergencyResponder extends Role {
+public class EmergencyResponder extends UserAccount {
     private String responderType;
     private String certificationLevel;
     private String vehicleAssigned;
 
-    public EmergencyResponder() {
-        super("EMERGENCYRESPONDER", "Emergency Responder", false, "Responds to emergency calls"); // Added line
-    }
-
-    public EmergencyResponder(String id, String name, boolean isAdmin, String description, String responderType, String certificationLevel, String vehicleAssigned) {
-        super(id, name, isAdmin, description);
+    public EmergencyResponder(String responderType, String certificationLevel, String vehicleAssigned,
+                              String id, String name, String gender, int age, String dateOfBirth,
+                              String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new EmergencyResponderRole(), organization, contactInfo);
         this.responderType = responderType;
         this.certificationLevel = certificationLevel;
         this.vehicleAssigned = vehicleAssigned;
     }
 
+    public EmergencyResponder() {
+        super();
+    }
+
+    // Getters and Setters
     public String getResponderType() {
         return responderType;
     }
@@ -44,3 +51,4 @@ public class EmergencyResponder extends Role {
         this.vehicleAssigned = vehicleAssigned;
     }
 }
+

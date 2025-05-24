@@ -1,23 +1,30 @@
 // Model/personnel/roles/DoctorRole.java
 package Model.Personnel;
 
-import Model.Role.Role;
+import Model.Person.ContactInfo;
+import Model.Role.DoctorRole;
+import Model.User.UserAccount;
 
 
-public class Doctor extends Role {
+public class Doctor extends UserAccount {
     private String specialization;
     private String licenseNumber;
 
-    public Doctor() {
-        super("DOCTOR", "Doctor", false, "Medical practitioner"); // Added line
-    }
-
-    public Doctor(String id, String name, boolean isAdmin, String description, String specialization, String licenseNumber) {
-        super(id, name, isAdmin, description);
+    public Doctor(String specialization, String licenseNumber,
+                  String id, String name, String gender, int age, String dateOfBirth,
+                  String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new DoctorRole(), organization, contactInfo);
         this.specialization = specialization;
         this.licenseNumber = licenseNumber;
     }
 
+    public Doctor() {
+        super();
+    }
+
+    // Getters and Setters
     public String getSpecialization() {
         return specialization;
     }

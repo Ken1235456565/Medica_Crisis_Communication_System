@@ -1,17 +1,24 @@
 // Model/personnel/roles/ResourceAnalystRole.java
 package Model.Personnel;
 
-import Model.Role.Role;
+import Model.Person.ContactInfo;
+import Model.Role.ResourceAnalystRole;
+import Model.User.UserAccount;
 
-public class ResourceAnalyst extends Role {
+public class ResourceAnalyst extends UserAccount {
     private String analysisArea;
 
-    public ResourceAnalyst() {
+    public ResourceAnalyst(String analysisArea,
+                           String id, String name, String gender, int age, String dateOfBirth,
+                           String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new ResourceAnalystRole(), organization, contactInfo);
+        this.analysisArea = analysisArea;
     }
 
-    public ResourceAnalyst(String id, String name, boolean isAdmin, String description, String analysisArea) {
-        super(id, name, isAdmin, description);
-        this.analysisArea = analysisArea;
+    public ResourceAnalyst() {
+        super();
     }
 
     public String getAnalysisArea() {

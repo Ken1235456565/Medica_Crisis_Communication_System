@@ -19,24 +19,24 @@ import Model.Personnel.EmergencyResponder;
 import Model.Personnel.Employee;
 import Model.Personnel.LogisticsManager;
 import Model.Personnel.Nurse;
-import Model.Role.Role;
-import Model.Personnel.Donor; // Import Donor
+import Model.Personnel.Donor; 
 
 import Model.Person.ContactInfo;
-import Model.Patient.Patient; // Import Patient
+import Model.Patient.Patient; 
+import Model.Role.AdminRole;
 import Model.Supplies.SupplyItem; // Import SupplyItem
 import Model.Supplies.Equipments; // Import Equipments
 import Model.Supplies.Vehicle; // Import Vehicle
 import Model.Supplies.Donation; // Import Donation
 import Model.Supplies.Donation.DonatedItem; // Import DonatedItem
 
-import Model.WorkQueue.Appointment; // Import Appointment
-import Model.WorkQueue.EmergencyWorkRequest; // Import EmergencyWorkRequest
-import Model.WorkQueue.SupplyWorkRequest; // Import SupplyWorkRequest
-import Model.WorkQueue.DonationRequest; // Import DonationRequest
-import Model.WorkQueue.DeliveryAssignmentRequest; // Import DeliveryAssignmentRequest
+import Model.WorkQueue.Appointment; 
+import Model.WorkQueue.EmergencyWorkRequest; 
+import Model.WorkQueue.SupplyWorkRequest; 
+import Model.WorkQueue.DonationRequest; 
+import Model.WorkQueue.DeliveryAssignmentRequest; 
 import Model.WorkQueue.PayrollRequest; // Import PayrollRequest
-import Model.WorkQueue.ResourceAnalysisRequest; // Import ResourceAnalysisRequest
+import Model.WorkQueue.ResourceAnalysisRequest; 
 import Model.WorkQueue.CostReport; // Import CostReport
 import Model.WorkQueue.MissionStats; // Import MissionStats
 import Model.WorkQueue.ICURequest; // Import ICURequest
@@ -85,7 +85,7 @@ public class ConfigureASystem {
             clinicalServicesOrg = new ClinicalServicesUnit("Clinical Services", null, true); // Added admin placeholder and emergencyReady
             bostonHospital.addOrganization(clinicalServicesOrg);
         }
-        Employee hospitalAdminEmployeePlaceholder = new Employee(faker.name().fullName(), faker.name().username(), faker.internet().password(), new Admin(), "Administration", "Hospital Management");
+        Employee hospitalAdminEmployeePlaceholder = new Employee(faker.name().fullName(), faker.name().username(), faker.internet().password(), new AdminRole(), "Administration", "Hospital Management");
         hospitalAdminEmployeePlaceholder.setContactInfo(new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress()));
         AdministrationUnit hospitalAdminOrg = (AdministrationUnit) bostonHospital.findOrganizationByName("Hospital Admin");
         if (hospitalAdminOrg == null) {

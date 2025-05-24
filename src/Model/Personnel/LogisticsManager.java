@@ -1,24 +1,30 @@
 package Model.Personnel;
 
-import Model.Role.Role;
+import Model.Person.ContactInfo;
+import Model.Role.LogisticsManagerRole;
+import Model.User.UserAccount;
 
-public class LogisticsManager extends Role {
-    private String department;
+public class LogisticsManager extends UserAccount {
+    private String logisticsManagerID;
+
+    public LogisticsManager(String logisticsManagerID,
+                            String id, String name, String gender, int age, String dateOfBirth,
+                            String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth,
+              username, password,
+              new LogisticsManagerRole(), organization, contactInfo);
+        this.logisticsManagerID = logisticsManagerID;
+    }
 
     public LogisticsManager() {
-        super("LOGISTICSMANAGER", "Logistics Manager", false, "Manages logistics operations"); // Added line
+        super();
     }
 
-    public LogisticsManager(String id, String name, boolean isAdmin, String description, String department) {
-        super(id, name, isAdmin, description);
-        this.department = department;
+    public String getLogisticsManagerID() {
+        return logisticsManagerID;
     }
 
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setLogisticsManagerID(String logisticsManagerID) {
+        this.logisticsManagerID = logisticsManagerID;
     }
 }

@@ -24,11 +24,20 @@ import Model.Personnel.EmergencyResponder;
 import Model.Personnel.LogisticsManager;
 import Model.Personnel.DeliveryStaff;
 import Model.Personnel.DonationCoordinator;
-import Model.Personnel.Payroll;
+import Model.Personnel.PayrollStaff;
 import Model.Personnel.Manager;
 import Model.Personnel.ResourceAnalyst;
 import Model.Personnel.Visitor;
 import Model.Role.AdminRole;
+import Model.Role.DeliveryStaffRole;
+import Model.Role.DoctorRole;
+import Model.Role.DonationCoordinatorRole;
+import Model.Role.EmergencyDispatcherRole;
+import Model.Role.EmergencyResponderRole;
+import Model.Role.LogisticsManagerRole;
+import Model.Role.NurseRole;
+import Model.Role.PayrollStaffRole;
+import Model.Role.VisitorRole;
 import java.awt.CardLayout;
 import ui.DeliveryStaff.DeliveryStaffWorkAreaPanel;
 import ui.DonationCoordinator.DonationCoordinatorWorkAreaPanel;
@@ -267,15 +276,17 @@ public class MainJFrame extends javax.swing.JFrame {
             workAreaPanel = new SupplyOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof DonationCoordinatorRole) {
             workAreaPanel = new DonationCoordinatorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof PayrollRole) {
+        } else if (role instanceof PayrollStaffRole) {
             workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof DeliveryStaffRole) {
             workAreaPanel = new DeliveryStaffWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof VisitorRole) {
             workAreaPanel = new VisitorDonorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof ResourceAnalystRole) {
-            workAreaPanel = new EquipmentTechnicianWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else {
+        } 
+//        else if (role instanceof ResourceAnalystRole) {
+//            workAreaPanel = new EquipmentTechnicianWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+//        } 
+        else {
             JOptionPane.showMessageDialog(this, "Unrecognized role type.");
             return;
         }
