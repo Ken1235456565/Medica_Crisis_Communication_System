@@ -5,9 +5,11 @@
 package ui.SupplychainManager;
 
 import Model.Organization.Organization;
-import Model.Supplies.DonationCatalog;
 import Model.User.UserAccount;
+import Model.Supplies.SupplyItemCatalog;
+import Model.Supplies.DeliveryCatalog;
 import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *
@@ -19,11 +21,31 @@ public class SupplyOfficerWorkAreaPanel extends javax.swing.JPanel {
     private Organization organization;
     private UserAccount userAccount;
 
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
+
     public SupplyOfficerWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
+
         initComponents();
+        initContentPanel();
+    }
+
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Assuming organization has methods to get its directories/catalogs
+        SupplyItemCatalog supplyCatalog = organization.getSupplyItemCatalog(); // Placeholder
+        DeliveryCatalog deliveryCatalog = organization.getDeliveryCatalog(); // Placeholder
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("ManageStock", new ManageStock(userProcessContainer, organization, userAccount, supplyCatalog));
+        contentPanel.add("SupplyUsageTracking", new SupplyUsageTracking(userProcessContainer, organization, userAccount, supplyCatalog));
+        contentPanel.add("ManageSupplyRequests", new ManageSupplyRequests(userProcessContainer, organization, userAccount, supplyCatalog));
+        contentPanel.add("ManageShipment", new ManageShipment(userProcessContainer, organization, userAccount, deliveryCatalog));
     }
 
     /**
@@ -35,44 +57,44 @@ public class SupplyOfficerWorkAreaPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnSubmitICURequest = new javax.swing.JButton();
-        btnViewPatientList = new javax.swing.JButton();
+        btnSupplyUsageTracking = new javax.swing.JButton();
+        btnManageStock = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        btnViewMedicalOrderStatus = new javax.swing.JButton();
-        btnSubmitMedicalOrder = new javax.swing.JButton();
+        btnManageSupplyRequests = new javax.swing.JButton();
+        btnManageShipment = new javax.swing.JButton();
 
-        btnSubmitICURequest.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnSubmitICURequest.setText("Manage Supply Usage");
-        btnSubmitICURequest.addActionListener(new java.awt.event.ActionListener() {
+        btnSupplyUsageTracking.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnSupplyUsageTracking.setText("Supply Usage Tracking");
+        btnSupplyUsageTracking.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitICURequestActionPerformed(evt);
+                btnSupplyUsageTrackingActionPerformed(evt);
             }
         });
 
-        btnViewPatientList.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnViewPatientList.setText("Manage Inventory");
-        btnViewPatientList.addActionListener(new java.awt.event.ActionListener() {
+        btnManageStock.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnManageStock.setText("Manage Stock");
+        btnManageStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewPatientListActionPerformed(evt);
+                btnManageStockActionPerformed(evt);
             }
         });
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Supply Chain Manage");
 
-        btnViewMedicalOrderStatus.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnViewMedicalOrderStatus.setText("Manage Supplies Applications");
-        btnViewMedicalOrderStatus.addActionListener(new java.awt.event.ActionListener() {
+        btnManageSupplyRequests.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnManageSupplyRequests.setText("Manage Supply Requests");
+        btnManageSupplyRequests.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewMedicalOrderStatusActionPerformed(evt);
+                btnManageSupplyRequestsActionPerformed(evt);
             }
         });
 
-        btnSubmitMedicalOrder.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnSubmitMedicalOrder.setText("Track Applications");
-        btnSubmitMedicalOrder.addActionListener(new java.awt.event.ActionListener() {
+        btnManageShipment.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnManageShipment.setText("Manage Shipment");
+        btnManageShipment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitMedicalOrderActionPerformed(evt);
+                btnManageShipmentActionPerformed(evt);
             }
         });
 
@@ -84,13 +106,13 @@ public class SupplyOfficerWorkAreaPanel extends javax.swing.JPanel {
                 .addGap(162, 162, 162)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnViewMedicalOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnManageSupplyRequests, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
-                        .addComponent(btnSubmitICURequest, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnSupplyUsageTracking, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnViewPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnManageStock, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(92, 92, 92)
-                        .addComponent(btnSubmitMedicalOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(btnManageShipment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(194, 194, 194))
             .addGroup(layout.createSequentialGroup()
                 .addGap(380, 380, 380)
@@ -102,40 +124,48 @@ public class SupplyOfficerWorkAreaPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(113, 113, 113)
                 .addComponent(jLabel1)
+                .addGap(74, 74, 74)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnManageStock, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnManageShipment, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(76, 76, 76)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnViewPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSubmitMedicalOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(79, 79, 79)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSubmitICURequest, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnViewMedicalOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(229, Short.MAX_VALUE))
+                    .addComponent(btnSupplyUsageTracking, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnManageSupplyRequests, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(234, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSubmitICURequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitICURequestActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitICURequestActionPerformed
+    private void btnSupplyUsageTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupplyUsageTrackingActionPerformed
+        // Navigate to SupplyUsageTracking (labeled as Track Applications)
+        userProcessContainer.add("SupplyUsageTracking", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnSupplyUsageTrackingActionPerformed
 
-    private void btnViewPatientListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPatientListActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnViewPatientListActionPerformed
+    private void btnManageStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStockActionPerformed
+        // Navigate to ManageStock (labeled as Manage Inventory)
+        userProcessContainer.add("ManageStock", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnManageStockActionPerformed
 
-    private void btnViewMedicalOrderStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewMedicalOrderStatusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnViewMedicalOrderStatusActionPerformed
+    private void btnManageSupplyRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageSupplyRequestsActionPerformed
+        // Navigate to ManageSupplyRequests (labeled as Manage Supplies Applications)
+        userProcessContainer.add("ManageSupplyRequests", contentPanel.getComponent(2));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnManageSupplyRequestsActionPerformed
 
-    private void btnSubmitMedicalOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitMedicalOrderActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitMedicalOrderActionPerformed
+    private void btnManageShipmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageShipmentActionPerformed
+        // Navigate to SupplyUsageTracking (labeled as Track Applications)
+        userProcessContainer.add("ManageShipment", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnManageShipmentActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSubmitICURequest;
-    private javax.swing.JButton btnSubmitMedicalOrder;
-    private javax.swing.JButton btnViewMedicalOrderStatus;
-    private javax.swing.JButton btnViewPatientList;
+    private javax.swing.JButton btnManageShipment;
+    private javax.swing.JButton btnManageStock;
+    private javax.swing.JButton btnManageSupplyRequests;
+    private javax.swing.JButton btnSupplyUsageTracking;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

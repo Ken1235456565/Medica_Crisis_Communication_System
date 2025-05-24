@@ -6,8 +6,10 @@ package ui.VisitorDonor;
 
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import Model.Supplies.DonationCatalog;
+import Model.EcoSystem; // Needed for BrowsePublicData
 import javax.swing.JPanel;
-import ui.admin.*;
+import java.awt.CardLayout;
 
 /**
  *
@@ -18,12 +20,32 @@ public class VisitorDonorWorkAreaPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
+    private EcoSystem system;
+
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
 
     public VisitorDonorWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
+        this.system = EcoSystem.getInstance(); // Assuming EcoSystem is a singleton
+
         initComponents();
+        initContentPanel();
+    }
+
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Assuming organization has a DonationCatalog
+        DonationCatalog donationCatalog = organization.getDonationCatalog(); // Placeholder
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("SubmitDonation", new SubmitDonation(userProcessContainer, organization, userAccount, donationCatalog));
+        contentPanel.add("ViewDonationHistory", new ViewDonationHistory(userProcessContainer, organization, userAccount, donationCatalog));
+        contentPanel.add("BrowsePublicData", new BrowsePublicData(userProcessContainer, organization, userAccount, system));
     }
 
     /**
@@ -100,15 +122,21 @@ public class VisitorDonorWorkAreaPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSubmitDonationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitDonationsActionPerformed
-        // TODO add your handling code here:
+        // Navigate to SubmitDonation
+        userProcessContainer.add("SubmitDonation", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnSubmitDonationsActionPerformed
 
     private void btnViewDonationHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDonationHistoryActionPerformed
-        // TODO add your handling code here:
+        // Navigate to ViewDonationHistory
+        userProcessContainer.add("ViewDonationHistory", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnViewDonationHistoryActionPerformed
 
     private void btnBrowsePublicDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowsePublicDataActionPerformed
-        // TODO add your handling code here:
+        // Navigate to BrowsePublicData
+        userProcessContainer.add("BrowsePublicData", contentPanel.getComponent(2));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnBrowsePublicDataActionPerformed
 
 

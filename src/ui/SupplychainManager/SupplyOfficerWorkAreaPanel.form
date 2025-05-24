@@ -20,14 +20,14 @@
               <EmptySpace min="-2" pref="162" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="btnViewMedicalOrderStatus" min="-2" pref="284" max="-2" attributes="0"/>
+                      <Component id="btnManageSupplyRequests" min="-2" pref="284" max="-2" attributes="0"/>
                       <EmptySpace pref="92" max="32767" attributes="0"/>
-                      <Component id="btnSubmitICURequest" min="-2" pref="271" max="-2" attributes="0"/>
+                      <Component id="btnSupplyUsageTracking" min="-2" pref="271" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="btnViewPatientList" min="-2" pref="284" max="-2" attributes="0"/>
+                      <Component id="btnManageStock" min="-2" pref="284" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
-                      <Component id="btnSubmitMedicalOrder" max="32767" attributes="0"/>
+                      <Component id="btnManageShipment" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="194" max="-2" attributes="0"/>
@@ -44,42 +44,42 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="113" max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="74" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnManageStock" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnManageShipment" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnViewPatientList" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="btnSubmitMedicalOrder" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnSupplyUsageTracking" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnManageSupplyRequests" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnSubmitICURequest" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="btnViewMedicalOrderStatus" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace pref="229" max="32767" attributes="0"/>
+              <EmptySpace pref="234" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="btnSubmitICURequest">
+    <Component class="javax.swing.JButton" name="btnSupplyUsageTracking">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Manage Supply Usage"/>
+        <Property name="text" type="java.lang.String" value="Supply Usage Tracking"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitICURequestActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSupplyUsageTrackingActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewPatientList">
+    <Component class="javax.swing.JButton" name="btnManageStock">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Manage Inventory"/>
+        <Property name="text" type="java.lang.String" value="Manage Stock"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewPatientListActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageStockActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
@@ -90,26 +90,26 @@
         <Property name="text" type="java.lang.String" value="Supply Chain Manage"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewMedicalOrderStatus">
+    <Component class="javax.swing.JButton" name="btnManageSupplyRequests">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Manage Supplies Applications"/>
+        <Property name="text" type="java.lang.String" value="Manage Supply Requests"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewMedicalOrderStatusActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageSupplyRequestsActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnSubmitMedicalOrder">
+    <Component class="javax.swing.JButton" name="btnManageShipment">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Track Applications"/>
+        <Property name="text" type="java.lang.String" value="Manage Shipment"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitMedicalOrderActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageShipmentActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

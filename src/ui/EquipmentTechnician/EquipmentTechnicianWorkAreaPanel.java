@@ -6,7 +6,9 @@ package ui.EquipmentTechnician;
 
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import Model.Supplies.EquipmentsCatalog;
 import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *
@@ -18,13 +20,31 @@ public class EquipmentTechnicianWorkAreaPanel extends javax.swing.JPanel {
     private Organization organization;
     private UserAccount userAccount;
 
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
+
     public EquipmentTechnicianWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
+
         initComponents();
+        initContentPanel();
     }
 
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Assuming organization has methods to get its directories/catalogs
+        EquipmentsCatalog equipmentsCatalog = organization.getEquipmentsCatalog(); // Placeholder
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("ReportIssue", new ReportIssue(userProcessContainer, organization, userAccount, equipmentsCatalog));
+        contentPanel.add("ManageRepairStatus", new ManageRepairStatus(userProcessContainer, organization, userAccount, equipmentsCatalog));
+        contentPanel.add("EquipmentStatusChart", new EquipmentStatusChart(userProcessContainer, organization, userAccount, equipmentsCatalog));
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -98,15 +118,21 @@ public class EquipmentTechnicianWorkAreaPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRepairStatusUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepairStatusUpdateActionPerformed
-        // TODO add your handling code here:
+        // Navigate to ManageRepairStatus
+        userProcessContainer.add("RepairStatusUpdate", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnRepairStatusUpdateActionPerformed
 
     private void btnEquipmentStatsChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEquipmentStatsChartActionPerformed
-        // TODO add your handling code here:
+        // Navigate to EquipmentStatusChart
+        userProcessContainer.add("EquipmentStatsChart", contentPanel.getComponent(2));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnEquipmentStatsChartActionPerformed
 
     private void btnReportIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportIssueActionPerformed
-        // TODO add your handling code here:
+        // Navigate to ReportIssue
+        userProcessContainer.add("ReportIssue", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnReportIssueActionPerformed
 
 

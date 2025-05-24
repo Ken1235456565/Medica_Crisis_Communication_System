@@ -21,21 +21,17 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="322" max="-2" attributes="0"/>
           </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="362" max="-2" attributes="0"/>
+              <Component id="btnResponderStatsChart" min="-2" pref="284" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="174" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="btnRequestSupplies" min="-2" pref="284" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="btnResponderStatsChart" min="-2" pref="284" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="btnManageMissions" min="-2" pref="284" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
-                          <Component id="btnUpdateMissionStatus" min="-2" pref="284" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
+                  <Component id="btnManageMissions" min="-2" pref="284" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
+                  <Component id="btnUpdateMissionStatus" min="-2" pref="284" max="-2" attributes="0"/>
                   <EmptySpace pref="174" max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -46,7 +42,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="708" max="32767" attributes="0"/>
+              <EmptySpace pref="351" max="32767" attributes="0"/>
+              <Component id="btnResponderStatsChart" min="-2" pref="138" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="219" max="-2" attributes="0"/>
           </Group>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
@@ -55,12 +53,7 @@
                       <Component id="btnManageMissions" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
                       <Component id="btnUpdateMissionStatus" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btnResponderStatsChart" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                      <Component id="btnRequestSupplies" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="223" max="32767" attributes="0"/>
+                  <EmptySpace pref="440" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -106,17 +99,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateMissionStatusActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnRequestSupplies">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Helvetica Neue" size="18" style="0"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Request Supplies"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRequestSuppliesActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

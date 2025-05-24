@@ -70,6 +70,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Donation Stats Chart"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDonationStatsChartActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnBrowsePublicData">
       <Properties>
@@ -78,6 +81,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Browse Public Data"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBrowsePublicDataActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnManageDonations">
       <Properties>
@@ -86,6 +92,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Manage Donations"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageDonationsActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnSubmitDonations">
       <Properties>
@@ -94,6 +103,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Submit Donations"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitDonationsActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
@@ -110,6 +122,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="View Donation History"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewDonationHistoryActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

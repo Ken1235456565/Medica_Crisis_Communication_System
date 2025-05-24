@@ -4,9 +4,11 @@
  */
 package ui.EmergencyDispatcher;
 
-import javax.swing.JPanel;
+import Model.EcoSystem;
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *
@@ -17,12 +19,32 @@ public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
+    private EcoSystem system;
+    
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
 
     public EmergencyDispatcherWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
+        this.system = EcoSystem.getInstance(); // Assuming EcoSystem is a singleton
+
         initComponents();
+        initContentPanel();
+    }
+    
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("RequestCreate", new RequestCreate(userProcessContainer, organization, userAccount, system));
+        contentPanel.add("RequestManagement", new RequestManagement(userProcessContainer, organization, userAccount, system));
+        contentPanel.add("RequestTracking", new RequestTracking(userProcessContainer, organization, userAccount, system));
+        contentPanel.add("ResponderStats", new ResponderStats(userProcessContainer, organization, userAccount, system));
+        // Assuming TaskAssignment is another panel that would be added
+        // contentPanel.add("TaskAssignment", new TaskAssignment(userProcessContainer, organization, userAccount, system));
     }
 
     /**
@@ -36,7 +58,7 @@ public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         btnRequestManagement = new javax.swing.JButton();
-        btnTaskAssignment = new javax.swing.JButton();
+        btnResponderStats = new javax.swing.JButton();
         btnTaskTracking = new javax.swing.JButton();
         btnRequestCreate = new javax.swing.JButton();
 
@@ -51,11 +73,11 @@ public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
             }
         });
 
-        btnTaskAssignment.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnTaskAssignment.setText("Task Assignment");
-        btnTaskAssignment.addActionListener(new java.awt.event.ActionListener() {
+        btnResponderStats.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnResponderStats.setText("Responder Status");
+        btnResponderStats.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTaskAssignmentActionPerformed(evt);
+                btnResponderStatsActionPerformed(evt);
             }
         });
 
@@ -91,7 +113,7 @@ public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
                             .addComponent(btnRequestCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(74, 74, 74)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnTaskAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnResponderStats, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnTaskTracking, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(183, 183, 183))))
         );
@@ -103,7 +125,7 @@ public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
                 .addGap(125, 125, 125)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRequestCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTaskAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnResponderStats, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(70, 70, 70)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRequestManagement, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -113,19 +135,25 @@ public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRequestCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRequestCreateActionPerformed
-        // TODO add your handling code here:
+        // Navigate to RequestCreate
+        userProcessContainer.add("RequestCreate", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnRequestCreateActionPerformed
 
-    private void btnTaskAssignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaskAssignmentActionPerformed
+    private void btnResponderStatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResponderStatsActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnTaskAssignmentActionPerformed
+    }//GEN-LAST:event_btnResponderStatsActionPerformed
 
     private void btnRequestManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRequestManagementActionPerformed
-        // TODO add your handling code here:
+        // Navigate to RequestManagement
+        userProcessContainer.add("RequestManagement", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnRequestManagementActionPerformed
 
     private void btnTaskTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaskTrackingActionPerformed
-        // TODO add your handling code here:
+        // Navigate to RequestTracking
+        userProcessContainer.add("RequestTracking", contentPanel.getComponent(2));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnTaskTrackingActionPerformed
 
     
@@ -133,7 +161,7 @@ public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRequestCreate;
     private javax.swing.JButton btnRequestManagement;
-    private javax.swing.JButton btnTaskAssignment;
+    private javax.swing.JButton btnResponderStats;
     private javax.swing.JButton btnTaskTracking;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables

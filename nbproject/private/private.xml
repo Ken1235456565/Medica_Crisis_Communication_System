@@ -5,11 +5,10 @@
         <group>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/EcoSystem.java</file>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Organization/OperationsSupportUnit.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/admin/ManageNetwork.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Organization/Organization.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Network/NetworkDirectory.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Network/Network.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Personnel/DeliveryStaff.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Organization/DonationManagementUnit.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/admin/ManageEnterprise.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/admin/AdminWorkAreaPanel.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/ConfigureASystem.java</file>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/MainJFrame.java</file>
         </group>
     </open-files>

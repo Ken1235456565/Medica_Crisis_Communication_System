@@ -17,17 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField; // For handling password input
 
 // Import specific role classes for type checking
-import Model.Personnel.Admin;
-import Model.Personnel.Doctor;
-import Model.Personnel.Nurse;
-import Model.Personnel.EmergencyDispatcher;
-import Model.Personnel.EmergencyResponder;
-import Model.Personnel.LogisticsManager;
-import Model.Personnel.DeliveryStaff;
-import Model.Personnel.DonationCoordinator;
-import Model.Personnel.PayrollStaff;
-import Model.Personnel.ResourceAnalyst;
-import Model.Personnel.Visitor;
 import Model.Role.AdminRole;
 import Model.Role.DeliveryStaffRole;
 import Model.Role.DoctorRole;
@@ -49,6 +38,7 @@ import ui.HospitalNurse.HospitalNurseWorkArea;
 import ui.PayrollOfficer.PayrollOfficerWorkAreaPanel;
 import ui.SupplychainManager.SupplyOfficerWorkAreaPanel;
 import ui.VisitorDonor.VisitorDonorWorkAreaPanel;
+import ui.admin.AdminWorkAreaPanel;
 import ui.admin.ManageEnterprise;
 import ui.admin.ManageNetwork;
 import ui.admin.ManageOrganization;
@@ -60,7 +50,6 @@ import ui.admin.ManageUserAccounts;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
-    private NetworkDirectory networks;
     private EcoSystem system;
     private JPanel userProcessContainer;
 
@@ -72,8 +61,13 @@ public class MainJFrame extends javax.swing.JFrame {
         this.setResizable(false);
         this.setSize(1000, 800);
         system = EcoSystem.getInstance(); 
-        this.userProcessContainer = jPanel2;
+        // 初始化用户界面容器（核心！）
+        userProcessContainer = new JPanel(new CardLayout());
+        this.setContentPane(userProcessContainer); // 将主容器设为主窗口内容
+        
     }
+    
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -211,83 +205,13 @@ public class MainJFrame extends javax.swing.JFrame {
         // 1. 系统级查找
         authenticatedUser = system.getUserAccountDirectory().authenticateUser(username, password);
 
-        // 2. 逐层递归查找用户（Network → Enterprise → Organization）
-        if (authenticatedUser == null) {
-            // Try authenticating at the Ecosystem level
-            authenticatedUser = system.getUserAccountDirectory().authenticateUser(username, password);
-            if (authenticatedUser != null && authenticatedUser.getRole() instanceof AdminRole) { // Assuming system admin has AdminRole
-                // currentNetwork, currentEnterprise, currentOrg remain null for system admin
-            } else {
-                authenticatedUser = null; // Reset if it's not an Admin or not found at system level
-            }
-        }
-
-        if (authenticatedUser == null) {
-            for (Network network : system.getNetworkDirectory().getNetworkList()) { // Use getNetworkDirectory()
-                // Try authenticating at the Network level
-                if (network.getAdmin() != null &&
-                    network.getAdmin().getUsername().equals(username) &&
-                    network.getAdmin().getPassword().equals(password)) {
-                    authenticatedUser = network.getAdmin();
-                    currentNetwork = network;
-                    break;
-                }
-
-                for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
-                    // Try authenticating at the Enterprise level
-                    if (enterprise.getAdmin() != null &&
-                        enterprise.getAdmin().getUsername().equals(username) &&
-                        enterprise.getAdmin().getPassword().equals(password)) {
-                        authenticatedUser = enterprise.getAdmin();
-                        currentNetwork = network;
-                        currentEnterprise = enterprise;
-                        break;
-                    }
-
-                    // Try authenticating at the Organization level
-                    for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
-                        if (org.getAdmin() != null &&
-                            org.getAdmin().getUsername().equals(username) &&
-                            org.getAdmin().getPassword().equals(password)) {
-                            authenticatedUser = org.getAdmin();
-                            currentNetwork = network;
-                            currentEnterprise = enterprise;
-                            currentOrg = org;
-                            break;
-                        }
-                    }
-                    if (authenticatedUser != null) break;
-                }
-                if (authenticatedUser != null) break;
-            }
-        }
-
-        // 3. 没找到：提示错误
-        if (authenticatedUser == null) {
-            JOptionPane.showMessageDialog(this, "Invalid username or password.");
-            return;
-        }
-
         // 4. 获取角色
         Role role = authenticatedUser.getRole();
         JPanel workAreaPanel = null;
 
         // 5. 分流：按角色分配界面
         if (role instanceof AdminRole) {
-            if (currentOrg != null) {
-                // Organization Admin → 用户管理
-                workAreaPanel = new ManageUserAccounts(userProcessContainer, currentOrg);
-            } else if (currentEnterprise != null) {
-                // Enterprise Admin → 组织管理
-                workAreaPanel = new ManageOrganization(userProcessContainer, currentEnterprise.getOrganizations(), currentEnterprise);
-            } else if (currentNetwork != null) {
-                // Network Admin → 企业管理
-                workAreaPanel = new ManageEnterprise(userProcessContainer, currentNetwork);
-            } else {
-                // 系统级管理员（假设存在）
-                workAreaPanel = new ManageNetwork(userProcessContainer, system);
-            }
-
+            //这里重写，现在只有一个admin
         } else if (role instanceof EmergencyDispatcherRole) {
             workAreaPanel = new EmergencyDispatcherWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof EmergencyResponderRole) {

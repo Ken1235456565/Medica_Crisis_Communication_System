@@ -7,7 +7,10 @@ package ui.HospitalNurse;
 import Model.Organization.Organization;
 import Model.Personnel.Nurse;
 import Model.User.UserAccount;
+import Model.Patient.PatientDirectory;
+import Model.Supplies.ICUbedCatalog;
 import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *
@@ -18,15 +21,35 @@ public class HospitalNurseWorkArea extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private Nurse nurse; // The logged-in nurse
+    private Nurse nurse;
+
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
 
     public HospitalNurseWorkArea(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         // Assuming the UserAccount holds the specific Nurse object
-        // this.nurse = (Nurse) userAccount.getEmployee(); // Or similar logic to get the nurse object
+        this.nurse = (Nurse) userAccount.getEmployee(); // Placeholder
+
         initComponents();
+        initContentPanel();
+    }
+
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Assuming organization has methods to get its directories/catalogs
+        PatientDirectory patientDirectory = organization.getPatientDirectory(); // Placeholder
+        ICUbedCatalog icuBedCatalog = organization.getICUbedCatalog(); // Placeholder
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("ManagePatientCarePlans", new ManagePatientCarePlans(userProcessContainer, organization, userAccount, patientDirectory));
+        contentPanel.add("ManageMedicationAdministration", new ManageMedicationAdministration(userProcessContainer, organization, userAccount, patientDirectory));
+        contentPanel.add("ManageICUPatientMonitoring", new ManageICUPatientMonitoring(userProcessContainer, organization, userAccount, patientDirectory, icuBedCatalog));
+        contentPanel.add("ViewPatientShiftNotes", new ViewPatientShiftNotes(userProcessContainer, organization, userAccount, patientDirectory));
     }
 
     /**
@@ -39,43 +62,43 @@ public class HospitalNurseWorkArea extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        btnViewPatientList = new javax.swing.JButton();
-        btnSubmitICURequest = new javax.swing.JButton();
-        btnSubmitMedicalOrder = new javax.swing.JButton();
-        btnViewMedicalOrderStatus = new javax.swing.JButton();
+        btnManagePatientCarePlans = new javax.swing.JButton();
+        btnManageICUPatientMonitoring = new javax.swing.JButton();
+        btnManageMedicationAdministration = new javax.swing.JButton();
+        btnViewPatientShiftNotes = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Hospital Nurse WorkArea");
 
-        btnViewPatientList.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnViewPatientList.setText("Manage Patient Care Plans");
-        btnViewPatientList.addActionListener(new java.awt.event.ActionListener() {
+        btnManagePatientCarePlans.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnManagePatientCarePlans.setText("Manage Patient Care Plans");
+        btnManagePatientCarePlans.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewPatientListActionPerformed(evt);
+                btnManagePatientCarePlansActionPerformed(evt);
             }
         });
 
-        btnSubmitICURequest.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnSubmitICURequest.setText("Manage ICU Patient Monitoring");
-        btnSubmitICURequest.addActionListener(new java.awt.event.ActionListener() {
+        btnManageICUPatientMonitoring.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnManageICUPatientMonitoring.setText("Manage ICU Patient Monitoring");
+        btnManageICUPatientMonitoring.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitICURequestActionPerformed(evt);
+                btnManageICUPatientMonitoringActionPerformed(evt);
             }
         });
 
-        btnSubmitMedicalOrder.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnSubmitMedicalOrder.setText("Manage Medication Administration");
-        btnSubmitMedicalOrder.addActionListener(new java.awt.event.ActionListener() {
+        btnManageMedicationAdministration.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnManageMedicationAdministration.setText("Manage Medication Administration");
+        btnManageMedicationAdministration.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitMedicalOrderActionPerformed(evt);
+                btnManageMedicationAdministrationActionPerformed(evt);
             }
         });
 
-        btnViewMedicalOrderStatus.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnViewMedicalOrderStatus.setText("View Patient Shift Notes");
-        btnViewMedicalOrderStatus.addActionListener(new java.awt.event.ActionListener() {
+        btnViewPatientShiftNotes.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnViewPatientShiftNotes.setText("View Patient Shift Notes");
+        btnViewPatientShiftNotes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewMedicalOrderStatusActionPerformed(evt);
+                btnViewPatientShiftNotesActionPerformed(evt);
             }
         });
 
@@ -89,13 +112,13 @@ public class HospitalNurseWorkArea extends javax.swing.JPanel {
                         .addGap(162, 162, 162)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnViewMedicalOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnViewPatientShiftNotes, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(92, 92, 92)
-                                .addComponent(btnSubmitICURequest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(btnManageICUPatientMonitoring, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnViewPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnManagePatientCarePlans, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(92, 92, 92)
-                                .addComponent(btnSubmitMedicalOrder))))
+                                .addComponent(btnManageMedicationAdministration))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(361, 361, 361)
                         .addComponent(jLabel1)))
@@ -108,38 +131,46 @@ public class HospitalNurseWorkArea extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addGap(77, 77, 77)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnViewPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSubmitMedicalOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnManagePatientCarePlans, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnManageMedicationAdministration, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(79, 79, 79)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSubmitICURequest, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnViewMedicalOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnManageICUPatientMonitoring, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnViewPatientShiftNotes, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(229, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnViewPatientListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPatientListActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnViewPatientListActionPerformed
+    private void btnManagePatientCarePlansActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManagePatientCarePlansActionPerformed
+        // Navigate to ManagePatientCarePlans
+        userProcessContainer.add("ManagePatientCarePlans", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnManagePatientCarePlansActionPerformed
 
-    private void btnSubmitICURequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitICURequestActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitICURequestActionPerformed
+    private void btnManageICUPatientMonitoringActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageICUPatientMonitoringActionPerformed
+        // Navigate to ManageICUPatientMonitoring
+        userProcessContainer.add("ManageICUPatientMonitoring", contentPanel.getComponent(2));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnManageICUPatientMonitoringActionPerformed
 
-    private void btnSubmitMedicalOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitMedicalOrderActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitMedicalOrderActionPerformed
+    private void btnManageMedicationAdministrationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageMedicationAdministrationActionPerformed
+        // Navigate to ManageMedicationAdministration
+        userProcessContainer.add("ManageMedicationAdministration", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnManageMedicationAdministrationActionPerformed
 
-    private void btnViewMedicalOrderStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewMedicalOrderStatusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnViewMedicalOrderStatusActionPerformed
+    private void btnViewPatientShiftNotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPatientShiftNotesActionPerformed
+        // Navigate to ViewPatientShiftNotes
+        userProcessContainer.add("ViewPatientShiftNotes", contentPanel.getComponent(3));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnViewPatientShiftNotesActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSubmitICURequest;
-    private javax.swing.JButton btnSubmitMedicalOrder;
-    private javax.swing.JButton btnViewMedicalOrderStatus;
-    private javax.swing.JButton btnViewPatientList;
+    private javax.swing.JButton btnManageICUPatientMonitoring;
+    private javax.swing.JButton btnManageMedicationAdministration;
+    private javax.swing.JButton btnManagePatientCarePlans;
+    private javax.swing.JButton btnViewPatientShiftNotes;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

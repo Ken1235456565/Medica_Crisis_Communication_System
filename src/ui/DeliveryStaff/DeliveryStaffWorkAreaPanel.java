@@ -6,7 +6,9 @@ package ui.DeliveryStaff;
 
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import Model.Supplies.DeliveryCatalog;
 import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *
@@ -18,11 +20,29 @@ public class DeliveryStaffWorkAreaPanel extends javax.swing.JPanel {
     private Organization organization;
     private UserAccount userAccount;
 
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
+
     public DeliveryStaffWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
+        
         initComponents();
+        initContentPanel();
+    }
+    
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Assuming organization has methods to get its directories/catalogs
+        DeliveryCatalog deliveryCatalog = organization.getDeliveryCatalog(); // Placeholder
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("TaskInstructions", new TaskInstructions(userProcessContainer, organization, userAccount, deliveryCatalog));
+        contentPanel.add("ManageDeliveryTasks", new ManageDeliveryTasks(userProcessContainer, organization, userAccount, deliveryCatalog));
+        contentPanel.add("UploadProof", new UploadProof(userProcessContainer, organization, userAccount, null)); // Requires a specific delivery
     }
 
     /**
@@ -115,19 +135,25 @@ public class DeliveryStaffWorkAreaPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTaskInstructionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaskInstructionsActionPerformed
-        // TODO add your handling code here:
+        // Navigate to TaskInstructions
+        userProcessContainer.add("TaskInstructions", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnTaskInstructionsActionPerformed
 
     private void btnManageTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageTaskActionPerformed
-        // TODO add your handling code here:
+        // Navigate to ManageDeliveryTasks
+        userProcessContainer.add("ManageDeliveryTasks", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnManageTaskActionPerformed
 
     private void btnUploadProofActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadProofActionPerformed
-        // TODO add your handling code here:
+        // Navigate to UploadProof (Note: This panel likely needs a selected delivery, which isn't handled here)
+         userProcessContainer.add("UploadProof", new UploadProof(userProcessContainer, organization, userAccount, someSelectedDelivery));
+         ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnUploadProofActionPerformed
 
     private void btnDeliverySummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeliverySummaryActionPerformed
-        // TODO add your handling code here:
+        // caculation button:
     }//GEN-LAST:event_btnDeliverySummaryActionPerformed
 
 

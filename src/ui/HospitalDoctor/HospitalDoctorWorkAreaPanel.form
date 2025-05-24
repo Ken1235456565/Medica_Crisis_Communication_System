@@ -22,7 +22,7 @@
                       <EmptySpace min="-2" pref="162" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnViewMedicalOrderStatus" min="-2" pref="284" max="-2" attributes="0"/>
+                              <Component id="btnDutyHistory" min="-2" pref="284" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="btnSubmitICURequest" min="-2" pref="284" max="-2" attributes="0"/>
                           </Group>
@@ -55,7 +55,7 @@
               <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnSubmitICURequest" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="btnViewMedicalOrderStatus" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnDutyHistory" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="231" max="32767" attributes="0"/>
           </Group>
@@ -104,7 +104,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitMedicalOrderActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewMedicalOrderStatus">
+    <Component class="javax.swing.JButton" name="btnDutyHistory">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -112,7 +112,7 @@
         <Property name="text" type="java.lang.String" value="Duty History"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewMedicalOrderStatusActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDutyHistoryActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

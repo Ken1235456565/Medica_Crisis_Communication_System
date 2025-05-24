@@ -6,7 +6,10 @@ package ui.EmergencyResponder;
 
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import Model.Supplies.DeliveryCatalog;
+import Model.Employee.EmployeeDirectory;
 import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *
@@ -18,11 +21,31 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
     private Organization organization;
     private UserAccount userAccount;
 
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
+
     public EmergencyResponderWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
+
         initComponents();
+        initContentPanel();
+    }
+    
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Assuming organization has methods to get its directories/catalogs
+        DeliveryCatalog missionCatalog = organization.getDeliveryCatalog(); // Placeholder
+        EmployeeDirectory employeeDirectory = organization.getEmployeeDirectory(); // Placeholder
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("MissionManagement", new MissionManagement(userProcessContainer, organization, userAccount, missionCatalog));
+        contentPanel.add("UpdateMissionStatus", new UpdateMissionStatus(userProcessContainer, organization, userAccount, null)); // Requires a specific missionToUpdate
+        contentPanel.add("ResponderSalaryChart", new ResponderSalaryChart(userProcessContainer, organization, userAccount, employeeDirectory));
+        
     }
 
     /**
@@ -38,7 +61,6 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
         btnManageMissions = new javax.swing.JButton();
         btnResponderStatsChart = new javax.swing.JButton();
         btnUpdateMissionStatus = new javax.swing.JButton();
-        btnRequestSupplies = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Emergency Responder WorkArea");
@@ -67,14 +89,6 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
             }
         });
 
-        btnRequestSupplies.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnRequestSupplies.setText("Request Supplies");
-        btnRequestSupplies.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRequestSuppliesActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -83,18 +97,16 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
                 .addContainerGap(328, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(322, 322, 322))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(362, 362, 362)
+                .addComponent(btnResponderStatsChart, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(174, 174, 174)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnRequestSupplies, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnResponderStatsChart, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnManageMissions, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(92, 92, 92)
-                            .addComponent(btnUpdateMissionStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnManageMissions, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(92, 92, 92)
+                    .addComponent(btnUpdateMissionStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(174, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -102,41 +114,40 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(63, 63, 63)
                 .addComponent(jLabel1)
-                .addContainerGap(708, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 351, Short.MAX_VALUE)
+                .addComponent(btnResponderStatsChart, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(219, 219, 219))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(222, 222, 222)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnManageMissions, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnUpdateMissionStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(79, 79, 79)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnResponderStatsChart, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnRequestSupplies, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(223, Short.MAX_VALUE)))
+                    .addContainerGap(440, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnManageMissionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageMissionsActionPerformed
-        // TODO add your handling code here:
+        // Navigate to MissionManagement
+        userProcessContainer.add("MissionManagement", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnManageMissionsActionPerformed
 
     private void btnResponderStatsChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResponderStatsChartActionPerformed
-        // TODO add your handling code here:
+        // Navigate to ResponderSalaryChart
+        userProcessContainer.add("ResponderStatsChart", contentPanel.getComponent(2));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnResponderStatsChartActionPerformed
 
     private void btnUpdateMissionStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateMissionStatusActionPerformed
-        // TODO add your handling code here:
+        // Navigate to UpdateMissionStatus (Note: This panel likely needs a selected mission, which isn't handled here)
+        userProcessContainer.add("UpdateMissionStatus", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnUpdateMissionStatusActionPerformed
-
-    private void btnRequestSuppliesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRequestSuppliesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRequestSuppliesActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnManageMissions;
-    private javax.swing.JButton btnRequestSupplies;
     private javax.swing.JButton btnResponderStatsChart;
     private javax.swing.JButton btnUpdateMissionStatus;
     private javax.swing.JLabel jLabel1;

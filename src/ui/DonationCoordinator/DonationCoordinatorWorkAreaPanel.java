@@ -6,7 +6,10 @@ package ui.DonationCoordinator;
 
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import Model.Supplies.DonationCatalog;
+import Model.EcoSystem; // Needed for BrowsePublicData
 import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *
@@ -17,13 +20,35 @@ public class DonationCoordinatorWorkAreaPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
+    private EcoSystem system;
+
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
 
     public DonationCoordinatorWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
+        this.system = EcoSystem.getInstance(); // Assuming EcoSystem is a singleton
+
         initComponents();
+        initContentPanel();
     }
+
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Assuming organization has a DonationCatalog
+        DonationCatalog donationCatalog = organization.getDonationCatalog(); // Placeholder
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("SubmitDonation", new SubmitDonation(userProcessContainer, organization, userAccount, donationCatalog));
+        contentPanel.add("ViewDonationHistory", new ViewDonationHistory(userProcessContainer, organization, userAccount, donationCatalog));
+        contentPanel.add("ManageDonations", new ManageDonations(userProcessContainer, organization, userAccount, donationCatalog));
+        contentPanel.add("BrowsePublicData", new BrowsePublicData(userProcessContainer, organization, userAccount, system));
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -43,21 +68,46 @@ public class DonationCoordinatorWorkAreaPanel extends javax.swing.JPanel {
 
         btnDonationStatsChart.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         btnDonationStatsChart.setText("Donation Stats Chart");
+        btnDonationStatsChart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDonationStatsChartActionPerformed(evt);
+            }
+        });
 
         btnBrowsePublicData.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         btnBrowsePublicData.setText("Browse Public Data");
+        btnBrowsePublicData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrowsePublicDataActionPerformed(evt);
+            }
+        });
 
         btnManageDonations.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         btnManageDonations.setText("Manage Donations");
+        btnManageDonations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManageDonationsActionPerformed(evt);
+            }
+        });
 
         btnSubmitDonations.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         btnSubmitDonations.setText("Submit Donations");
+        btnSubmitDonations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitDonationsActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Donation Coordinator WorkArea");
 
         btnViewDonationHistory.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         btnViewDonationHistory.setText("View Donation History");
+        btnViewDonationHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDonationHistoryActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -99,6 +149,34 @@ public class DonationCoordinatorWorkAreaPanel extends javax.swing.JPanel {
                 .addContainerGap(225, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSubmitDonationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitDonationsActionPerformed
+        // Navigate to SubmitDonation
+        userProcessContainer.add("SubmitDonation", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnSubmitDonationsActionPerformed
+
+    private void btnViewDonationHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDonationHistoryActionPerformed
+        // Navigate to ViewDonationHistory
+        userProcessContainer.add("ViewDonationHistory", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnViewDonationHistoryActionPerformed
+
+    private void btnBrowsePublicDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowsePublicDataActionPerformed
+        // Navigate to BrowsePublicData
+        userProcessContainer.add("BrowsePublicData", contentPanel.getComponent(3));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnBrowsePublicDataActionPerformed
+
+    private void btnManageDonationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageDonationsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnManageDonationsActionPerformed
+
+    private void btnDonationStatsChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDonationStatsChartActionPerformed
+        // Navigate to ManageDonations
+        userProcessContainer.add("ManageDonations", contentPanel.getComponent(2));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnDonationStatsChartActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

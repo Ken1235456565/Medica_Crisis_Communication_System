@@ -6,7 +6,9 @@ package ui.PayrollOfficer;
 
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import Model.Employee.EmployeeDirectory;
 import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *
@@ -18,11 +20,28 @@ public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
     private Organization organization;
     private UserAccount userAccount;
 
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
+
     public PayrollOfficerWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
+
         initComponents();
+        initContentPanel();
+    }
+
+    private void initContentPanel() {
+        contentPanel = new JPanel(new CardLayout());
+        this.cardLayout = (CardLayout) contentPanel.getLayout();
+
+        // Assuming organization has methods to get its directories/catalogs
+        EmployeeDirectory employeeDirectory = organization.getEmployeeDirectory(); // Placeholder
+
+        // Add sub-panels to the contentPanel
+        contentPanel.add("GeneratePayrolls", new GeneratePayrolls(userProcessContainer, organization, userAccount, employeeDirectory));
+        contentPanel.add("ManageEmployeeSalary", new ManageEmployeeSalary(userProcessContainer, organization, userAccount, employeeDirectory));
     }
 
     /**
@@ -35,44 +54,44 @@ public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        btnViewPatientList = new javax.swing.JButton();
-        btnSubmitICURequest = new javax.swing.JButton();
-        btnSubmitMedicalOrder = new javax.swing.JButton();
-        btnViewMedicalOrderStatus = new javax.swing.JButton();
+        btnGeneratePayrolls = new javax.swing.JButton();
+        btnTotalPayrollChart = new javax.swing.JButton();
+        btnCaculateMonthCost = new javax.swing.JButton();
+        btnManageEmployeeSalary = new javax.swing.JButton();
         cmbTimeSpan = new javax.swing.JComboBox<>();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Payroll Officer WorkArea");
 
-        btnViewPatientList.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnViewPatientList.setText("Generate Payrolls");
-        btnViewPatientList.addActionListener(new java.awt.event.ActionListener() {
+        btnGeneratePayrolls.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnGeneratePayrolls.setText("Generate Payrolls");
+        btnGeneratePayrolls.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewPatientListActionPerformed(evt);
+                btnGeneratePayrollsActionPerformed(evt);
             }
         });
 
-        btnSubmitICURequest.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnSubmitICURequest.setText("Total Payroll Chart");
-        btnSubmitICURequest.addActionListener(new java.awt.event.ActionListener() {
+        btnTotalPayrollChart.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnTotalPayrollChart.setText("Total Payroll Chart");
+        btnTotalPayrollChart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitICURequestActionPerformed(evt);
+                btnTotalPayrollChartActionPerformed(evt);
             }
         });
 
-        btnSubmitMedicalOrder.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnSubmitMedicalOrder.setText("Caculate Month Cost");
-        btnSubmitMedicalOrder.addActionListener(new java.awt.event.ActionListener() {
+        btnCaculateMonthCost.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnCaculateMonthCost.setText("Caculate Month Cost");
+        btnCaculateMonthCost.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitMedicalOrderActionPerformed(evt);
+                btnCaculateMonthCostActionPerformed(evt);
             }
         });
 
-        btnViewMedicalOrderStatus.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnViewMedicalOrderStatus.setText("Manage Employee Salary");
-        btnViewMedicalOrderStatus.addActionListener(new java.awt.event.ActionListener() {
+        btnManageEmployeeSalary.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnManageEmployeeSalary.setText("Manage Employee Salary");
+        btnManageEmployeeSalary.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewMedicalOrderStatusActionPerformed(evt);
+                btnManageEmployeeSalaryActionPerformed(evt);
             }
         });
 
@@ -88,14 +107,14 @@ public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
                         .addGap(162, 162, 162)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnViewMedicalOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnManageEmployeeSalary, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(92, 92, 92)
-                                .addComponent(btnSubmitICURequest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(btnTotalPayrollChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnViewPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnGeneratePayrolls, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(92, 92, 92)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(btnSubmitMedicalOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+                                    .addComponent(btnCaculateMonthCost, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                                     .addComponent(cmbTimeSpan, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(361, 361, 361)
@@ -109,41 +128,45 @@ public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addGap(77, 77, 77)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnViewPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGeneratePayrolls, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cmbTimeSpan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSubmitMedicalOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(79, 79, 79)
+                        .addComponent(btnCaculateMonthCost, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(82, 82, 82)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSubmitICURequest, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnViewMedicalOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(229, Short.MAX_VALUE))
+                    .addComponent(btnTotalPayrollChart, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnManageEmployeeSalary, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(226, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnViewPatientListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPatientListActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnViewPatientListActionPerformed
+    private void btnGeneratePayrollsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGeneratePayrollsActionPerformed
+        // Navigate to GeneratePayrolls
+        userProcessContainer.add("GeneratePayrolls", contentPanel.getComponent(0));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnGeneratePayrollsActionPerformed
 
-    private void btnSubmitICURequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitICURequestActionPerformed
+    private void btnTotalPayrollChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalPayrollChartActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitICURequestActionPerformed
+    }//GEN-LAST:event_btnTotalPayrollChartActionPerformed
 
-    private void btnSubmitMedicalOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitMedicalOrderActionPerformed
+    private void btnCaculateMonthCostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCaculateMonthCostActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitMedicalOrderActionPerformed
+    }//GEN-LAST:event_btnCaculateMonthCostActionPerformed
 
-    private void btnViewMedicalOrderStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewMedicalOrderStatusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnViewMedicalOrderStatusActionPerformed
+    private void btnManageEmployeeSalaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageEmployeeSalaryActionPerformed
+        // Navigate to ManageEmployeeSalary
+        userProcessContainer.add("ManageEmployeeSalary", contentPanel.getComponent(1));
+        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnManageEmployeeSalaryActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSubmitICURequest;
-    private javax.swing.JButton btnSubmitMedicalOrder;
-    private javax.swing.JButton btnViewMedicalOrderStatus;
-    private javax.swing.JButton btnViewPatientList;
+    private javax.swing.JButton btnCaculateMonthCost;
+    private javax.swing.JButton btnGeneratePayrolls;
+    private javax.swing.JButton btnManageEmployeeSalary;
+    private javax.swing.JButton btnTotalPayrollChart;
     private javax.swing.JComboBox<String> cmbTimeSpan;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables

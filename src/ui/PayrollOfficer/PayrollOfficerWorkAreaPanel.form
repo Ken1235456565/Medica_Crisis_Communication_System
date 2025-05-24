@@ -22,15 +22,15 @@
                       <EmptySpace min="-2" pref="162" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnViewMedicalOrderStatus" min="-2" pref="284" max="-2" attributes="0"/>
+                              <Component id="btnManageEmployeeSalary" min="-2" pref="284" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
-                              <Component id="btnSubmitICURequest" max="32767" attributes="0"/>
+                              <Component id="btnTotalPayrollChart" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnViewPatientList" min="-2" pref="284" max="-2" attributes="0"/>
+                              <Component id="btnGeneratePayrolls" min="-2" pref="284" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="btnSubmitMedicalOrder" pref="273" max="32767" attributes="0"/>
+                                  <Component id="btnCaculateMonthCost" pref="273" max="32767" attributes="0"/>
                                   <Component id="cmbTimeSpan" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -52,19 +52,19 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="btnViewPatientList" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnGeneratePayrolls" min="-2" pref="138" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="cmbTimeSpan" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="btnSubmitMedicalOrder" min="-2" pref="100" max="-2" attributes="0"/>
+                      <Component id="btnCaculateMonthCost" min="-2" pref="100" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnSubmitICURequest" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="btnViewMedicalOrderStatus" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnTotalPayrollChart" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnManageEmployeeSalary" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="229" max="32767" attributes="0"/>
+              <EmptySpace pref="226" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -78,7 +78,7 @@
         <Property name="text" type="java.lang.String" value="Payroll Officer WorkArea"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewPatientList">
+    <Component class="javax.swing.JButton" name="btnGeneratePayrolls">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -86,10 +86,10 @@
         <Property name="text" type="java.lang.String" value="Generate Payrolls"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewPatientListActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGeneratePayrollsActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnSubmitICURequest">
+    <Component class="javax.swing.JButton" name="btnTotalPayrollChart">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -97,10 +97,10 @@
         <Property name="text" type="java.lang.String" value="Total Payroll Chart"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitICURequestActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTotalPayrollChartActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnSubmitMedicalOrder">
+    <Component class="javax.swing.JButton" name="btnCaculateMonthCost">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -108,10 +108,10 @@
         <Property name="text" type="java.lang.String" value="Caculate Month Cost"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitMedicalOrderActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCaculateMonthCostActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewMedicalOrderStatus">
+    <Component class="javax.swing.JButton" name="btnManageEmployeeSalary">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -119,7 +119,7 @@
         <Property name="text" type="java.lang.String" value="Manage Employee Salary"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewMedicalOrderStatusActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageEmployeeSalaryActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="cmbTimeSpan">
