@@ -1,7 +1,7 @@
 // Model/personnel/roles/EmergencyDispatcherRole.java
 package Model.Personnel;
 
-import Model.Personnel.Role;
+import Model.Role.Role;
 
 public class EmergencyDispatcher extends Role {
     private String dispatchZone;

@@ -17,9 +17,9 @@ import Model.Personnel.Doctor;
 import Model.Personnel.EmergencyDispatcher;
 import Model.Personnel.EmergencyResponder;
 import Model.Personnel.Employee;
-import Model.Personnel.LogisticsManagerRole;
+import Model.Personnel.LogisticsManager;
 import Model.Personnel.Nurse;
-import Model.Personnel.Role;
+import Model.Role.Role;
 import Model.Personnel.Donor; // Import Donor
 
 import Model.Person.ContactInfo;
@@ -284,7 +284,7 @@ public class ConfigureASystem {
 
         // Create Logistics Manager User and add to Inventory Manager Org with Faker-generated data
         ContactInfo logisticsManagerContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee logisticsManagerEmployee = new Employee(faker.name().fullName(), "logisticsmanager", "logisticsmanager", new LogisticsManagerRole(), "Manager", "Logistics");
+        Employee logisticsManagerEmployee = new Employee(faker.name().fullName(), "logisticsmanager", "logisticsmanager", new LogisticsManager(), "Manager", "Logistics");
         logisticsManagerEmployee.setContactInfo(logisticsManagerContact);
         UserAccount logisticsManagerAccount = system.getUserAccountDirectory().createUserAccount(logisticsManagerEmployee.getUsername(), logisticsManagerEmployee.getPassword(), logisticsManagerEmployee, logisticsManagerEmployee.getRole());
         inventoryManagerOrg.addEmployee(logisticsManagerEmployee);

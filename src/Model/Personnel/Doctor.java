@@ -1,6 +1,8 @@
 // Model/personnel/roles/DoctorRole.java
 package Model.Personnel;
 
+import Model.Role.Role;
+
 
 public class Doctor extends Role {
     private String specialization;

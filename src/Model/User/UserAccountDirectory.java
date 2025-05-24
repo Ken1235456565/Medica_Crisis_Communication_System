@@ -2,7 +2,7 @@
 package Model.User;
 
 import Model.Personnel.Employee;
-import Model.Personnel.Role;
+import Model.Role.Role;
 import java.util.ArrayList;
 import java.util.List;
 

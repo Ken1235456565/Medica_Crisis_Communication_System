@@ -1,7 +1,7 @@
 // Model/personnel/roles/NurseRole.java
 package Model.Personnel;
 
-import Model.Personnel.Role;
+import Model.Role.Role;
 
 public class Nurse extends Role {
     private String nurseType;

@@ -2,7 +2,7 @@
 // Model/personnel/roles/EmergencyResponderRole.java
 package Model.Personnel;
 
-import Model.Personnel.Role;
+import Model.Role.Role;
 
 public class EmergencyResponder extends Role {
     private String responderType;

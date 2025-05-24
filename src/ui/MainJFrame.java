@@ -8,7 +8,7 @@ import Model.Enterprise.Enterprise;
 import Model.Network.Network;
 import Model.Network.NetworkDirectory; // Corrected import
 import Model.Organization.Organization;
-import Model.Personnel.Role;
+import Model.Role.Role;
 import Model.User.UserAccount;
 import Model.ConfigureASystem; // For initializing the system data
 import javax.swing.JPanel;
@@ -21,13 +21,14 @@ import Model.Personnel.Doctor;
 import Model.Personnel.Nurse;
 import Model.Personnel.EmergencyDispatcher;
 import Model.Personnel.EmergencyResponder;
-import Model.Personnel.LogisticsManagerRole;
+import Model.Personnel.LogisticsManager;
 import Model.Personnel.DeliveryStaff;
 import Model.Personnel.DonationCoordinator;
 import Model.Personnel.Payroll;
 import Model.Personnel.Manager;
 import Model.Personnel.ResourceAnalyst;
 import Model.Personnel.Visitor;
+import Model.Role.AdminRole;
 import java.awt.CardLayout;
 import ui.DeliveryStaff.DeliveryStaffWorkAreaPanel;
 import ui.DonationCoordinator.DonationCoordinatorWorkAreaPanel;
@@ -47,6 +48,8 @@ import ui.VisitorDonor.VisitorDonorWorkAreaPanel;
 public class MainJFrame extends javax.swing.JFrame {
 
     private NetworkDirectory system;
+    private JPanel userProcessContainer;
+
     /**
      * Creates new form MainJFrame
      */
@@ -55,6 +58,7 @@ public class MainJFrame extends javax.swing.JFrame {
         this.setResizable(false);
         this.setSize(1000, 800);
         this.system = ConfigureASystem.configure(); 
+        this.userProcessContainer = jPanel2;
     }
 
     /**
@@ -198,9 +202,11 @@ public class MainJFrame extends javax.swing.JFrame {
             for (Network network : system.getNetworkList()) {
                 for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
                     // Enterprise 层找
-                    authenticatedUser = enterprise.getUserAccountDirectory().authenticateUser(username, password);
-                    if (authenticatedUser != null) {
-                        currentNetwork = network;
+                    Admin admin = enterprise.getAdmin();
+                    if (admin != null &&
+                        admin.getUsername().equals(username) &&
+                        admin.getPassword().equals(password)) {
+                        authenticatedUser = admin;  // 注意类型
                         currentEnterprise = enterprise;
                         break;
                     }
@@ -234,7 +240,7 @@ public class MainJFrame extends javax.swing.JFrame {
         JPanel workAreaPanel = null;
 
         // 5. 分流：按角色分配界面
-        if (role instanceof Admin) {
+        if (role instanceof AdminRole) {
             if (currentOrg != null) {
                 // Organization Admin → 用户管理
                 workAreaPanel = new ManageUserAccounts(userProcessContainer, currentOrg);
@@ -249,25 +255,25 @@ public class MainJFrame extends javax.swing.JFrame {
                 return;
             }
 
-        } else if (role instanceof EmergencyDispatcher) {
+        } else if (role instanceof EmergencyDispatcherRole) {
             workAreaPanel = new EmergencyDispatcherWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof EmergencyResponder) {
+        } else if (role instanceof EmergencyResponderRole) {
             workAreaPanel = new EmergencyResponderWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof Doctor) {
+        } else if (role instanceof DoctorRole) {
             workAreaPanel = new HospitalDoctorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof Nurse) {
+        } else if (role instanceof NurseRole) {
             workAreaPanel = new HospitalNurseWorkArea(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof LogisticsManagerRole) {
             workAreaPanel = new SupplyOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof DonationCoordinator) {
+        } else if (role instanceof DonationCoordinatorRole) {
             workAreaPanel = new DonationCoordinatorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof Payroll) {
+        } else if (role instanceof PayrollRole) {
             workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof DeliveryStaff) {
+        } else if (role instanceof DeliveryStaffRole) {
             workAreaPanel = new DeliveryStaffWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof Visitor) {
+        } else if (role instanceof VisitorRole) {
             workAreaPanel = new VisitorDonorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof ResourceAnalyst) {
+        } else if (role instanceof ResourceAnalystRole) {
             workAreaPanel = new EquipmentTechnicianWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else {
             JOptionPane.showMessageDialog(this, "Unrecognized role type.");

@@ -1,7 +1,7 @@
 // Model/personnel/roles/ResourceAnalystRole.java
 package Model.Personnel;
 
-import Model.Personnel.Role;
+import Model.Role.Role;
 
 public class ResourceAnalyst extends Role {
     private String analysisArea;

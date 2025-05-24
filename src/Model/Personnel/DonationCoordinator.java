@@ -1,7 +1,7 @@
 // Model/personnel/roles/DonationCoordinatorRole.java
 package Model.Personnel;
 
-import Model.Personnel.Role;
+import Model.Role.Role;
 
 public class DonationCoordinator extends Role {
     private String region;

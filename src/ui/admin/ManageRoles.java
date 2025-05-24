@@ -6,7 +6,7 @@ package ui.admin;
 
 import Model.Enterprise.Enterprise;
 import Model.Organization.Organization;
-import Model.Personnel.RoleDirectory;
+import Model.Role.RoleDirectory;
 import javax.swing.JPanel;
 
 /**

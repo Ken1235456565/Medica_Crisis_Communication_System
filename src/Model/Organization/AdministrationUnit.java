@@ -3,7 +3,7 @@ package Model.Organization;
 
 import Model.Personnel.Employee;
 import Model.Person.Person;
-import Model.Personnel.Role;
+import Model.Role.Role;
 
 import Model.User.UserAccount;
 

@@ -1,7 +1,9 @@
 package Model.Enterprise;
 
 import Model.Organization.Organization;
+import Model.Organization.OrganizationDirectory;
 import Model.Person.ContactInfo;
+import Model.Personnel.Admin;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,29 +19,39 @@ public abstract class Enterprise {
     private String manager;
     private ContactInfo contactInfo; // Changed to ContactInfo
     private String networkBelong;
-    private List<Organization> organizations; // ADDED: List of organizations
+    private OrganizationDirectory organizations; // ADDED: List of organizations
+    private Admin admin;
 
     // Define EnterpriseType enum INSIDE the Enterprise class
     public enum EnterpriseType {
         Hospital,
         Emergency,
         Logistics,
-        PublicHealth  // Added PublicHealth
-        // ... other types
+        PublicHealth  
     }
 
     public Enterprise() {
-        this.organizations = new ArrayList<>(); // Initialize the list
-        this.contactInfo = new ContactInfo(); // Initialize ContactInfo
+        this.organizations = new OrganizationDirectory();
+        this.contactInfo = new ContactInfo();
     }
 
     public Enterprise(String id, String name, EnterpriseType type, String description, String manager) {
-        this(); // Call default constructor
+        this();
         this.id = id;
         this.name = name;
         this.type = type;
         this.description = description;
         this.manager = manager;
+    }
+    
+    public Enterprise(String id, String name, EnterpriseType type, String description, String manager,Admin admin) {
+        this();
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.manager = manager;
+        this.admin = admin;
     }
 
     // Getters and setters
@@ -65,23 +77,32 @@ public abstract class Enterprise {
     public String getNetworkBelong() { return networkBelong; }
     public void setNetworkBelong(String networkBelong) { this.networkBelong = networkBelong; }
 
-    public List<Organization> getOrganizations() { return organizations; } // ADDED
-    public void setOrganizations(List<Organization> organizations) { this.organizations = organizations; } // ADDED
+    public OrganizationDirectory getOrganizations() {
+        return organizations;
+    }
+
+    public void setOrganizations(OrganizationDirectory organizations) {
+        this.organizations = organizations;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+    
 
     // Method to add an organization
     public void addOrganization(Organization organization) {
-        this.organizations.add(organization);
+        this.organizations.addOrganization(organization);
     }
 
-    // Method to find an organization by name (optional)
     public Organization findOrganizationByName(String name) {
-        for (Organization org : this.organizations) {
-            if (org.getOrganizationName().equals(name)) {
-                return org;
-            }
-        }
-        return null;
+        return this.organizations.findOrganizationByName(name);
     }
+
 
     @Override
     public String toString() {

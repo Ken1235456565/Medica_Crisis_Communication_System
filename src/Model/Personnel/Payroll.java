@@ -1,7 +1,7 @@
 // Model/personnel/roles/PayrollRole.java
 package Model.Personnel;
 
-import Model.Personnel.Role;
+import Model.Role.Role;
 
 public class Payroll extends Role {
     private String department;

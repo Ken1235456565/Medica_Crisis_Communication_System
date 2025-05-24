@@ -1,5 +1,5 @@
 // Model/personnel/Role.java
-package Model.Personnel;
+package Model.Role;
 
 public abstract class Role {
     private String id;

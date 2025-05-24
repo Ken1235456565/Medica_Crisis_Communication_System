@@ -2,7 +2,7 @@
 package Model.User;
 
 import Model.Person.ContactInfo;
-import Model.Personnel.Role;
+import Model.Role.Role;
 import Model.Person.Person; // Import Person
 import Model.Personnel.Employee;
 

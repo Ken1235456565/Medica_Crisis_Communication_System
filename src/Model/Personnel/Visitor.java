@@ -1,7 +1,7 @@
 // Model/personnel/roles/VisitorRole.java
 package Model.Personnel;
 
-import Model.Personnel.Role;
+import Model.Role.Role;
 
 public class Visitor extends Role {
     private String visitPurpose;

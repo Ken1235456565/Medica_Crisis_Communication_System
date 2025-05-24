@@ -1,5 +1,5 @@
 // Model/personnel/RoleDirectory.java
-package Model.Personnel;
+package Model.Role;
 
 import java.util.ArrayList;
 import java.util.List;

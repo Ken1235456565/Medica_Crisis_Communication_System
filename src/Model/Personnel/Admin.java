@@ -4,15 +4,21 @@
  */
 package Model.Personnel;
 
+import Model.Person.ContactInfo;
+import Model.Role.AdminRole;
+import Model.User.UserAccount;
 
-import Model.Personnel.Role;
 
-public class Admin extends Role {
-    public Admin(String id, String name, boolean isAdmin, String description) {
-        super(id, name, isAdmin, description);
+public class Admin extends UserAccount {
+
+    public Admin(String id, String name, String gender, int age, String dateOfBirth,
+                 String username, String password, String organization, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, username, password,
+              new AdminRole(),
+              organization, contactInfo);
     }
 
     public Admin() {
-        super("ADMIN", "Administrator", true, "System Administrator Role"); // Added line
+        super(); // 你可以保留这个无参构造器（如果 UserAccount 有的话）
     }
 }

@@ -1,6 +1,7 @@
 // Model/Personnel/Employee.java
 package Model.Personnel;
 
+import Model.Role.Role;
 import Model.Person.ContactInfo;
 import Model.User.UserAccount;
 
