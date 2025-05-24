@@ -1,8 +1,9 @@
 // Model/organization/AdministrationUnit.java
 package Model.Organization;
 
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 import Model.Person.Person;
+import Model.Personnel.Admin;
 import Model.Role.Role;
 
 import Model.User.UserAccount;
@@ -35,7 +36,7 @@ public class AdministrationUnit extends Organization { // EXTENDS Organization
     }
 
     // Constructor with admin
-    public AdministrationUnit(String unitName, Employee admin) { // Modified to accept unit name
+    public AdministrationUnit(String unitName, Admin admin) { // Modified to accept unit name
         super(unitName, admin);
         this.userAccounts = new ArrayList<>();
         this.definedRoles = new ArrayList<>();
@@ -223,7 +224,7 @@ public class AdministrationUnit extends Organization { // EXTENDS Organization
     }
 
     // Create and assign a new organization
-    public Organization createOrganization(String orgName, String orgType, Employee admin) {
+    public Organization createOrganization(String orgName, String orgType, Admin admin) {
         Organization newOrg = null;
 
         // Create the appropriate organization type

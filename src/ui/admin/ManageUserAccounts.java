@@ -5,7 +5,7 @@
 package ui.admin;
 
 import Model.Organization.Organization;
-import Model.Personnel.EmployeeDirectory;
+import Model.Employee.EmployeeDirectory;
 import Model.Role.RoleDirectory;
 import Model.User.UserAccountDirectory;
 import javax.swing.JPanel;

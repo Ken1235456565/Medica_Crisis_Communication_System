@@ -1,7 +1,7 @@
 // Model/user/UserAccountDirectory.java
 package Model.User;
 
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 import Model.Role.Role;
 import java.util.ArrayList;
 import java.util.List;

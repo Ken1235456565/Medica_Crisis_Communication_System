@@ -11,6 +11,7 @@ import Model.Organization.Organization;
 import Model.Role.Role;
 import Model.User.UserAccount;
 import Model.ConfigureASystem; // For initializing the system data
+import Model.EcoSystem;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField; // For handling password input
@@ -25,7 +26,6 @@ import Model.Personnel.LogisticsManager;
 import Model.Personnel.DeliveryStaff;
 import Model.Personnel.DonationCoordinator;
 import Model.Personnel.PayrollStaff;
-import Model.Personnel.Manager;
 import Model.Personnel.ResourceAnalyst;
 import Model.Personnel.Visitor;
 import Model.Role.AdminRole;
@@ -49,6 +49,10 @@ import ui.HospitalNurse.HospitalNurseWorkArea;
 import ui.PayrollOfficer.PayrollOfficerWorkAreaPanel;
 import ui.SupplychainManager.SupplyOfficerWorkAreaPanel;
 import ui.VisitorDonor.VisitorDonorWorkAreaPanel;
+import ui.admin.ManageEnterprise;
+import ui.admin.ManageNetwork;
+import ui.admin.ManageOrganization;
+import ui.admin.ManageUserAccounts;
 
 /**
  *
@@ -56,7 +60,8 @@ import ui.VisitorDonor.VisitorDonorWorkAreaPanel;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
-    private NetworkDirectory system;
+    private NetworkDirectory networks;
+    private EcoSystem system;
     private JPanel userProcessContainer;
 
     /**
@@ -66,7 +71,7 @@ public class MainJFrame extends javax.swing.JFrame {
         initComponents();
         this.setResizable(false);
         this.setSize(1000, 800);
-        this.system = ConfigureASystem.configure(); 
+        system = EcoSystem.getInstance(); 
         this.userProcessContainer = jPanel2;
     }
 
@@ -208,32 +213,51 @@ public class MainJFrame extends javax.swing.JFrame {
 
         // 2. 逐层递归查找用户（Network → Enterprise → Organization）
         if (authenticatedUser == null) {
-            for (Network network : system.getNetworkList()) {
+            // Try authenticating at the Ecosystem level
+            authenticatedUser = system.getUserAccountDirectory().authenticateUser(username, password);
+            if (authenticatedUser != null && authenticatedUser.getRole() instanceof AdminRole) { // Assuming system admin has AdminRole
+                // currentNetwork, currentEnterprise, currentOrg remain null for system admin
+            } else {
+                authenticatedUser = null; // Reset if it's not an Admin or not found at system level
+            }
+        }
+
+        if (authenticatedUser == null) {
+            for (Network network : system.getNetworkDirectory().getNetworkList()) { // Use getNetworkDirectory()
+                // Try authenticating at the Network level
+                if (network.getAdmin() != null &&
+                    network.getAdmin().getUsername().equals(username) &&
+                    network.getAdmin().getPassword().equals(password)) {
+                    authenticatedUser = network.getAdmin();
+                    currentNetwork = network;
+                    break;
+                }
+
                 for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
-                    // Enterprise 层找
-                    Admin admin = enterprise.getAdmin();
-                    if (admin != null &&
-                        admin.getUsername().equals(username) &&
-                        admin.getPassword().equals(password)) {
-                        authenticatedUser = admin;  // 注意类型
+                    // Try authenticating at the Enterprise level
+                    if (enterprise.getAdmin() != null &&
+                        enterprise.getAdmin().getUsername().equals(username) &&
+                        enterprise.getAdmin().getPassword().equals(password)) {
+                        authenticatedUser = enterprise.getAdmin();
+                        currentNetwork = network;
                         currentEnterprise = enterprise;
                         break;
                     }
 
-                    // Organization 层找
-                    for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
-                        authenticatedUser = org.getUserAccountDirectory().authenticateUser(username, password);
-                        if (authenticatedUser != null) {
+                    // Try authenticating at the Organization level
+                    for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
+                        if (org.getAdmin() != null &&
+                            org.getAdmin().getUsername().equals(username) &&
+                            org.getAdmin().getPassword().equals(password)) {
+                            authenticatedUser = org.getAdmin();
                             currentNetwork = network;
                             currentEnterprise = enterprise;
                             currentOrg = org;
                             break;
                         }
                     }
-
                     if (authenticatedUser != null) break;
                 }
-
                 if (authenticatedUser != null) break;
             }
         }
@@ -255,13 +279,13 @@ public class MainJFrame extends javax.swing.JFrame {
                 workAreaPanel = new ManageUserAccounts(userProcessContainer, currentOrg);
             } else if (currentEnterprise != null) {
                 // Enterprise Admin → 组织管理
-                workAreaPanel = new ManageOrganization(userProcessContainer, currentEnterprise.getOrganizationDirectory(), currentEnterprise);
+                workAreaPanel = new ManageOrganization(userProcessContainer, currentEnterprise.getOrganizations(), currentEnterprise);
             } else if (currentNetwork != null) {
                 // Network Admin → 企业管理
                 workAreaPanel = new ManageEnterprise(userProcessContainer, currentNetwork);
             } else {
-                JOptionPane.showMessageDialog(this, "Admin context missing.");
-                return;
+                // 系统级管理员（假设存在）
+                workAreaPanel = new ManageNetwork(userProcessContainer, system);
             }
 
         } else if (role instanceof EmergencyDispatcherRole) {
@@ -282,11 +306,7 @@ public class MainJFrame extends javax.swing.JFrame {
             workAreaPanel = new DeliveryStaffWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof VisitorRole) {
             workAreaPanel = new VisitorDonorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } 
-//        else if (role instanceof ResourceAnalystRole) {
-//            workAreaPanel = new EquipmentTechnicianWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-//        } 
-        else {
+        } else {
             JOptionPane.showMessageDialog(this, "Unrecognized role type.");
             return;
         }

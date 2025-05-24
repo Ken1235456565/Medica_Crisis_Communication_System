@@ -1,6 +1,6 @@
 package Model.Organization;
 
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 import Model.Supplies.SupplyItem;
 import Model.Supplies.Vehicle;
 import Model.WorkQueue.DeliveryAssignmentRequest;

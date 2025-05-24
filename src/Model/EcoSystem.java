@@ -6,6 +6,8 @@ package Model;
 
 import Model.Network.Network;
 import Model.Network.NetworkDirectory;
+import Model.Personnel.Admin;
+import Model.User.UserAccountDirectory;
 
 /**
  *
@@ -14,13 +16,15 @@ import Model.Network.NetworkDirectory;
 public class EcoSystem {
     private static EcoSystem business; // 单例
     private NetworkDirectory networkDirectory;
+    private UserAccountDirectory UserAccountDirectory;
+    private Admin admin; // 系统管理员账号
 
-    // 构造器私有化，防止直接 new
-    private EcoSystem() {
+    // 构造器私有化
+    public EcoSystem() {
         networkDirectory = new NetworkDirectory();
     }
 
-    // 获取单例实例
+    // 获取 EcoSystem 单例
     public static EcoSystem getInstance() {
         if (business == null) {
             business = new EcoSystem();
@@ -46,7 +50,7 @@ public class EcoSystem {
         networkDirectory.getNetworkList().remove(network);
     }
 
-    // 查找网络
+    // 按名称查找网络
     public Network findNetworkByName(String name) {
         for (Network net : networkDirectory.getNetworkList()) {
             if (net.getName().equalsIgnoreCase(name)) {
@@ -56,5 +60,40 @@ public class EcoSystem {
         return null;
     }
 
-    // 后续可添加：角色、审计、全局配置等
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public UserAccountDirectory getUserAccountDirectory() {
+        return UserAccountDirectory;
+    }
+
+    public void setUserAccountDirectory(UserAccountDirectory UserAccountDirectory) {
+        this.UserAccountDirectory = UserAccountDirectory;
+    }
+    
+    
+
+    // 登录验证：如果匹配系统管理员
+    public Admin authenticateAdmin(String username, String password) {
+        if (admin != null &&
+            admin.getUsername().equals(username) &&
+            admin.getPassword().equals(password)) {
+            return admin;
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return "EcoSystem{" +
+                "networks=" + networkDirectory.getNetworkList().size() +
+                ", admin=" + (admin != null ? admin.getUsername() : "none") +
+                '}';
+    }
 }
+

@@ -15,17 +15,14 @@ import Model.User.UserAccount;
 public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
-    private UserAccount userAccount;
     private Organization organization;
+    private UserAccount userAccount;
 
-    /**
-     * Creates new form EmergencyDispatcherWorkAreaPanel
-     */
-    public EmergencyDispatcherWorkAreaPanel(JPanel userProcessContainer, UserAccount userAccount, Organization organization) {
-        initComponents();
+    public EmergencyDispatcherWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
-        this.userAccount = userAccount;
         this.organization = organization;
+        this.userAccount = userAccount;
+        initComponents();
     }
 
     /**

@@ -1,6 +1,6 @@
 package Model.WorkQueue;
 
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 import Model.Patient.Patient;
 import java.util.Date;
 

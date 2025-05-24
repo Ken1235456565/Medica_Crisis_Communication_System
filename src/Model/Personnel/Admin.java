@@ -4,21 +4,21 @@
  */
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.AdminRole;
 import Model.User.UserAccount;
 
 
-public class Admin extends UserAccount {
+public class Admin extends Employee {
 
-    public Admin(String id, String name, String gender, int age, String dateOfBirth,
-                 String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth, username, password,
-              new AdminRole(),
-              organization, contactInfo);
+    public Admin(String name, String username, String password, String department, String designation, ContactInfo contactInfo) {
+        super(name, username, password, new AdminRole(), department, designation);
+        this.setContactInfo(contactInfo);
     }
 
+    // 可选无参构造器
     public Admin() {
-        super(); // 你可以保留这个无参构造器（如果 UserAccount 有的话）
+        super();
     }
 }

@@ -4,7 +4,7 @@ package Model.User;
 import Model.Person.ContactInfo;
 import Model.Role.Role;
 import Model.Person.Person; // Import Person
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 
 public class UserAccount extends Person { // Extend Person
     private String username;

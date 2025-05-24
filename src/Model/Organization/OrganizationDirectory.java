@@ -1,7 +1,7 @@
 // Model/Organization/OrganizationDirectory.java
 package Model.Organization;
 
-import Model.Personnel.Employee; // Import Employee
+import Model.Employee.Employee; // Import Employee
 import java.util.ArrayList;
 import java.util.List;
 

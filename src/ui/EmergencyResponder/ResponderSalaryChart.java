@@ -5,7 +5,7 @@
 package ui.EmergencyResponder;
 
 import Model.Organization.Organization;
-import Model.Personnel.EmployeeDirectory;
+import Model.Employee.EmployeeDirectory;
 import Model.User.UserAccount;
 import javax.swing.JPanel;
 

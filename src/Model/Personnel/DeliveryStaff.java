@@ -1,6 +1,7 @@
 // Model/personnel/roles/DeliveryStaffRole.java
 package Model.Personnel;
 
+import Model.Person.ContactInfo;
 import Model.Role.DeliveryStaffRole;
 import Model.User.UserAccount;
 

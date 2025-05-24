@@ -12,11 +12,11 @@ import java.util.ArrayList;
 public class NetworkDirectory {
     private static NetworkDirectory instance; // Singleton instance
     private List<Network> networkList;
-    private UserAccountDirectory userAccountDirectory; // Added UserAccountDirectory
+    
 
     public NetworkDirectory() { // Made constructor private for Singleton pattern
         this.networkList = new ArrayList<>();
-        this.userAccountDirectory = new UserAccountDirectory(); // Initialize UserAccountDirectory
+         // Initialize UserAccountDirectory
     }
 
     public static synchronized NetworkDirectory getInstance() { // Singleton getInstance method
@@ -66,12 +66,5 @@ public class NetworkDirectory {
         return null;
     }
 
-    // Getter for UserAccountDirectory
-    public UserAccountDirectory getUserAccountDirectory() {
-        return userAccountDirectory;
-    }
-
-    public void setUserAccountDirectory(UserAccountDirectory userAccountDirectory) {
-        this.userAccountDirectory = userAccountDirectory;
-    }
+   
 }

@@ -5,7 +5,7 @@
 package Model.WorkQueue;
 
 
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 import Model.Patient.Patient;
 import Model.WorkQueue.Appointment;
 import java.util.ArrayList;

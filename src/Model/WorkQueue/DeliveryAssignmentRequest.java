@@ -1,7 +1,7 @@
 package Model.WorkQueue;
 
 import Model.Supplies.Delivery;
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 import java.util.Date;
 
 /**

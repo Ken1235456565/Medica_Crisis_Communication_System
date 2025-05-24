@@ -1,6 +1,6 @@
 package Model.Organization;
 
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 import Model.Personnel.Donor;
 import Model.Supplies.Donation;
 import Model.WorkQueue.DonationRequest;

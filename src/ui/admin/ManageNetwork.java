@@ -4,6 +4,7 @@
  */
 package ui.admin;
 
+import Model.EcoSystem;
 import Model.Network.NetworkDirectory;
 import javax.swing.JPanel;
 
@@ -13,11 +14,11 @@ import javax.swing.JPanel;
  */
 public class ManageNetwork extends javax.swing.JPanel {
     private JPanel userProcessContainer;
-    private NetworkDirectory networkDirectory; // The directory of networks to manage
+    private EcoSystem ecoSystem; // The directory of networks to manage
 
-    public ManageNetwork(JPanel userProcessContainer, NetworkDirectory networkDirectory) {
+    public ManageNetwork(JPanel userProcessContainer, EcoSystem ecoSystem) {
         this.userProcessContainer = userProcessContainer;
-        this.networkDirectory = networkDirectory;
+        this.ecoSystem = ecoSystem;
         initComponents();
     }
 

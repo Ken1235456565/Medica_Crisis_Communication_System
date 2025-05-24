@@ -1,7 +1,7 @@
 package Model.Organization;
 
-import Model.Personnel.Employee;
-import Model.Person.PayrollRecord;
+import Model.Employee.Employee;
+import Model.Employee.PayrollRecord;
 import Model.WorkQueue.PayrollRequest;
 import Model.WorkQueue.ResourceAnalysisRequest;
 import Model.WorkQueue.CostReport;

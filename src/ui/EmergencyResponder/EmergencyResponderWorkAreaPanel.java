@@ -4,16 +4,24 @@
  */
 package ui.EmergencyResponder;
 
+import Model.Organization.Organization;
+import Model.User.UserAccount;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tiankaining
  */
 public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form EmergencyResponderWorkAreaPanel
-     */
-    public EmergencyResponderWorkAreaPanel() {
+    private JPanel userProcessContainer;
+    private Organization organization;
+    private UserAccount userAccount;
+
+    public EmergencyResponderWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.userAccount = userAccount;
         initComponents();
     }
 

@@ -1,7 +1,7 @@
 // Model/organization/ClinicalServicesUnit.java
 package Model.Organization;
 
-import Model.Personnel.Employee;
+import Model.Employee.Employee;
 import Model.Patient.Patient;
 import Model.WorkQueue.Appointment;
 import Model.WorkQueue.AppointmentSchedule; // Changed to AppointmentSchedule
