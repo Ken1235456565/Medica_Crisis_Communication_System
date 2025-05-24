@@ -1,15 +1,14 @@
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Role.SupplychainManagerRole;
 import Model.Person.ContactInfo;
-import Model.Role.Role;
-import Model.User.UserAccount;
 
 /**
  * Supply Officer role class
  * @author tiankaining
  */
-public class SupplychainManager extends UserAccount {
+public class SupplychainManager extends Employee {
     private String supplychainManagerID;
 
     public SupplychainManager(String supplyOfficerID,

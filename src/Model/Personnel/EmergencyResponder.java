@@ -2,11 +2,11 @@
 // Model/personnel/roles/EmergencyResponderRole.java
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.EmergencyResponderRole;
-import Model.User.UserAccount;
 
-public class EmergencyResponder extends UserAccount {
+public class EmergencyResponder extends Employee {
     private String responderType;
     private String certificationLevel;
     private String vehicleAssigned;

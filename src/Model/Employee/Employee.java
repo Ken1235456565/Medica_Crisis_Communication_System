@@ -42,8 +42,16 @@ public class Employee extends UserAccount {
         this.department = department;
         this.isActive = true;
     }
+    
+    public Employee(String id, String name, String gender, int age, String dateOfBirth,
+                String username, String password, Role role,
+                String organization, ContactInfo contactInfo) {
+    super(id, name, gender, age, dateOfBirth, username, password, role, organization, contactInfo);
+    this.setId(id != null ? id : generateEmployeeId());
+    this.isActive = true;
+}
 
-    private String generateEmployeeId() {
+    protected String generateEmployeeId() {
         return "EMP" + counter++;
     }
 
@@ -70,7 +78,18 @@ public class Employee extends UserAccount {
     public void setActive(boolean active) {
         isActive = active;
     }
-
+    
+    public void setPayrollRecord(PayrollRecord payrollRecord) {
+        this.payrollRecord = payrollRecord;
+    }
+    
+    public double calculateMySalary() {
+        if (this.payrollRecord != null) {
+            return this.payrollRecord.calculateNetSalary();
+        }
+        return 0.0; // Or throw an exception if payroll record is expected to always exist
+    }
+    
     @Override
     public String toString() {
         return getName() + " (" + position + ", " + department + ")";

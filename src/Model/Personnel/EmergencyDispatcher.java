@@ -1,12 +1,13 @@
 // Model/personnel/roles/EmergencyDispatcherRole.java
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.EmergencyDispatcherRole;
 import Model.Role.Role;
 import Model.User.UserAccount;
 
-public class EmergencyDispatcher extends UserAccount {
+public class EmergencyDispatcher extends Employee {
     private String dispatchZone;
     private String certificationLevel;
 
@@ -40,3 +41,4 @@ public class EmergencyDispatcher extends UserAccount {
         this.certificationLevel = certificationLevel;
     }
 }
+

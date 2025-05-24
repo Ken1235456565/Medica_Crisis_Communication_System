@@ -1,11 +1,11 @@
 // Model/personnel/roles/DeliveryStaffRole.java
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.DeliveryStaffRole;
-import Model.User.UserAccount;
 
-public class DeliveryStaff extends UserAccount {
+public class DeliveryStaff extends Employee {
     private String vehicleType;
     private String licenseNumber;
 
@@ -19,24 +19,26 @@ public class DeliveryStaff extends UserAccount {
         this.licenseNumber = licenseNumber;
     }
 
-    public DeliveryStaff() {
-        super();
-    }
-
-    // Getters and Setters
     public String getVehicleType() {
         return vehicleType;
-    }
-
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
     }
 
     public String getLicenseNumber() {
         return licenseNumber;
     }
 
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
     public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
     }
+
+    @Override
+    public String toString() {
+        return getName() + " (Delivery Staff - " + vehicleType + ")";
+    }
 }
+
+

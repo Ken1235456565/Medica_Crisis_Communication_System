@@ -1,11 +1,11 @@
 // Model/personnel/roles/ResourceAnalystRole.java
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.ResourceAnalystRole;
-import Model.User.UserAccount;
 
-public class ResourceAnalyst extends UserAccount {
+public class ResourceAnalyst extends Employee {
     private String analysisArea;
 
     public ResourceAnalyst(String analysisArea,

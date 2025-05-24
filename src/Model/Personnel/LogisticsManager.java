@@ -1,10 +1,10 @@
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.LogisticsManagerRole;
-import Model.User.UserAccount;
 
-public class LogisticsManager extends UserAccount {
+public class LogisticsManager extends Employee {
     private String logisticsManagerID;
 
     public LogisticsManager(String logisticsManagerID,

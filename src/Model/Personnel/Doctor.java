@@ -1,12 +1,13 @@
 // Model/personnel/roles/DoctorRole.java
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.DoctorRole;
 import Model.User.UserAccount;
 
 
-public class Doctor extends UserAccount {
+public class Doctor extends Employee {
     private String specialization;
     private String licenseNumber;
 
@@ -20,11 +21,7 @@ public class Doctor extends UserAccount {
         this.licenseNumber = licenseNumber;
     }
 
-    public Doctor() {
-        super();
-    }
-
-    // Getters and Setters
+    // Getter & Setter
     public String getSpecialization() {
         return specialization;
     }
@@ -40,4 +37,10 @@ public class Doctor extends UserAccount {
     public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
     }
+
+    @Override
+    public String toString() {
+        return getName() + " (" + specialization + ")";
+    }
 }
+

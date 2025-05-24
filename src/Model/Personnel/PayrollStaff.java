@@ -1,11 +1,11 @@
 // Model/personnel/roles/PayrollRole.java
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.PayrollStaffRole;
-import Model.User.UserAccount;
 
-public class PayrollStaff extends UserAccount {
+public class PayrollStaff extends Employee {
     private String payrollStaffID;
     private String payrollPeriod;
 

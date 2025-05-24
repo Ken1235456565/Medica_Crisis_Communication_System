@@ -1,11 +1,11 @@
 // Model/personnel/roles/NurseRole.java
 package Model.Personnel;
 
+import Model.Employee.Employee;
 import Model.Person.ContactInfo;
 import Model.Role.NurseRole;
-import Model.User.UserAccount;
 
-public class Nurse extends UserAccount {
+public class Nurse extends Employee {
     private String nurseType;
     private String licenseNumber;
 
