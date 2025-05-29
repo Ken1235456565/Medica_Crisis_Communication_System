@@ -16,12 +16,13 @@ import Model.User.UserAccountDirectory;
 public class EcoSystem {
     private static EcoSystem business; // 单例
     private NetworkDirectory networkDirectory;
-    private UserAccountDirectory UserAccountDirectory;
+    private UserAccountDirectory userAccountDirectory;
     private Admin admin; // 系统管理员账号
 
     // 构造器私有化
     public EcoSystem() {
         networkDirectory = new NetworkDirectory();
+        this.userAccountDirectory = new UserAccountDirectory();
     }
 
     // 获取 EcoSystem 单例
@@ -69,31 +70,36 @@ public class EcoSystem {
     }
 
     public UserAccountDirectory getUserAccountDirectory() {
-        return UserAccountDirectory;
+        return userAccountDirectory;
     }
 
     public void setUserAccountDirectory(UserAccountDirectory UserAccountDirectory) {
-        this.UserAccountDirectory = UserAccountDirectory;
+        this.userAccountDirectory = UserAccountDirectory;
     }
     
     
 
     // 登录验证：如果匹配系统管理员
     public Admin authenticateAdmin(String username, String password) {
-        if (admin != null &&
-            admin.getUsername().equals(username) &&
-            admin.getPassword().equals(password)) {
-            return admin;
-        }
-        return null;
+    if (admin != null &&
+        admin.getUserAccount() != null &&
+        admin.getUserAccount().getUsername().equals(username) &&
+        admin.getUserAccount().getPassword().equals(password)) {
+        return admin;
     }
+    return null;
+}
+
 
     @Override
     public String toString() {
         return "EcoSystem{" +
                 "networks=" + networkDirectory.getNetworkList().size() +
-                ", admin=" + (admin != null ? admin.getUsername() : "none") +
+                ", admin=" + (admin != null && admin.getUserAccount() != null
+                              ? admin.getUserAccount().getUsername()
+                              : "none") +
                 '}';
     }
+
 }
 

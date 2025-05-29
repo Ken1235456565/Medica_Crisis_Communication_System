@@ -5,6 +5,7 @@
 package ui.SupplychainManager;
 
 import Model.Organization.Organization;
+import Model.Organization.SupplyChainManagementUnit;
 import Model.User.UserAccount;
 import Model.Supplies.SupplyItemCatalog;
 import Model.Supplies.DeliveryCatalog;
@@ -38,8 +39,9 @@ public class SupplyOfficerWorkAreaPanel extends javax.swing.JPanel {
         this.cardLayout = (CardLayout) contentPanel.getLayout();
 
         // Assuming organization has methods to get its directories/catalogs
-        SupplyItemCatalog supplyCatalog = organization.getSupplyItemCatalog(); // Placeholder
-        DeliveryCatalog deliveryCatalog = organization.getDeliveryCatalog(); // Placeholder
+        SupplyChainManagementUnit scmOrg = (SupplyChainManagementUnit) organization;
+        SupplyItemCatalog supplyCatalog = scmOrg.getSupplyItemCatalog();
+        DeliveryCatalog deliveryCatalog = scmOrg.getDeliveryCatalog();
 
         // Add sub-panels to the contentPanel
         contentPanel.add("ManageStock", new ManageStock(userProcessContainer, organization, userAccount, supplyCatalog));

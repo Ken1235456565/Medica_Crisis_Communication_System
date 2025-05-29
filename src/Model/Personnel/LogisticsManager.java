@@ -9,10 +9,8 @@ public class LogisticsManager extends Employee {
 
     public LogisticsManager(String logisticsManagerID,
                             String id, String name, String gender, int age, String dateOfBirth,
-                            String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new LogisticsManagerRole(), organization, contactInfo);
+                            String position, String department, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, position, department, contactInfo);
         this.logisticsManagerID = logisticsManagerID;
     }
 

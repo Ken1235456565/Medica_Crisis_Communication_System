@@ -10,10 +10,8 @@ public class ResourceAnalyst extends Employee {
 
     public ResourceAnalyst(String analysisArea,
                            String id, String name, String gender, int age, String dateOfBirth,
-                           String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new ResourceAnalystRole(), organization, contactInfo);
+                           String position, String department, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, position, department, contactInfo);
         this.analysisArea = analysisArea;
     }
 

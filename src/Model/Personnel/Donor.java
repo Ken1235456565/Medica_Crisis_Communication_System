@@ -2,26 +2,28 @@
 package Model.Personnel;
 
 import Model.Person.ContactInfo;
+import Model.Person.Person;
 import Model.Role.VisitorRole;
 import Model.Supplies.Donation;
 import Model.User.UserAccount;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Donor extends UserAccount {
+public class Donor extends Person {
     private String donorId;
-    private List<Donation> donationHistory;
+    private UserAccount userAccount;
+    private List<Donation> donationHistory = new ArrayList<>();
 
-    public Donor(String donorId,
-                 String id, String name, String gender, int age, String dateOfBirth,
-                 String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new VisitorRole(), 
-              organization, contactInfo);
-        this.donorId = donorId;
-        this.donationHistory = new ArrayList<>();
+    public Donor(String id, String name, String gender, int age, String dateOfBirth, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, contactInfo);
+        this.donorId = "DON" + personIdCounter++;
     }
+    
+    public Donor(String id, String name, String gender, int age, String dateOfBirth,
+                ContactInfo contactInfo, UserAccount userAccount) {
+       this(id, name, gender, age, dateOfBirth, contactInfo);
+       this.userAccount = userAccount;
+   }
 
     public Donor() {
         super();
@@ -54,6 +56,14 @@ public class Donor extends UserAccount {
 
     public void addDonation(Donation donation) {
         this.donationHistory.add(donation);
+    }
+    
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
     }
     
     public double getTotalDonationAmount() {

@@ -2,6 +2,7 @@ package Model.Organization;
 
 import Model.Employee.Employee;
 import Model.Employee.PayrollRecord;
+import Model.Personnel.Admin;
 import Model.WorkQueue.PayrollRequest;
 import Model.WorkQueue.ResourceAnalysisRequest;
 import Model.WorkQueue.CostReport;
@@ -47,7 +48,7 @@ public class OperationsSupportUnit extends Organization { // EXTENDS Organizatio
     }
     
     // Constructor with detailed info
-    public OperationsSupportUnit(String unitName, Employee admin, String fiscalYear) {
+    public OperationsSupportUnit(String unitName, Admin admin, String fiscalYear) {
         super(unitName, admin);
         this.unitName = unitName;
         this.payrolls = new ArrayList<>();
@@ -118,7 +119,7 @@ public class OperationsSupportUnit extends Organization { // EXTENDS Organizatio
                                            Date payPeriodEnd, Date paymentDate) {
         
         PayrollRequest payrollRequest = new PayrollRequest(employee, payPeriodStart, payPeriodEnd, paymentDate);
-        payrollRequest.setSender(admin); // Assuming admin sends payroll requests
+        payrollRequest.setSender(admin.getUserAccount()); // Assuming admin sends payroll requests
         
         // Add to payrolls list (if PayrollRecord is part of workqueue, otherwise handle separately)
         // For now, we'll just add the request to analysisTasks and the general work queue.
@@ -198,7 +199,7 @@ public class OperationsSupportUnit extends Organization { // EXTENDS Organizatio
     // Create Resource Analysis Request
     public ResourceAnalysisRequest createResourceAnalysisRequest(String analysisType, Date periodStart, Date periodEnd, String department, Employee requestedBy) {
         ResourceAnalysisRequest request = new ResourceAnalysisRequest(analysisType, periodStart, periodEnd, department);
-        request.setSender(requestedBy);
+        request.setSender(requestedBy.getUserAccount());
         addAnalysisTask(request);
         return request;
     }
@@ -206,7 +207,7 @@ public class OperationsSupportUnit extends Organization { // EXTENDS Organizatio
     // Create Cost Report Request
     public CostReport createCostReportRequest(String reportTitle, Date startDate, Date endDate, String department, String reportType, Employee requestedBy) {
         CostReport request = new CostReport(reportTitle, startDate, endDate, department, reportType);
-        request.setSender(requestedBy);
+        request.setSender(requestedBy.getUserAccount());
         addAnalysisTask(request);
         return request;
     }

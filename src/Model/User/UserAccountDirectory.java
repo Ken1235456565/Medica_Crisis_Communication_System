@@ -38,20 +38,31 @@ public class UserAccountDirectory {
     }
 
     public UserAccount createUserAccount(String username, String password, Employee employee, Role role) {
-        // Since Employee is a Person, we can pass it directly to UserAccount's constructor that takes a Person.
-        // The organization is null here, as it's typically assigned later or by a specific organization's admin unit.
-        UserAccount userAccount = new UserAccount(employee, username, password, role, null); 
+        // Organization can be null at creation
+        UserAccount userAccount = new UserAccount(username, password, role, null, employee);
         userAccountList.add(userAccount);
         return userAccount;
     }
     
     public UserAccount authenticateUser(String username, String password) {
-    for (UserAccount ua : userAccountList) {
-        if (ua.getUsername().equals(username) && ua.getPassword().equals(password)) {
-            return ua;  // 登录成功
+        for (UserAccount ua : userAccountList) {
+            if (ua.getUsername().equals(username) && ua.getPassword().equals(password)) {
+                return ua;  // 登录成功
+            }
         }
+        return null; // 登录失败
     }
-    return null; // 登录失败
-}
+    
+    public List<Employee> findEmployeesByRole(String roleName) {
+        List<Employee> result = new ArrayList<>();
+        for (UserAccount ua : userAccountList) {
+            if (ua.getRole() != null &&
+                ua.getRole().getName().equals(roleName) &&
+                ua.getEmployee() != null) {
+                result.add(ua.getEmployee());
+            }
+        }
+        return result;
+    }
 
 }

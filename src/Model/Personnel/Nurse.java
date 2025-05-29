@@ -11,10 +11,8 @@ public class Nurse extends Employee {
 
     public Nurse(String nurseType, String licenseNumber,
                  String id, String name, String gender, int age, String dateOfBirth,
-                 String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new NurseRole(), organization, contactInfo);
+                 String position, String department, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, position, department, contactInfo);
         this.nurseType = nurseType;
         this.licenseNumber = licenseNumber;
     }

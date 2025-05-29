@@ -4,6 +4,8 @@
  */
 package ui.HospitalNurse;
 
+import Model.Employee.Employee;
+import Model.Organization.ClinicalServicesUnit;
 import Model.Organization.Organization;
 import Model.Personnel.Nurse;
 import Model.User.UserAccount;
@@ -31,7 +33,7 @@ public class HospitalNurseWorkArea extends javax.swing.JPanel {
         this.organization = organization;
         this.userAccount = userAccount;
         // Assuming the UserAccount holds the specific Nurse object
-        this.nurse = (Nurse) userAccount.getEmployee(); // Placeholder
+        Employee nurse = userAccount.getEmployee();
 
         initComponents();
         initContentPanel();
@@ -41,15 +43,18 @@ public class HospitalNurseWorkArea extends javax.swing.JPanel {
         contentPanel = new JPanel(new CardLayout());
         this.cardLayout = (CardLayout) contentPanel.getLayout();
 
-        // Assuming organization has methods to get its directories/catalogs
-        PatientDirectory patientDirectory = organization.getPatientDirectory(); // Placeholder
-        ICUbedCatalog icuBedCatalog = organization.getICUbedCatalog(); // Placeholder
+        // Cast the generic Organization to ClinicalServicesUnit to access its specific methods
+        ClinicalServicesUnit clinicalOrg = (ClinicalServicesUnit) organization; // Cast to ClinicalServicesUnit
 
-        // Add sub-panels to the contentPanel
-        contentPanel.add("ManagePatientCarePlans", new ManagePatientCarePlans(userProcessContainer, organization, userAccount, patientDirectory));
-        contentPanel.add("ManageMedicationAdministration", new ManageMedicationAdministration(userProcessContainer, organization, userAccount, patientDirectory));
-        contentPanel.add("ManageICUPatientMonitoring", new ManageICUPatientMonitoring(userProcessContainer, organization, userAccount, patientDirectory, icuBedCatalog));
-        contentPanel.add("ViewPatientShiftNotes", new ViewPatientShiftNotes(userProcessContainer, organization, userAccount, patientDirectory));
+        // Use the casted object to get the directories/catalogs
+        PatientDirectory patientDirectory = clinicalOrg.getPatientDirectory();
+        ICUbedCatalog icuBedCatalog = clinicalOrg.getICUbedCatalog();
+
+        // 添加子页面，传入 clinicalOrg 使逻辑更清晰
+        contentPanel.add("ManagePatientCarePlans", new ManagePatientCarePlans(userProcessContainer, clinicalOrg, userAccount, patientDirectory));
+        contentPanel.add("ManageMedicationAdministration", new ManageMedicationAdministration(userProcessContainer, clinicalOrg, userAccount, patientDirectory));
+        contentPanel.add("ManageICUPatientMonitoring", new ManageICUPatientMonitoring(userProcessContainer, clinicalOrg, userAccount, patientDirectory, icuBedCatalog));
+        contentPanel.add("ViewPatientShiftNotes", new ViewPatientShiftNotes(userProcessContainer, clinicalOrg, userAccount, patientDirectory));
     }
 
     /**

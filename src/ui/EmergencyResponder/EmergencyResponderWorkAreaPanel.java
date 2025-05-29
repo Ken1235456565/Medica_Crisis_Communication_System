@@ -8,6 +8,8 @@ import Model.Organization.Organization;
 import Model.User.UserAccount;
 import Model.Supplies.DeliveryCatalog;
 import Model.Employee.EmployeeDirectory;
+import Model.Organization.EmergencyResponseUnit;
+import Model.WorkQueue.MissionCatalog;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
 
@@ -20,6 +22,7 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
+    EmployeeDirectory employeeDirectory;
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
@@ -38,9 +41,10 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
         this.cardLayout = (CardLayout) contentPanel.getLayout();
 
         // Assuming organization has methods to get its directories/catalogs
-        DeliveryCatalog missionCatalog = organization.getDeliveryCatalog(); // Placeholder
-        EmployeeDirectory employeeDirectory = organization.getEmployeeDirectory(); // Placeholder
-
+        EmergencyResponseUnit erOrg = (EmergencyResponseUnit) organization;
+        DeliveryCatalog catalog = erOrg.getDeliveryCatalog();
+        MissionCatalog missionCatalog = ((EmergencyResponseUnit) organization).getMissionCatalog();
+        
         // Add sub-panels to the contentPanel
         contentPanel.add("MissionManagement", new MissionManagement(userProcessContainer, organization, userAccount, missionCatalog));
         contentPanel.add("UpdateMissionStatus", new UpdateMissionStatus(userProcessContainer, organization, userAccount, null)); // Requires a specific missionToUpdate

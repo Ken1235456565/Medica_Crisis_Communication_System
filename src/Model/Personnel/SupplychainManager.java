@@ -11,13 +11,11 @@ import Model.Person.ContactInfo;
 public class SupplychainManager extends Employee {
     private String supplychainManagerID;
 
-    public SupplychainManager(String supplyOfficerID,
-                         String id, String name, String gender, int age, String dateOfBirth,
-                         String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new SupplychainManagerRole(), organization, contactInfo);
-        this.supplychainManagerID = supplyOfficerID;
+    public SupplychainManager(String supplychainManagerID,
+                               String id, String name, String gender, int age, String dateOfBirth,
+                               String position, String department, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, position, department, contactInfo);
+        this.supplychainManagerID = supplychainManagerID;
     }
 
     public SupplychainManager() {

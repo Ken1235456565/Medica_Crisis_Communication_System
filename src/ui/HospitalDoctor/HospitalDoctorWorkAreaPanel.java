@@ -4,15 +4,20 @@
  */
 package ui.HospitalDoctor;
 
+import Model.Employee.Employee;
 import Model.Organization.Organization;
 import Model.Personnel.Doctor;
 import Model.Patient.PatientDirectory;
 import Model.Supplies.SupplyItemCatalog;
 import Model.Supplies.ICUbedCatalog;
 import Model.Employee.EmployeeDirectory;
+import Model.Organization.ClinicalServicesUnit;
+import Model.Organization.SupplyChainManagementUnit;
+import Model.Patient.Patient;
 import Model.User.UserAccount;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
+import java.util.List;
 
 /**
  *
@@ -32,29 +37,35 @@ public class HospitalDoctorWorkAreaPanel extends javax.swing.JPanel {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
-        this.doctor = (Doctor) userAccount.getEmployee(); // Or similar logic to get the doctor object
+        Employee doctor = userAccount.getEmployee(); 
         initComponents();
         initContentPanel();
     }
     
-    private void initContentPanel() {
-        contentPanel = new JPanel(new CardLayout());
-        this.cardLayout = (CardLayout) contentPanel.getLayout();
+private void initContentPanel() {
+    contentPanel = new JPanel(new CardLayout());
+    this.cardLayout = (CardLayout) contentPanel.getLayout();
 
-        // Assuming organization has methods to get its directories/catalogs
-        PatientDirectory patientDirectory = organization.getPatientDirectory(); // Placeholder method
-        SupplyItemCatalog supplyCatalog = organization.getSupplyItemCatalog(); // Placeholder method
-        ICUbedCatalog icuBedCatalog = organization.getICUbedCatalog(); // Placeholder method
-        EmployeeDirectory employeeDirectory = organization.getEmployeeDirectory(); // Placeholder method
+    //强制转换成具体类型 ClinicalServicesUnit
+    if (organization instanceof ClinicalServicesUnit) {
+        ClinicalServicesUnit clinicalOrg = (ClinicalServicesUnit) organization;
 
+        // 从子类获取数据结构
+        PatientDirectory patientDirectory = clinicalOrg.getPatientDirectory();
+        SupplyItemCatalog supplyCatalog = clinicalOrg.getSupplyItemCatalog();
+        ICUbedCatalog icuBedCatalog = clinicalOrg.getICUbedCatalog();
+        EmployeeDirectory employeeDirectory = clinicalOrg.getEmployeeDirectory(); // 父类字段
 
-        // Add sub-panels to the contentPanel
-        contentPanel.add("ManagePatientList", new ManagePatientList(userProcessContainer, organization, userAccount, patientDirectory));
-        contentPanel.add("ManageICURequest", new ManageICURequest(userProcessContainer, organization, userAccount, patientDirectory, icuBedCatalog));
-        contentPanel.add("ManageMedicalRequest", new ManageMedicalRequest(userProcessContainer, organization, userAccount, patientDirectory, supplyCatalog));
-        contentPanel.add("ViewOnDutyHistory", new ViewOnDutyHistory(userProcessContainer, organization, userAccount, employeeDirectory));
-        // contentPanel.add("PersonalHistorylinked", new PersonalHistorylinked(userProcessContainer, organization, userAccount, selectedPatient)); // Requires a selected patient
+        //添加子页面（以统一 clinicalOrg 传入，逻辑更清晰）
+        contentPanel.add("ManagePatientList", new ManagePatientList(userProcessContainer, clinicalOrg, userAccount, patientDirectory));
+        contentPanel.add("ManageICURequest", new ManageICURequest(userProcessContainer, clinicalOrg, userAccount, patientDirectory, icuBedCatalog));
+        contentPanel.add("ManageMedicalRequest", new ManageMedicalRequest(userProcessContainer, clinicalOrg, userAccount, patientDirectory, supplyCatalog));
+        contentPanel.add("ViewOnDutyHistory", new ViewOnDutyHistory(userProcessContainer, clinicalOrg, userAccount, employeeDirectory));
+    } else {
+        throw new IllegalArgumentException("Organization is not a ClinicalServicesUnit.");
     }
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -110,13 +110,15 @@ public class Network {
 
     // 登录认证方法（可选）
     public Admin authenticateAdmin(String username, String password) {
-        if (admin != null &&
-            admin.getUsername().equals(username) &&
-            admin.getPassword().equals(password)) {
-            return admin;
-        }
-        return null;
+    if (admin != null &&
+        admin.getUserAccount() != null &&
+        admin.getUserAccount().getUsername().equals(username) &&
+        admin.getUserAccount().getPassword().equals(password)) {
+        return admin;
     }
+    return null;
+}
+
 
     @Override
     public String toString() {

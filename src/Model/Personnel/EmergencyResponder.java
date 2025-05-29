@@ -13,14 +13,15 @@ public class EmergencyResponder extends Employee {
 
     public EmergencyResponder(String responderType, String certificationLevel, String vehicleAssigned,
                               String id, String name, String gender, int age, String dateOfBirth,
-                              String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new EmergencyResponderRole(), organization, contactInfo);
+                              String position, String department, ContactInfo contactInfo) {
+        // ⛔️ 去掉 generateEmployeeId 检查，直接传入 id
+        super(id, name, gender, age, dateOfBirth, position, department, contactInfo);
+
         this.responderType = responderType;
         this.certificationLevel = certificationLevel;
         this.vehicleAssigned = vehicleAssigned;
     }
+
 
     public EmergencyResponder() {
         super();

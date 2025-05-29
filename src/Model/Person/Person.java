@@ -17,18 +17,22 @@ public abstract class Person {
 
     // Default constructor
     public Person() {
-        this.id = "PER" + personIdCounter++; // Assign a unique ID
+        this.id = generatePersonId();
         this.contactInfo = new ContactInfo();
     }
     
     // Constructor with parameters (if you want to manually provide ID)
     public Person(String id, String name, String gender, int age, String dateOfBirth) {
         this(); // Call default constructor to set auto-generated ID and ContactInfo
-        this.id = id; // Override the auto-generated ID if a specific one is provided
+        this.id = (id != null && !id.isEmpty()) ? id : generatePersonId(); // Override the auto-generated ID if a specific one is provided
         this.name = name;
         this.gender = gender;
         this.age = age;
         this.dateOfBirth = dateOfBirth;
+    }
+    
+    protected static String generatePersonId() {
+        return "PER" + personIdCounter++;
     }
 
     // Constructor with all parameters including ContactInfo (if you want to manually provide ID and ContactInfo)

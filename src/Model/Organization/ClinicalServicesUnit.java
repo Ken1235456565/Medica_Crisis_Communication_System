@@ -3,6 +3,11 @@ package Model.Organization;
 
 import Model.Employee.Employee;
 import Model.Patient.Patient;
+import Model.Patient.PatientDirectory;
+import Model.Personnel.Admin;
+import Model.Supplies.ICUbedCatalog;
+import Model.Supplies.SupplyItemCatalog;
+import Model.User.UserAccount;
 import Model.WorkQueue.Appointment;
 import Model.WorkQueue.AppointmentSchedule; // Changed to AppointmentSchedule
 import Model.WorkQueue.EmergencyWorkRequest;
@@ -21,6 +26,9 @@ public class ClinicalServicesUnit extends Organization {
     private AppointmentSchedule appointmentSchedule; // Changed to AppointmentSchedule
     private List<WorkRequest> activeRequests; // 病人求助、转诊等
     private boolean emergencyReady; // 是否具备急救响应功能
+    private ICUbedCatalog ICUbedCatalog;
+    private PatientDirectory patientDirectory = new PatientDirectory();
+    private SupplyItemCatalog supplyItemCatalog = new SupplyItemCatalog();
 
     // Default constructor
     public ClinicalServicesUnit() {
@@ -45,7 +53,7 @@ public class ClinicalServicesUnit extends Organization {
     }
 
     // Constructor with detailed info
-    public ClinicalServicesUnit(String unitName, Employee admin, boolean emergencyReady) {
+    public ClinicalServicesUnit(String unitName, Admin admin, boolean emergencyReady) {
         super(unitName, admin);
         this.unitName = unitName;
         this.medicalStaff = new ArrayList<>();
@@ -61,6 +69,13 @@ public class ClinicalServicesUnit extends Organization {
         return unitName;
     }
 
+    public PatientDirectory getPatientDirectory() {
+        return patientDirectory;
+    }
+    public SupplyItemCatalog getSupplyItemCatalog() {
+        return supplyItemCatalog;
+    }
+    
     @Override
     public void setOrganizationName(String unitName) {
         this.unitName = unitName;
@@ -133,32 +148,43 @@ public class ClinicalServicesUnit extends Organization {
         addWorkRequest(request); // Also add to the general work queue
     }
 
+    public ICUbedCatalog getICUbedCatalog() {
+        return ICUbedCatalog;
+    }
+
+    public void setICUbedCatalog(ICUbedCatalog ICUbedCatalog) {
+        this.ICUbedCatalog = ICUbedCatalog;
+    }
+    
+
     // Complete work request
     public void completeActiveRequest(WorkRequest request) {
         request.setStatus("Completed");
     }
 
     // Find doctor
-    public Employee findDoctor(String doctorName) {
-        for (Employee employee : medicalStaff) {
-            if (employee.getRole().getName().equals("Doctor") &&
-                employee.getName().equals(doctorName)) {
-                return employee;
-            }
+    public UserAccount findDoctor(String doctorName) {
+    for (UserAccount ua : userAccountDirectory.getUserAccountList()) {
+        if (ua.getRole().getName().equals("Doctor") &&
+            ua.getEmployee() != null &&
+            ua.getEmployee().getName().equals(doctorName)) {
+            return ua;
         }
-        return null;
     }
+    return null;
+}
 
     // Find nurse
-    public Employee findNurse(String nurseName) {
-        for (Employee employee : medicalStaff) {
-            if (employee.getRole().getName().equals("Nurse") &&
-                employee.getName().equals(nurseName)) {
-                return employee;
-            }
+    public UserAccount findNurse(String nurseName) {
+    for (UserAccount ua : userAccountDirectory.getUserAccountList()) {
+        if (ua.getRole().getName().equals("Nurse") &&
+            ua.getEmployee() != null &&
+            ua.getEmployee().getName().equals(nurseName)) {
+            return ua;
         }
-        return null;
     }
+    return null;
+}
 
     // Find patient
     public Patient findPatient(String patientName) {
@@ -204,7 +230,7 @@ public class ClinicalServicesUnit extends Organization {
             (admin != null ? admin.getName() : "Unknown Reporter") // Reported by admin's name
         );
         
-        emergencyRequest.setSender(admin); // Set admin as the sender
+        emergencyRequest.setSender(admin.getUserAccount());
         
         // Add to active requests
         addActiveRequest(emergencyRequest);

@@ -5,6 +5,7 @@
 package ui.DeliveryStaff;
 
 import Model.Organization.Organization;
+import Model.Organization.SupplyChainManagementUnit;
 import Model.User.UserAccount;
 import Model.Supplies.DeliveryCatalog;
 import javax.swing.JPanel;
@@ -19,6 +20,7 @@ public class DeliveryStaffWorkAreaPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
+    SupplyChainManagementUnit supplyChainManagementUnit;
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
@@ -37,12 +39,12 @@ public class DeliveryStaffWorkAreaPanel extends javax.swing.JPanel {
         this.cardLayout = (CardLayout) contentPanel.getLayout();
 
         // Assuming organization has methods to get its directories/catalogs
-        DeliveryCatalog deliveryCatalog = organization.getDeliveryCatalog(); // Placeholder
+        DeliveryCatalog deliveryCatalog = supplyChainManagementUnit.getDeliveryCatalog(); // Placeholder
 
         // Add sub-panels to the contentPanel
         contentPanel.add("TaskInstructions", new TaskInstructions(userProcessContainer, organization, userAccount, deliveryCatalog));
         contentPanel.add("ManageDeliveryTasks", new ManageDeliveryTasks(userProcessContainer, organization, userAccount, deliveryCatalog));
-        contentPanel.add("UploadProof", new UploadProof(userProcessContainer, organization, userAccount, null)); // Requires a specific delivery
+         // UploadProof
     }
 
     /**
@@ -148,7 +150,7 @@ public class DeliveryStaffWorkAreaPanel extends javax.swing.JPanel {
 
     private void btnUploadProofActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadProofActionPerformed
         // Navigate to UploadProof (Note: This panel likely needs a selected delivery, which isn't handled here)
-         userProcessContainer.add("UploadProof", new UploadProof(userProcessContainer, organization, userAccount, someSelectedDelivery));
+         userProcessContainer.add("UploadProof", new UploadProof(userProcessContainer, organization, userAccount, null));
          ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnUploadProofActionPerformed
 

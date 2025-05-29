@@ -2,6 +2,7 @@
 package Model.Organization;
 
 import Model.Employee.Employee; // Import Employee
+import Model.Personnel.Admin;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class OrganizationDirectory {
     }
 
     // Factory method to create and add organizations - ADDED
-    public Organization createOrganization(String type, String name, Employee admin) {
+    public Organization createOrganization(String type, String name, Admin admin) {
         Organization organization = null;
         switch (type) {
             case "ClinicalServices":
@@ -63,7 +64,7 @@ public class OrganizationDirectory {
                 organization = new EmergencyResponseUnit(name, admin);
                 break;
             case "InventoryManagement":
-                organization = new InventoryManager(name);
+                organization = new SupplyChainManagementUnit(name);
                 break;
             case "DonationManagement":
                 organization = new DonationManagementUnit(admin);

@@ -40,9 +40,9 @@ public class ViewDonationHistory extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         btnViewDetail = new javax.swing.JButton();
-        btnGoUpload2 = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblViewDonationHistory = new javax.swing.JTable();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("View Donation History");
@@ -54,14 +54,14 @@ public class ViewDonationHistory extends javax.swing.JPanel {
             }
         });
 
-        btnGoUpload2.setText("Back");
-        btnGoUpload2.addActionListener(new java.awt.event.ActionListener() {
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGoUpload2ActionPerformed(evt);
+                btnBackActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblViewDonationHistory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -80,7 +80,7 @@ public class ViewDonationHistory extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblViewDonationHistory);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -99,7 +99,7 @@ public class ViewDonationHistory extends javax.swing.JPanel {
                     .addGap(87, 87, 87)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 828, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnGoUpload2, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addContainerGap(88, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -115,7 +115,7 @@ public class ViewDonationHistory extends javax.swing.JPanel {
                     .addGap(117, 117, 117)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(111, 111, 111)
-                    .addComponent(btnGoUpload2)
+                    .addComponent(btnBack)
                     .addContainerGap(117, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -124,16 +124,16 @@ public class ViewDonationHistory extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnViewDetailActionPerformed
 
-    private void btnGoUpload2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoUpload2ActionPerformed
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnGoUpload2ActionPerformed
+    }//GEN-LAST:event_btnBackActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnGoUpload2;
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnViewDetail;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblViewDonationHistory;
     // End of variables declaration//GEN-END:variables
 }

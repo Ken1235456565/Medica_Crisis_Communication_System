@@ -8,6 +8,7 @@ import Model.Organization.Organization;
 import Model.User.UserAccount;
 import Model.Supplies.DonationCatalog;
 import Model.EcoSystem; // Needed for BrowsePublicData
+import Model.Organization.DonationManagementUnit;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
 
@@ -21,15 +22,17 @@ public class DonationCoordinatorWorkAreaPanel extends javax.swing.JPanel {
     private Organization organization;
     private UserAccount userAccount;
     private EcoSystem system;
+    DonationManagementUnit donationManagementUnit;
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
 
-    public DonationCoordinatorWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
-        this.userProcessContainer = userProcessContainer;
-        this.organization = organization;
-        this.userAccount = userAccount;
-        this.system = EcoSystem.getInstance(); // Assuming EcoSystem is a singleton
+    public DonationCoordinatorWorkAreaPanel(JPanel container, EcoSystem system,
+                                            UserAccount account, DonationManagementUnit donationUnit) {
+        this.userProcessContainer = container;
+        this.system = system;
+        this.userAccount = account;
+        this.donationManagementUnit = donationUnit;
 
         initComponents();
         initContentPanel();
@@ -40,7 +43,7 @@ public class DonationCoordinatorWorkAreaPanel extends javax.swing.JPanel {
         this.cardLayout = (CardLayout) contentPanel.getLayout();
 
         // Assuming organization has a DonationCatalog
-        DonationCatalog donationCatalog = organization.getDonationCatalog(); // Placeholder
+        DonationCatalog donationCatalog = donationManagementUnit.getDonationRecords(); // Placeholder
 
         // Add sub-panels to the contentPanel
         contentPanel.add("SubmitDonation", new SubmitDonation(userProcessContainer, organization, userAccount, donationCatalog));
@@ -169,13 +172,13 @@ public class DonationCoordinatorWorkAreaPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBrowsePublicDataActionPerformed
 
     private void btnManageDonationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageDonationsActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnManageDonationsActionPerformed
-
-    private void btnDonationStatsChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDonationStatsChartActionPerformed
         // Navigate to ManageDonations
         userProcessContainer.add("ManageDonations", contentPanel.getComponent(2));
         ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    }//GEN-LAST:event_btnManageDonationsActionPerformed
+
+    private void btnDonationStatsChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDonationStatsChartActionPerformed
+        
     }//GEN-LAST:event_btnDonationStatsChartActionPerformed
 
 

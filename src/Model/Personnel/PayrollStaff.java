@@ -11,10 +11,8 @@ public class PayrollStaff extends Employee {
 
     public PayrollStaff(String payrollStaffID, String payrollPeriod,
                         String id, String name, String gender, int age, String dateOfBirth,
-                        String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new PayrollStaffRole(), organization, contactInfo);
+                        String position, String department, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, position, department, contactInfo);
         this.payrollStaffID = payrollStaffID;
         this.payrollPeriod = payrollPeriod;
     }

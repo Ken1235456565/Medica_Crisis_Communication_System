@@ -2,26 +2,18 @@
 package Model.Personnel;
 
 import Model.Person.ContactInfo;
-import Model.Role.DonationCoordinatorRole;
-import Model.User.UserAccount;
+import Model.Person.Person;
 
-public class DonationCoordinator extends UserAccount {
+
+public class DonationCoordinator extends Person {
     private String region;
 
-    public DonationCoordinator(String region,
-                               String id, String name, String gender, int age, String dateOfBirth,
-                               String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new DonationCoordinatorRole(), organization, contactInfo);
+    public DonationCoordinator(String id, String name, String gender, int age, String dateOfBirth,
+                               String region, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, contactInfo);
         this.region = region;
     }
 
-    public DonationCoordinator() {
-        super();
-    }
-
-    // Getter and Setter
     public String getRegion() {
         return region;
     }
@@ -29,4 +21,10 @@ public class DonationCoordinator extends UserAccount {
     public void setRegion(String region) {
         this.region = region;
     }
+
+    @Override
+    public String toString() {
+        return getName() + " (" + region + ")";
+    }
 }
+

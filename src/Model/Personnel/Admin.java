@@ -12,26 +12,19 @@ import Model.User.UserAccount;
 
 public class Admin extends Employee {
 
-    public Admin(String name, String username, String password,
+    public Admin(String name, String gender, int age, String dob,
                  String position, String department, ContactInfo contactInfo) {
-        super(name, username, password, new AdminRole(), position, department);
-        this.setContactInfo(contactInfo);
-        this.setPayrollRecord(null);  // Admin 默认无工资记录
+        super(null, name, gender, age, dob, position, department, contactInfo);
     }
 
     public Admin(String id, String name, String gender, int age, String dob,
-                String username, String password, String organization, ContactInfo contactInfo) {
-       super(name, username, password, new AdminRole(), organization, contactInfo,
-             "Administrator", "Admin Department");
-       this.setId(id != null ? id : generateEmployeeId());
-   }
-
+                 String position, String department, ContactInfo contactInfo) {
+        super(id, name, gender, age, dob, position, department, contactInfo);
+    }
 
     public Admin() {
-        super();
-        this.setRole(new AdminRole());
-        this.setPosition("Administrator");
-        this.setDepartment("Admin Department");
+        super(); // default constructor of Employee
     }
 }
+
 

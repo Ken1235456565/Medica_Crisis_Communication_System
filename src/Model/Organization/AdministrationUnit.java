@@ -88,22 +88,14 @@ public class AdministrationUnit extends Organization { // EXTENDS Organization
 
     // Create user account
     public UserAccount createUserAccount(String username, String password, Person person, Role role) {
-        UserAccount userAccount = new UserAccount(username, password, role, null, person.getContactInfo()); // Pass contact info from person
-
-        // Set basic details from person (these are now handled by UserAccount extending Person)
-        userAccount.setId(person.getId());
-        userAccount.setName(person.getName());
-        userAccount.setGender(person.getGender());
-        userAccount.setAge(person.getAge());
-        userAccount.setDateOfBirth(person.getDateOfBirth());
-
-        userAccounts.add(userAccount);
-
-        // Log account creation
-        logAction(userAccount.getId(), "User account created with role: " + role.getName());
-
+    // Organization 可以为 null，或传参设置
+    UserAccount userAccount = new UserAccount(username, password, role, null, (Employee) person);
+    userAccounts.add(userAccount);
+    // Log account creation
+    logAction(userAccount.getUsername(), "User account created with role: " + role.getName());
         return userAccount;
     }
+
 
     // Find user account by username
     public UserAccount findUserAccountByUsername(String username) {
@@ -201,22 +193,20 @@ public class AdministrationUnit extends Organization { // EXTENDS Organization
 
     // Assign user to organization
     public boolean assignUserToOrganization(UserAccount user, Organization organization) {
-        // First check if the user exists
         if (!userAccounts.contains(user)) {
             return false;
         }
 
-        // Then check if the organization exists
         if (!managedOrganizations.contains(organization)) {
             return false;
         }
 
-        // If user is an employee, add to organization
-        if (user instanceof Employee) {
-            organization.addEmployee((Employee) user);
+        Employee employee = user.getEmployee(); // ✅ 新结构：显式组合访问
 
-            // Log assignment
-            logAction(user.getId(), "Assigned to organization: " + organization.getOrganizationName());
+        if (employee != null) {
+            organization.addEmployee(employee);
+
+            logAction(employee.getId(), "Assigned to organization: " + organization.getOrganizationName());
             return true;
         }
 
@@ -236,7 +226,7 @@ public class AdministrationUnit extends Organization { // EXTENDS Organization
                 newOrg = new ResourceDispatchUnit(orgName, admin);
                 break;
             case "Inventory":
-                newOrg = new InventoryManager(orgName); // InventoryManager constructor doesn't take admin directly
+                newOrg = new SupplyChainManagementUnit(orgName); // InventoryManager constructor doesn't take admin directly
                 break;
             case "Operations":
                 newOrg = new OperationsSupportUnit(orgName, admin, "2025");
@@ -294,19 +284,6 @@ public class AdministrationUnit extends Organization { // EXTENDS Organization
         return stats;
     }
 
-    // Reset user password
-    public boolean resetUserPassword(String username, String newPassword) {
-        UserAccount user = findUserAccountByUsername(username);
-        if (user == null) {
-            return false;
-        }
-
-        user.setPassword(newPassword);
-
-        // Log password reset
-        logAction(user.getId(), "Password reset");
-        return true;
-    }
 
     // Deactivate user account
     public boolean deactivateUserAccount(String username) {
@@ -315,14 +292,16 @@ public class AdministrationUnit extends Organization { // EXTENDS Organization
             return false;
         }
 
-        // If user is an employee, mark as inactive
-        if (user instanceof Employee) {
-            ((Employee) user).setActive(false);
+        Employee employee = user.getEmployee();
+        if (employee != null) {
+            employee.setActive(false); 
+            logAction(employee.getId(), "Account deactivated");
+            return true;
         }
 
-        // Log deactivation
-        logAction(user.getId(), "Account deactivated");
-        return true;
+        // Optional: Log even if no employee
+        logAction(user.getUsername(), "Tried to deactivate account, but no associated employee found");
+        return false;
     }
 
     @Override

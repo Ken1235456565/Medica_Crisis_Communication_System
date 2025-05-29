@@ -66,7 +66,7 @@ public class DeliveryAssignmentRequest extends WorkRequest { // Extends WorkRequ
         this.assignedDriver = driver;
         this.assignedVehicle = vehicle;
         this.setStatus("Assigned");
-        this.setReceiver(driver); // Set the driver as the receiver
+        this.setReceiver(driver.getUserAccount()); // Set the driver as the receiver
     }
 
     public void completeAssignment(String notes) {

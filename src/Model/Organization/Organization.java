@@ -6,6 +6,8 @@ import Model.WorkQueue.WorkQueue;
 import Model.Person.ContactInfo;
 import Model.Personnel.Admin;
 import Model.Employee.EmployeeDirectory;
+import Model.Role.RoleDirectory;
+import Model.User.UserAccount;
 import Model.User.UserAccountDirectory;
 import Model.WorkQueue.WorkRequest;
 import java.util.ArrayList;
@@ -21,8 +23,10 @@ public abstract class Organization {
     protected EmployeeDirectory employeeDirectory;
     protected WorkQueue workQueue;
     protected ContactInfo contactInfo;
-    private UserAccountDirectory UserAccountDirectory;
-    private Admin admin;
+    protected RoleDirectory roleDirectory;
+    protected UserAccountDirectory userAccountDirectory;
+    protected Admin admin;
+    
     
     // Static ID counter
     private static int counter = 1;
@@ -61,12 +65,21 @@ public abstract class Organization {
         this.workQueue = new WorkQueue();
         this.contactInfo = new ContactInfo();
     }
-
-    // Constructor with name
-    public Organization(String organizationName) {
-        this();
-        this.organizationName = organizationName;
+    
+    public Organization(String name) {
+        this.organizationId = generateOrganizationId(); // 假设有 ID 生成器
+        this.organizationName = name;
+        this.employeeDirectory = new EmployeeDirectory();
+        this.workQueue = new WorkQueue();
+        this.contactInfo = new ContactInfo();  // 空构造即可，后期 set
+        this.roleDirectory = new RoleDirectory();
+        this.userAccountDirectory = new UserAccountDirectory();
+        this.admin = null;  // 可后期 set
     }
+
+    private String generateOrganizationId() {
+    return "ORG" + (counter++);
+}
 
     // Constructor with name and admin
     public Organization(String organizationName, Admin admin) {
@@ -116,14 +129,22 @@ public abstract class Organization {
         }
     }
 
-    public UserAccountDirectory getUserAccountDirectory() {
-        return UserAccountDirectory;
+    public RoleDirectory getRoleDirectory() {
+        return roleDirectory;
     }
 
-    public void setUserAccountDirectory(UserAccountDirectory UserAccountDirectory) {
-        this.UserAccountDirectory = UserAccountDirectory;
+    public void setRoleDirectory(RoleDirectory roleDirectory) {
+        this.roleDirectory = roleDirectory;
     }
-    
+
+    public UserAccountDirectory getUserAccountDirectory() {
+        return userAccountDirectory;
+    }
+
+    public void setUserAccountDirectory(UserAccountDirectory userAccountDirectory) {
+        this.userAccountDirectory = userAccountDirectory;
+    }
+
     
 
     // Find employees by role

@@ -1,6 +1,7 @@
 package Model.Organization;
 
 import Model.Employee.Employee;
+import Model.Personnel.Admin;
 import Model.Supplies.SupplyItem;
 import Model.Supplies.Vehicle;
 import Model.WorkQueue.DeliveryAssignmentRequest;
@@ -43,7 +44,7 @@ public class ResourceDispatchUnit extends Organization { // EXTENDS Organization
     }
     
     // Constructor with detailed info
-    public ResourceDispatchUnit(String unitName, Employee admin) {
+    public ResourceDispatchUnit(String unitName, Admin admin) {
         super(unitName, admin);
         this.unitName = unitName;
         this.transportFleet = new ArrayList<>();
@@ -124,7 +125,7 @@ public class ResourceDispatchUnit extends Organization { // EXTENDS Organization
         }
         
         DeliveryAssignmentRequest request = new DeliveryAssignmentRequest(dummyDelivery);
-        request.setSender(requestedBy); // Set who sent the request
+        request.setSender(requestedBy.getUserAccount()); // Set who sent the request
         
         // Add all items to dispatch queue
         for (SupplyItem item : items) {

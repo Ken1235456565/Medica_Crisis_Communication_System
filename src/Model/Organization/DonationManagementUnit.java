@@ -1,8 +1,11 @@
 package Model.Organization;
 
 import Model.Employee.Employee;
+import Model.Personnel.Admin;
 import Model.Personnel.Donor;
 import Model.Supplies.Donation;
+import Model.Supplies.DonationCatalog;
+import Model.User.UserAccount;
 import Model.WorkQueue.DonationRequest;
 import Model.WorkQueue.WorkRequest;
 import java.util.ArrayList;
@@ -16,7 +19,7 @@ import java.util.Map;
  * @author tiankaining
  */
 public class DonationManagementUnit extends Organization {
-    private List<Donation> donationRecords;
+    private DonationCatalog donationRecords;
     private List<Donor> donorList;
     private Map<String, Integer> donationInventory; // 物资名称 -> 数量
     private List<WorkRequest> donationRequests; // 来自组织的需求
@@ -26,7 +29,7 @@ public class DonationManagementUnit extends Organization {
     // Default constructor
     public DonationManagementUnit() {
         super("Donation Management");
-        this.donationRecords = new ArrayList<>();
+        this.donationRecords = new DonationCatalog();  // ✅ FIXED
         this.donorList = new ArrayList<>();
         this.donationInventory = new HashMap<>();
         this.donationRequests = new ArrayList<>();
@@ -34,9 +37,9 @@ public class DonationManagementUnit extends Organization {
     }
     
     // Constructor with admin
-    public DonationManagementUnit(Employee admin) {
+    public DonationManagementUnit(Admin admin) {
         super("Donation Management", admin);
-        this.donationRecords = new ArrayList<>();
+        this.donationRecords = new DonationCatalog();  // ✅ FIXED
         this.donorList = new ArrayList<>();
         this.donationInventory = new HashMap<>();
         this.donationRequests = new ArrayList<>();
@@ -44,9 +47,15 @@ public class DonationManagementUnit extends Organization {
     }
     
     // Getters and setters
-    public List<Donation> getDonationRecords() {
+
+    public DonationCatalog getDonationRecords() {
         return donationRecords;
     }
+
+    public void setDonationRecords(DonationCatalog donationRecords) {
+        this.donationRecords = donationRecords;
+    }
+    
     
     public List<Donor> getDonorList() {
         return donorList;
@@ -71,6 +80,7 @@ public class DonationManagementUnit extends Organization {
     public double getTotalFundsRaised() {
         return totalFundsRaised;
     }
+    
     
     // Add donor to list
     public void addDonor(Donor donor) {
@@ -100,7 +110,7 @@ public class DonationManagementUnit extends Organization {
     // Record monetary donation
     public Donation recordMonetaryDonation(Donor donor, double amount, String purpose) {
         Donation donation = new Donation(donor, amount, purpose);
-        donationRecords.add(donation);
+        donationRecords.addDonation(donation);
         
         // Update donor's donation history
         donor.addDonation(donation);
@@ -114,7 +124,7 @@ public class DonationManagementUnit extends Organization {
     // Record item donation
     public Donation recordItemDonation(Donor donor, List<Donation.DonatedItem> items, String purpose) {
         Donation donation = new Donation(donor, items, purpose);
-        donationRecords.add(donation);
+        donationRecords.addDonation(donation);
         
         // Update donor's donation history
         donor.addDonation(donation);
@@ -176,7 +186,7 @@ public class DonationManagementUnit extends Organization {
     }
     
     // Create donation request
-    public DonationRequest createDonationRequest(String requestType, List<Donation> donations, Employee requestedBy) { // Updated parameters
+    public DonationRequest createDonationRequest(String requestType, List<Donation> donations, UserAccount requestedBy) { // Updated parameters
     DonationRequest request = new DonationRequest(requestType, donations); // Correctly instantiating DonationRequest
     request.setSender(requestedBy); // Set who sent the request
     
@@ -207,7 +217,7 @@ public class DonationManagementUnit extends Organization {
         }
     };
     eventRequest.setMessage("Donation Event: " + eventDescription + " on " + eventDate); //
-    eventRequest.setSender(admin); // Set admin as sender
+    eventRequest.setSender(admin.getUserAccount()); // Set admin as sender
     eventRequest.setStatus("Scheduled"); //
 
     addDonationRequest(eventRequest); //
@@ -228,15 +238,9 @@ public class DonationManagementUnit extends Organization {
     
     // Get recent donations
     public List<Donation> getRecentDonations(int count) {
-        // Sort donations by date (newest first)
-        List<Donation> sortedDonations = new ArrayList<>(donationRecords);
-        sortedDonations.sort((d1, d2) -> 
-            d2.getDonationDate().compareTo(d1.getDonationDate())
-        );
-        
-        // Return latest N donations
-        int resultSize = Math.min(count, sortedDonations.size());
-        return sortedDonations.subList(0, resultSize);
+        List<Donation> sorted = new ArrayList<>();
+        sorted.sort((d1, d2) -> d2.getDonationDate().compareTo(d1.getDonationDate()));
+        return sorted.subList(0, Math.min(count, sorted.size()));
     }
     
     // Send donation acknowledgements

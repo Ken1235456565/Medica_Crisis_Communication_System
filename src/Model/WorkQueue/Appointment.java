@@ -38,7 +38,7 @@ public class Appointment extends WorkRequest { // Extends WorkRequest
         // Set WorkRequest properties
         this.setMessage("Appointment for " + patient.getName()); // Basic message
         this.setSender(null); // Who scheduled the appointment (e.g., receptionist)
-        this.setReceiver(doctor);
+        this.setReceiver(doctor.getUserAccount());
     }
 
     // Constructor with detailed info

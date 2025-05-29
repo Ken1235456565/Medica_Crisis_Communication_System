@@ -5,10 +5,12 @@
         <group>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/EcoSystem.java</file>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Organization/OperationsSupportUnit.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Organization/DonationManagementUnit.java</file>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/admin/ManageEnterprise.java</file>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/admin/AdminWorkAreaPanel.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/DonationCoordinator/DonationCoordinatorWorkAreaPanel.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/Organization/EmergencyResponseUnit.java</file>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/ConfigureASystem.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/DeliveryStaff/DeliveryStaffWorkAreaPanel.java</file>
             <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/MainJFrame.java</file>
         </group>
     </open-files>

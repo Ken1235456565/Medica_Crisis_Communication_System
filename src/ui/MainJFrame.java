@@ -12,6 +12,7 @@ import Model.Role.Role;
 import Model.User.UserAccount;
 import Model.ConfigureASystem; // For initializing the system data
 import Model.EcoSystem;
+import Model.Organization.DonationManagementUnit;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField; // For handling password input
@@ -26,6 +27,8 @@ import Model.Role.EmergencyResponderRole;
 import Model.Role.LogisticsManagerRole;
 import Model.Role.NurseRole;
 import Model.Role.PayrollStaffRole;
+import Model.Role.ResourceAnalystRole;
+import Model.Role.SupplychainManagerRole;
 import Model.Role.VisitorRole;
 import java.awt.CardLayout;
 import ui.DeliveryStaff.DeliveryStaffWorkAreaPanel;
@@ -56,19 +59,27 @@ public class MainJFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainJFrame
      */
-    public MainJFrame() {
-        initComponents();
-        this.setResizable(false);
-        this.setSize(1000, 800);
-        system = EcoSystem.getInstance(); 
-        // 初始化用户界面容器（核心！）
-        userProcessContainer = new JPanel(new CardLayout());
-        this.setContentPane(userProcessContainer); // 将主容器设为主窗口内容
-        
-    }
-    
-   
+public MainJFrame() {
+    initComponents();  // NetBeans 自动生成
+    this.setResizable(false);
+    this.setSize(1200, 800);
 
+    system = ConfigureASystem.configure();
+
+    // 设置 RightPanel 为 CardLayout（你已画好）
+    RightPanel.setLayout(new CardLayout());
+    this.userProcessContainer = RightPanel;
+
+    // ❗ 设定为右侧组件（你忘记这句就永远不会显示）
+    splitPanel.setRightComponent(userProcessContainer);
+
+    // ❗ 显示 LoginPanel（注意你 NetBeans 那个 panel 要设置 name 为 LoginPanel）
+    ((CardLayout) userProcessContainer.getLayout()).show(userProcessContainer, "LoginPanel");
+}
+
+
+
+           
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -78,15 +89,15 @@ public class MainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel1 = new javax.swing.JPanel();
+        splitPanel = new javax.swing.JSplitPane();
+        LoginPanel = new javax.swing.JPanel();
         txtUsername = new javax.swing.JTextField();
         txtPassword = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         loginBtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        RightPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -109,18 +120,18 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout LoginPanelLayout = new javax.swing.GroupLayout(LoginPanel);
+        LoginPanel.setLayout(LoginPanelLayout);
+        LoginPanelLayout.setHorizontalGroup(
+            LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(LoginPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LoginPanelLayout.createSequentialGroup()
                         .addGap(0, 2, Short.MAX_VALUE)
                         .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(LoginPanelLayout.createSequentialGroup()
+                        .addGroup(LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
@@ -129,9 +140,9 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        LoginPanelLayout.setVerticalGroup(
+            LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(LoginPanelLayout.createSequentialGroup()
                 .addGap(191, 191, 191)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -144,53 +155,54 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(loginBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(logoutBtn)
-                .addContainerGap(423, Short.MAX_VALUE))
+                .addContainerGap(424, Short.MAX_VALUE))
         );
 
-        jSplitPane1.setLeftComponent(jPanel1);
+        splitPanel.setLeftComponent(LoginPanel);
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Medica Crisis Communication System");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout RightPanelLayout = new javax.swing.GroupLayout(RightPanel);
+        RightPanel.setLayout(RightPanelLayout);
+        RightPanelLayout.setHorizontalGroup(
+            RightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RightPanelLayout.createSequentialGroup()
                 .addContainerGap(257, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(236, 236, 236))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        RightPanelLayout.setVerticalGroup(
+            RightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(RightPanelLayout.createSequentialGroup()
                 .addGap(273, 273, 273)
                 .addComponent(jLabel1)
-                .addContainerGap(536, Short.MAX_VALUE))
+                .addContainerGap(537, Short.MAX_VALUE))
         );
 
-        jSplitPane1.setRightComponent(jPanel2);
+        splitPanel.setRightComponent(RightPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jSplitPane1)
+                .addComponent(splitPanel)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addComponent(splitPanel)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        txtUsername.setText("");
-        ((JPasswordField)txtPassword).setText(""); 
-        jSplitPane1.setRightComponent(jPanel2);
+        userProcessContainer.removeAll();
+        JPanel blankPanel = new JPanel(); // 或者一个欢迎页
+        userProcessContainer.add("Blank", blankPanel);
+        ((CardLayout) userProcessContainer.getLayout()).show(userProcessContainer, "Blank");
     }
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {
@@ -198,36 +210,65 @@ public class MainJFrame extends javax.swing.JFrame {
         String password = txtPassword.getText();
 
         UserAccount authenticatedUser = null;
-        Network currentNetwork = null;
-        Enterprise currentEnterprise = null;
         Organization currentOrg = null;
 
-        // 1. 系统级查找
-        authenticatedUser = system.getUserAccountDirectory().authenticateUser(username, password);
+        // Try to authenticate the user across all organizations' user account directories
+        for (Network network : system.getNetworkDirectory().getNetworkList()) {
+            for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+                for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
+                    authenticatedUser = org.getUserAccountDirectory().authenticateUser(username, password);
+                    if (authenticatedUser != null) {
+                        currentOrg = org;
+                        break;
+                    }
+                }
+                if (authenticatedUser != null) {
+                    break;
+                }
+            }
+            if (authenticatedUser != null) {
+                break;
+            }
+        }
 
-        // 4. 获取角色
+        // If not found in any organization, try the system's user account directory (for sysadmin)
+        if (authenticatedUser == null) {
+            authenticatedUser = system.getUserAccountDirectory().authenticateUser(username, password);
+        }
+
+        if (authenticatedUser == null) {
+            JOptionPane.showMessageDialog(this, "Invalid credentials. Please check username and password.");
+            return;
+        }
+
         Role role = authenticatedUser.getRole();
         JPanel workAreaPanel = null;
 
-        // 5. 分流：按角色分配界面
+        // Route to the appropriate work area based on the role
         if (role instanceof AdminRole) {
-            //这里重写，现在只有一个admin
-        } else if (role instanceof EmergencyDispatcherRole) {
-            workAreaPanel = new EmergencyDispatcherWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof EmergencyResponderRole) {
-            workAreaPanel = new EmergencyResponderWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+            workAreaPanel = new AdminWorkAreaPanel(userProcessContainer, system, authenticatedUser);
         } else if (role instanceof DoctorRole) {
             workAreaPanel = new HospitalDoctorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof NurseRole) {
             workAreaPanel = new HospitalNurseWorkArea(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof EmergencyDispatcherRole) {
+            workAreaPanel = new EmergencyDispatcherWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof EmergencyResponderRole) {
+            workAreaPanel = new EmergencyResponderWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof LogisticsManagerRole) {
             workAreaPanel = new SupplyOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof DonationCoordinatorRole) {
-            workAreaPanel = new DonationCoordinatorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
-        } else if (role instanceof PayrollStaffRole) {
-            workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else if (role instanceof DeliveryStaffRole) {
             workAreaPanel = new DeliveryStaffWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof DonationCoordinatorRole) {
+        workAreaPanel = new DonationCoordinatorWorkAreaPanel(userProcessContainer, system, authenticatedUser, (DonationManagementUnit) currentOrg);
+        } else if (role instanceof PayrollStaffRole) {
+            workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+        } else if (role instanceof ResourceAnalystRole) {
+            // Assuming ResourceAnalyst also has a work area panel, replace with actual
+            workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser); // Placeholder
+        } else if (role instanceof SupplychainManagerRole) {
+            // Assuming SupplychainManager also has a work area panel, replace with actual
+            workAreaPanel = new SupplyOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser); // Placeholder
         } else if (role instanceof VisitorRole) {
             workAreaPanel = new VisitorDonorWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
         } else {
@@ -235,10 +276,8 @@ public class MainJFrame extends javax.swing.JFrame {
             return;
         }
 
-        // 6. 跳转到对应工作界面
-        userProcessContainer.add("workAreaPanel", workAreaPanel);
-        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-        layout.next(userProcessContainer);   
+        userProcessContainer.add("WorkArea", workAreaPanel);
+        ((CardLayout) userProcessContainer.getLayout()).show(userProcessContainer, "WorkArea");
     }
 
     /**
@@ -255,14 +294,14 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel LoginPanel;
+    private javax.swing.JPanel RightPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JButton loginBtn;
     private javax.swing.JButton logoutBtn;
+    private javax.swing.JSplitPane splitPanel;
     private javax.swing.JTextField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables

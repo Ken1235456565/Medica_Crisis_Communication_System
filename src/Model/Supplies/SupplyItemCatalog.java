@@ -4,48 +4,85 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manages a list of Supply objects.
+ * Manages a catalog of SupplyItem objects with support for
+ * adding, removing, searching by name, ID, or type, and inventory operations.
  */
 public class SupplyItemCatalog {
-
-    private List<SupplyItem> supplyList;
+    private List<SupplyItem> itemList;
 
     public SupplyItemCatalog() {
-        this.supplyList = new ArrayList<>();
+        this.itemList = new ArrayList<>();
     }
 
-    public List<SupplyItem> getSupplyList() {
-        return supplyList;
+    public List<SupplyItem> getItemList() {
+        return itemList;
+    }
+    
+    
+
+    // Basic Add - No Duplicates by Name
+    public void add(SupplyItem item) {
+        if (findItemByName(item.getName()) == null) {
+            itemList.add(item);
+        }
     }
 
-    public void setSupplyList(List<SupplyItem> supplyList) {
-        this.supplyList = supplyList;
+    
+    // Basic Remove
+    public void remove(SupplyItem item) {
+        itemList.remove(item);
     }
 
-    public void addSupply(SupplyItem supply) {
-        this.supplyList.add(supply);
+    // Clear entire catalog
+    public void clear() {
+        itemList.clear();
     }
 
-    public void removeSupply(SupplyItem supply) {
-        this.supplyList.remove(supply);
+    // Full List Access
+    public List<SupplyItem> getAllItems() {
+        return itemList;
     }
 
-    public SupplyItem findSupplyById(String id) {
-        for (SupplyItem supply : supplyList) {
-            if (supply.getSupplyId().equals(id)) {
-                return supply;
+    // Count items
+    public int size() {
+        return itemList.size();
+    }
+
+    // ========== FINDING LOGIC ==========
+
+    // Find by name (used for display & low-stock tracking)
+    public SupplyItem findItemByName(String itemName) {
+        for (SupplyItem item : itemList) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                return item;
             }
         }
         return null;
     }
 
-    public List<SupplyItem> findSuppliesByType(String type) {
+    // Find by ID (used if IDs are assigned)
+    public SupplyItem findItemById(String id) {
+        for (SupplyItem item : itemList) {
+            if (item.getSupplyId().equals(id)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    // Find by Type
+    public List<SupplyItem> findItemsByType(String type) {
         List<SupplyItem> results = new ArrayList<>();
-        for (SupplyItem supply : supplyList) {
-            if (supply.getType().equals(type)) {
-                results.add(supply);
+        for (SupplyItem item : itemList) {
+            if (item.getType().equalsIgnoreCase(type)) {
+                results.add(item);
             }
         }
         return results;
+    }
+
+    // ========== SETTERS / FOR BULK RELOAD (rarely used) ==========
+    public void setItemList(List<SupplyItem> newList) {
+        this.itemList = newList;
     }
 }

@@ -10,14 +10,13 @@ public class DeliveryStaff extends Employee {
     private String licenseNumber;
 
     public DeliveryStaff(String vehicleType, String licenseNumber,
-                         String id, String name, String gender, int age, String dateOfBirth,
-                         String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new DeliveryStaffRole(), organization, contactInfo);
-        this.vehicleType = vehicleType;
-        this.licenseNumber = licenseNumber;
-    }
+                     String id, String name, String gender, int age, String dateOfBirth,
+                     String position, String department, ContactInfo contactInfo) {
+    super(id, name, gender, age, dateOfBirth, position, department, contactInfo);
+    this.vehicleType = vehicleType;
+    this.licenseNumber = licenseNumber;
+}
+
 
     public String getVehicleType() {
         return vehicleType;

@@ -4,14 +4,17 @@ package Model.Employee;
 import Model.Role.Role;
 import Model.Person.ContactInfo;
 import Model.Employee.PayrollRecord;
+import Model.Person.Person;
 import Model.User.UserAccount;
 
 
-public class Employee extends UserAccount {
+
+public class Employee extends Person {
     private String position;
     PayrollRecord payrollRecord;
     private String department;
     private boolean isActive;
+    private UserAccount userAccount;
     private static int counter = 1;
 
     public Employee() {
@@ -22,36 +25,27 @@ public class Employee extends UserAccount {
         this.isActive = true;
     }
 
-    public Employee(String name, String username, String password, Role role,
-                    String position, String department) {
-        super(username, password, role, null, new ContactInfo());
-        this.setName(name);
-        this.setId(generateEmployeeId());
-        this.position = position;
-        this.department = department;
-        this.isActive = true;
-    }
-
-    public Employee(String name, String username, String password, Role role,
-                    String organization, ContactInfo contactInfo,
-                    String position, String department) {
-        super(null, name, null, 0, null,
-              username, password, role, organization, contactInfo);
-        this.setId(generateEmployeeId());
-        this.position = position;
-        this.department = department;
-        this.isActive = true;
-    }
-    
     public Employee(String id, String name, String gender, int age, String dateOfBirth,
-                String username, String password, Role role,
-                String organization, ContactInfo contactInfo) {
-    super(id, name, gender, age, dateOfBirth, username, password, role, organization, contactInfo);
-    this.setId(id != null ? id : generateEmployeeId());
+                String position, String department, ContactInfo contactInfo) {
+    super(id != null ? id : generateEmployeeId(), name, gender, age, dateOfBirth, contactInfo);
+    this.position = position;
+    this.department = department;
     this.isActive = true;
 }
 
-    protected String generateEmployeeId() {
+
+    public Employee(String name, String gender, int age, String dateOfBirth,
+                String position, String department, ContactInfo contactInfo) {
+    super(generateEmployeeId(), name, gender, age, dateOfBirth, contactInfo);
+    this.position = position;
+    this.department = department;
+    this.isActive = true;
+}
+
+    
+    
+
+    public static String generateEmployeeId() {
         return "EMP" + counter++;
     }
 
@@ -83,12 +77,22 @@ public class Employee extends UserAccount {
         this.payrollRecord = payrollRecord;
     }
     
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+    
+    
     public double calculateMySalary() {
         if (this.payrollRecord != null) {
             return this.payrollRecord.calculateNetSalary();
         }
         return 0.0; // Or throw an exception if payroll record is expected to always exist
     }
+    
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
+    
     
     @Override
     public String toString() {

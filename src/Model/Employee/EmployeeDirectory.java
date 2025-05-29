@@ -1,6 +1,7 @@
 // Model/personnel/EmployeeDirectory.java
 package Model.Employee;
 
+import Model.User.UserAccount;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,14 +45,16 @@ public class EmployeeDirectory {
         }
         return null;
     }
-
-    public List<Employee> findEmployeesByRole(String roleName) {
+    
+    public List<Employee> findEmployeesByRole(String positionName) {
         List<Employee> result = new ArrayList<>();
-        for (Employee employee : employeeList) {
-            if (employee.getRole() != null && employee.getRole().getName().equals(roleName)) {
-                result.add(employee);
+        for (Employee emp : employeeList) {
+            if (emp.getPosition() != null && emp.getPosition().equalsIgnoreCase(positionName)) {
+                result.add(emp);
             }
         }
         return result;
     }
+
+
 }

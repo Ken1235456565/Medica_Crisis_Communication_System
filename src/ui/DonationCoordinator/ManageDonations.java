@@ -39,18 +39,18 @@ public class ManageDonations extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblManageDonations = new javax.swing.JTable();
         btnDecline = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cmbOrganization = new javax.swing.JComboBox<>();
         btnApprove = new javax.swing.JButton();
-        btnGoUpload2 = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         btnViewDetail = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Manage Donations");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblManageDonations.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -69,7 +69,7 @@ public class ManageDonations extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblManageDonations);
 
         btnDecline.setText("Decline");
         btnDecline.addActionListener(new java.awt.event.ActionListener() {
@@ -78,7 +78,7 @@ public class ManageDonations extends javax.swing.JPanel {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", " ", " " }));
+        cmbOrganization.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", " ", " " }));
 
         btnApprove.setText("Approve");
         btnApprove.addActionListener(new java.awt.event.ActionListener() {
@@ -87,10 +87,10 @@ public class ManageDonations extends javax.swing.JPanel {
             }
         });
 
-        btnGoUpload2.setText("Back");
-        btnGoUpload2.addActionListener(new java.awt.event.ActionListener() {
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGoUpload2ActionPerformed(evt);
+                btnBackActionPerformed(evt);
             }
         });
 
@@ -120,8 +120,8 @@ public class ManageDonations extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnGoUpload2, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
+                                    .addComponent(cmbOrganization, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnBack, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
                                 .addGap(23, 23, 23)
                                 .addComponent(btnApprove, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(253, 253, 253)
@@ -143,10 +143,10 @@ public class ManageDonations extends javax.swing.JPanel {
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDecline)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbOrganization, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnApprove))
                 .addGap(18, 18, 18)
-                .addComponent(btnGoUpload2)
+                .addComponent(btnBack)
                 .addContainerGap(120, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -159,9 +159,9 @@ public class ManageDonations extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnApproveActionPerformed
 
-    private void btnGoUpload2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoUpload2ActionPerformed
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnGoUpload2ActionPerformed
+    }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnViewDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailActionPerformed
         // TODO add your handling code here:
@@ -170,13 +170,13 @@ public class ManageDonations extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApprove;
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnDecline;
-    private javax.swing.JButton btnGoUpload2;
     private javax.swing.JButton btnViewDetail;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cmbOrganization;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblManageDonations;
     // End of variables declaration//GEN-END:variables
 }

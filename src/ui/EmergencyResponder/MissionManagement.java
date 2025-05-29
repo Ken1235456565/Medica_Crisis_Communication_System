@@ -7,6 +7,7 @@ package ui.EmergencyResponder;
 import Model.Organization.Organization;
 import Model.Supplies.DeliveryCatalog;
 import Model.User.UserAccount;
+import Model.WorkQueue.MissionCatalog;
 import javax.swing.JPanel;
 
 /**
@@ -18,15 +19,16 @@ public class MissionManagement extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private DeliveryCatalog missionCatalog; // Catalog of missions to manage
+    private MissionCatalog missionCatalog;
 
-    public MissionManagement(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DeliveryCatalog missionCatalog) {
+    public MissionManagement(JPanel userProcessContainer, Organization organization, UserAccount userAccount, MissionCatalog missionCatalog) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.missionCatalog = missionCatalog;
         initComponents();
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -8,6 +8,7 @@ import Model.Organization.Organization;
 import Model.User.UserAccount;
 import Model.Supplies.DonationCatalog;
 import Model.EcoSystem; // Needed for BrowsePublicData
+import Model.Organization.DonationManagementUnit;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
 
@@ -40,7 +41,8 @@ public class VisitorDonorWorkAreaPanel extends javax.swing.JPanel {
         this.cardLayout = (CardLayout) contentPanel.getLayout();
 
         // Assuming organization has a DonationCatalog
-        DonationCatalog donationCatalog = organization.getDonationCatalog(); // Placeholder
+        DonationManagementUnit unit = new DonationManagementUnit();
+        DonationCatalog donationCatalog = unit.getDonationRecords();
 
         // Add sub-panels to the contentPanel
         contentPanel.add("SubmitDonation", new SubmitDonation(userProcessContainer, organization, userAccount, donationCatalog));

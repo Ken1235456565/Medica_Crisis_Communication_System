@@ -2,7 +2,7 @@
 package Model.Enterprise;
 
 import Model.Organization.ResourceDispatchUnit;
-import Model.Organization.InventoryManager;
+import Model.Organization.SupplyChainManagementUnit;
 
 /**
  *
@@ -15,7 +15,7 @@ public class LogisticsEnterprise extends Enterprise {
 
         // Initialize with Logistics-specific organizations
         ResourceDispatchUnit dispatch = new ResourceDispatchUnit("Transport");
-        InventoryManager inventory = new InventoryManager("Main Warehouse");
+        SupplyChainManagementUnit inventory = new SupplyChainManagementUnit("Main Warehouse");
 
         this.addOrganization(dispatch);
         this.addOrganization(inventory);

@@ -1,8 +1,12 @@
 package Model.Organization;
 
 import Model.Employee.Employee;
+import Model.Employee.EmployeeDirectory;
 import Model.Patient.Patient;
+import Model.Personnel.Admin;
+import Model.Supplies.DeliveryCatalog;
 import Model.WorkQueue.EmergencyWorkRequest;
+import Model.WorkQueue.MissionCatalog;
 import Model.WorkQueue.WorkRequest;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,9 +25,11 @@ public class EmergencyResponseUnit extends Organization { // EXTENDS Organizatio
     private Map<String, Boolean> emergencyVehicleStatus; // Vehicle ID -> Available status
     private List<WorkRequest> emergencyCalls;
     private int alertLevel; // 1-5, with 5 being highest
-    private Map<String, Integer> responseTimeMetrics; // Call ID -> Response time in minutes
+    private Map<String, Integer> responseTimeMetrics; // Call ID -> Response time in minutes'
+    private DeliveryCatalog deliveryCatalog;
+    private MissionCatalog missionCatalog;
     
-    // Default constructor
+    // ✅ 默认构造器（补上所有初始化）
     public EmergencyResponseUnit() {
         super("Emergency Response");
         this.unitName = "Emergency Response";
@@ -31,11 +37,14 @@ public class EmergencyResponseUnit extends Organization { // EXTENDS Organizatio
         this.emergencyPatients = new ArrayList<>();
         this.emergencyVehicleStatus = new HashMap<>();
         this.emergencyCalls = new ArrayList<>();
-        this.alertLevel = 1; // Default normal level
+        this.alertLevel = 1;
         this.responseTimeMetrics = new HashMap<>();
+        this.deliveryCatalog = new DeliveryCatalog();
+        this.missionCatalog = new MissionCatalog(); // ✅ 补上
+        this.employeeDirectory = new EmployeeDirectory(); // ✅ 补上
     }
     
-    // Constructor with unit name
+    // ✅ 构造器2
     public EmergencyResponseUnit(String unitName) {
         super(unitName);
         this.unitName = unitName;
@@ -43,20 +52,38 @@ public class EmergencyResponseUnit extends Organization { // EXTENDS Organizatio
         this.emergencyPatients = new ArrayList<>();
         this.emergencyVehicleStatus = new HashMap<>();
         this.emergencyCalls = new ArrayList<>();
-        this.alertLevel = 1; // Default normal level
+        this.alertLevel = 1;
         this.responseTimeMetrics = new HashMap<>();
+        this.deliveryCatalog = new DeliveryCatalog();
+        this.missionCatalog = new MissionCatalog();
+        this.employeeDirectory = new EmployeeDirectory();
     }
-    
-    // Constructor with admin
-    public EmergencyResponseUnit(String unitName, Employee admin) {
+
+    // ✅ 构造器3
+    public EmergencyResponseUnit(String unitName, Admin admin) {
         super(unitName, admin);
         this.unitName = unitName;
         this.emergencyStaff = new ArrayList<>();
         this.emergencyPatients = new ArrayList<>();
         this.emergencyVehicleStatus = new HashMap<>();
         this.emergencyCalls = new ArrayList<>();
-        this.alertLevel = 1; // Default normal level
+        this.alertLevel = 1;
         this.responseTimeMetrics = new HashMap<>();
+        this.deliveryCatalog = new DeliveryCatalog();
+        this.missionCatalog = new MissionCatalog();
+        this.employeeDirectory = new EmployeeDirectory();
+    }
+
+    public DeliveryCatalog getDeliveryCatalog() {
+        return deliveryCatalog;
+    }
+
+    public MissionCatalog getMissionCatalog() {
+        return missionCatalog;
+    }
+
+    public EmployeeDirectory getEmployeeDirectory() {
+        return employeeDirectory;
     }
     
     // Getters and setters
@@ -70,7 +97,7 @@ public class EmergencyResponseUnit extends Organization { // EXTENDS Organizatio
         this.unitName = unitName;
         super.setOrganizationName(unitName);
     }
-    
+
     public List<Employee> getEmergencyStaff() {
         return emergencyStaff;
     }
@@ -100,6 +127,8 @@ public class EmergencyResponseUnit extends Organization { // EXTENDS Organizatio
     public Map<String, Integer> getResponseTimeMetrics() {
         return responseTimeMetrics;
     }
+    
+    
     
     // Add emergency staff
     public void addEmergencyStaff(Employee employee) {
@@ -162,7 +191,7 @@ public class EmergencyResponseUnit extends Organization { // EXTENDS Organizatio
         }
         
         // Assign responder and update vehicle status
-        emergencyCall.setReceiver(responder);
+        emergencyCall.setReceiver(responder.getUserAccount());
         emergencyCall.setStatus("Dispatched");
         emergencyCall.setAssignedVehicle(vehicleId);
         emergencyVehicleStatus.put(vehicleId, false); // Mark vehicle as unavailable

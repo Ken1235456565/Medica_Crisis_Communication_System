@@ -1,12 +1,13 @@
 package Model;
 
+// Model/ConfigureASystem.java
 import Model.Enterprise.Enterprise;
 import Model.Network.Network;
 import Model.Network.NetworkDirectory;
 import Model.Organization.ClinicalServicesUnit;
 import Model.Organization.EmergencyResponseUnit;
 import Model.Organization.ResourceDispatchUnit;
-import Model.Organization.InventoryManager;
+import Model.Organization.SupplyChainManagementUnit;
 import Model.Organization.AdministrationUnit;
 import Model.Organization.DonationManagementUnit;
 import Model.Organization.OperationsSupportUnit;
@@ -17,13 +18,14 @@ import Model.Personnel.Doctor;
 import Model.Personnel.EmergencyDispatcher;
 import Model.Personnel.EmergencyResponder;
 import Model.Employee.Employee;
+import Model.Enterprise.LogisticsEnterprise;
 import Model.Personnel.LogisticsManager;
 import Model.Personnel.Nurse;
 import Model.Personnel.Donor;
-import Model.Personnel.PayrollStaff; // New
-import Model.Personnel.ResourceAnalyst; // New
-import Model.Personnel.DonationCoordinator; // New
-import Model.Personnel.SupplychainManager; // New
+import Model.Personnel.PayrollStaff;
+import Model.Personnel.ResourceAnalyst;
+import Model.Personnel.DonationCoordinator;
+import Model.Personnel.SupplychainManager;
 
 
 import Model.Person.ContactInfo;
@@ -35,10 +37,11 @@ import Model.Role.EmergencyDispatcherRole;
 import Model.Role.EmergencyResponderRole;
 import Model.Role.LogisticsManagerRole;
 import Model.Role.NurseRole;
-import Model.Role.PayrollStaffRole; // New
-import Model.Role.ResourceAnalystRole; // New
-import Model.Role.DonationCoordinatorRole; // New
-import Model.Role.SupplychainManagerRole; // New
+import Model.Role.PayrollStaffRole;
+import Model.Role.ResourceAnalystRole;
+import Model.Role.DonationCoordinatorRole;
+import Model.Role.SupplychainManagerRole;
+import Model.Role.VisitorRole;
 
 import Model.Supplies.SupplyItem;
 import Model.Supplies.Equipments;
@@ -102,10 +105,10 @@ public class ConfigureASystem {
             bostonHospital.addOrganization(clinicalServicesOrg);
         }
 
-        // Removed hospital admin placeholder and direct admin assignment for AdministrationUnit
         AdministrationUnit hospitalAdminOrg = (AdministrationUnit) bostonHospital.findOrganizationByName("Hospital Admin");
         if (hospitalAdminOrg == null) {
-            hospitalAdminOrg = new AdministrationUnit("Hospital Admin"); // Modified constructor to remove admin parameter
+            hospitalAdminOrg = new AdministrationUnit();
+            hospitalAdminOrg.setOrganizationName("Hospital Admin");
             bostonHospital.addOrganization(hospitalAdminOrg);
         }
 
@@ -122,12 +125,12 @@ public class ConfigureASystem {
         // Emergency Organizations
         EmergencyResponseUnit emergencyResponseOrg = (EmergencyResponseUnit) bostonEmergency.findOrganizationByName("Field Operations");
         if (emergencyResponseOrg == null) {
-            emergencyResponseOrg = new EmergencyResponseUnit("Field Operations", null); // Admin parameter kept, set to null
+            emergencyResponseOrg = new EmergencyResponseUnit("Field Operations", null);
             bostonEmergency.addOrganization(emergencyResponseOrg);
         }
         ResourceDispatchUnit emergencyDispatchOrg = (ResourceDispatchUnit) bostonEmergency.findOrganizationByName("911 Dispatch");
         if (emergencyDispatchOrg == null) {
-            emergencyDispatchOrg = new ResourceDispatchUnit("911 Dispatch", null); // Admin parameter kept, set to null
+            emergencyDispatchOrg = new ResourceDispatchUnit("911 Dispatch", null);
             bostonEmergency.addOrganization(emergencyDispatchOrg);
         }
 
@@ -141,14 +144,14 @@ public class ConfigureASystem {
         bostonLogistics.setContactInfo(logisticsContact);
 
         // Logistics Organizations
-        InventoryManager inventoryManagerOrg = (InventoryManager) bostonLogistics.findOrganizationByName("Main Warehouse");
+        SupplyChainManagementUnit inventoryManagerOrg = (SupplyChainManagementUnit) bostonLogistics.findOrganizationByName("Main Warehouse");
         if (inventoryManagerOrg == null) {
-            inventoryManagerOrg = new InventoryManager("Main Warehouse");
+            inventoryManagerOrg = new SupplyChainManagementUnit("Main Warehouse");
             bostonLogistics.addOrganization(inventoryManagerOrg);
         }
         ResourceDispatchUnit deliveryUnitOrg = (ResourceDispatchUnit) bostonLogistics.findOrganizationByName("Transport");
         if (deliveryUnitOrg == null) {
-            deliveryUnitOrg = new ResourceDispatchUnit("Transport", null); // Admin parameter kept, set to null
+            deliveryUnitOrg = new ResourceDispatchUnit("Transport", null);
             bostonLogistics.addOrganization(deliveryUnitOrg);
         }
 
@@ -164,94 +167,208 @@ public class ConfigureASystem {
         // Public Health Organizations (Added)
         DonationManagementUnit donationManagementOrg = (DonationManagementUnit) bostonPublicHealth.findOrganizationByName("Donation Management");
         if (donationManagementOrg == null) {
-            donationManagementOrg = new DonationManagementUnit(); // Modified constructor to remove admin parameter
+            donationManagementOrg = new DonationManagementUnit();
             bostonPublicHealth.addOrganization(donationManagementOrg);
         }
         OperationsSupportUnit operationsSupportOrg = (OperationsSupportUnit) bostonPublicHealth.findOrganizationByName("Operations Support");
         if (operationsSupportOrg == null) {
-            operationsSupportOrg = new OperationsSupportUnit("Operations Support", "2025"); // Modified constructor to remove admin parameter
+            operationsSupportOrg = new OperationsSupportUnit("Operations Support",null, "2025");
             bostonPublicHealth.addOrganization(operationsSupportOrg);
         }
 
 
         // Create System Admin User with Faker-generated data
         ContactInfo sysAdminContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee sysAdminEmployee = new Employee(faker.name().fullName(), "sysadmin", "sysadmin", new AdminRole(), "System Administrator", "IT");
-        sysAdminEmployee.setContactInfo(sysAdminContact);
-        system.getUserAccountDirectory().createUserAccount(sysAdminEmployee.getUsername(), sysAdminEmployee.getPassword(), sysAdminEmployee, sysAdminEmployee.getRole());
+        Employee sysAdminEmployee = new Employee("EMP" + faker.number().digits(4), faker.name().fullName(), faker.options().option("Male", "Female"), faker.number().numberBetween(25, 60), new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()), "System Administrator", "IT", sysAdminContact);
+        UserAccount sysAdminAccount = system.getUserAccountDirectory().createUserAccount("sysadmin", "sysadmin", sysAdminEmployee, new AdminRole());
+        sysAdminEmployee.setUserAccount(sysAdminAccount);
 
-        // --- Removed Network Admin and Hospital Enterprise Admin ---
 
-        // Users with specific roles
         // Create Doctor User and add to Clinical Services Org with Faker-generated data
         ContactInfo doctorContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee doctorEmployee = new Employee(faker.name().fullName(), "doctor", "doctor", new DoctorRole(), "Physician", "Medical");
-        doctorEmployee.setContactInfo(doctorContact);
-        system.getUserAccountDirectory().createUserAccount(doctorEmployee.getUsername(), doctorEmployee.getPassword(), doctorEmployee, doctorEmployee.getRole());
+        Employee doctorEmployee = new Employee("EMP" + faker.number().digits(4), faker.name().fullName(), faker.options().option("Male", "Female"), faker.number().numberBetween(30, 65), new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()), "Physician", "Medical", doctorContact);
+        UserAccount doctorAccount = clinicalServicesOrg.getUserAccountDirectory().createUserAccount("doctor", "doctor", doctorEmployee, new DoctorRole()); // Changed to organization's user account directory
+        doctorEmployee.setUserAccount(doctorAccount);
         clinicalServicesOrg.addEmployee(doctorEmployee);
 
         // Create Nurse User and add to Clinical Services Org with Faker-generated data
         ContactInfo nurseContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee nurseEmployee = new Employee(faker.name().fullName(), "nurse", "nurse", new NurseRole(), "Registered Nurse", "Nursing");
-        nurseEmployee.setContactInfo(nurseContact);
-        system.getUserAccountDirectory().createUserAccount(nurseEmployee.getUsername(), nurseEmployee.getPassword(), nurseEmployee, nurseEmployee.getRole());
+        Employee nurseEmployee = new Employee("EMP" + faker.number().digits(4), faker.name().fullName(), faker.options().option("Male", "Female"), faker.number().numberBetween(22, 55), new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()), "Registered Nurse", "Nursing", nurseContact);
+        UserAccount nurseAccount = clinicalServicesOrg.getUserAccountDirectory().createUserAccount("nurse", "nurse", nurseEmployee, new NurseRole()); // Changed to organization's user account directory
+        nurseEmployee.setUserAccount(nurseAccount);
         clinicalServicesOrg.addEmployee(nurseEmployee);
 
         // Create Payroll Staff User and add to Administration Unit (New)
         ContactInfo payrollStaffContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee payrollStaffEmployee = new Employee(faker.name().fullName(), "payrollstaff", "payrollstaff", new PayrollStaffRole(), "Payroll Staff", "Finance");
-        payrollStaffEmployee.setContactInfo(payrollStaffContact);
-        system.getUserAccountDirectory().createUserAccount(payrollStaffEmployee.getUsername(), payrollStaffEmployee.getPassword(), payrollStaffEmployee, payrollStaffEmployee.getRole());
+        Employee payrollStaffEmployee = new Employee("EMP" + faker.number().digits(4), faker.name().fullName(), faker.options().option("Male", "Female"), faker.number().numberBetween(25, 50), new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()), "Payroll Staff", "Finance", payrollStaffContact);
+        UserAccount payrollStaffAccount = hospitalAdminOrg.getUserAccountDirectory().createUserAccount("payrollstaff", "payrollstaff", payrollStaffEmployee, new PayrollStaffRole()); // Changed to organization's user account directory
+        payrollStaffEmployee.setUserAccount(payrollStaffAccount);
         hospitalAdminOrg.addEmployee(payrollStaffEmployee);
 
         // Create Resource Analyst User and add to Administration Unit (New)
         ContactInfo resourceAnalystContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee resourceAnalystEmployee = new Employee(faker.name().fullName(), "resourceanalyst", "resourceanalyst", new ResourceAnalystRole(), "Resource Analyst", "Administration");
-        resourceAnalystEmployee.setContactInfo(resourceAnalystContact);
-        system.getUserAccountDirectory().createUserAccount(resourceAnalystEmployee.getUsername(), resourceAnalystEmployee.getPassword(), resourceAnalystEmployee, resourceAnalystEmployee.getRole());
+        Employee resourceAnalystEmployee = new Employee("EMP" + faker.number().digits(4), faker.name().fullName(), faker.options().option("Male", "Female"), faker.number().numberBetween(25, 50), new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()), "Resource Analyst", "Administration", resourceAnalystContact);
+        UserAccount resourceAnalystAccount = hospitalAdminOrg.getUserAccountDirectory().createUserAccount("resourceanalyst", "resourceanalyst", resourceAnalystEmployee, new ResourceAnalystRole()); // Changed to organization's user account directory
+        resourceAnalystEmployee.setUserAccount(resourceAnalystAccount);
         hospitalAdminOrg.addEmployee(resourceAnalystEmployee);
 
         // Create Emergency Dispatcher User and add to Emergency Dispatch Org with Faker-generated data
-        ContactInfo dispatcherContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee dispatcherEmployee = new Employee(faker.name().fullName(), "dispatcher", "dispatcher", new EmergencyDispatcherRole(), "Dispatcher", "Dispatch");
-        dispatcherEmployee.setContactInfo(dispatcherContact);
-        UserAccount dispatcherAccount = system.getUserAccountDirectory().createUserAccount(dispatcherEmployee.getUsername(), dispatcherEmployee.getPassword(), dispatcherEmployee, dispatcherEmployee.getRole());
+        // 明确传入账号信息
+        String dispatcherUsername = "dispatcher";
+        String dispatcherPassword = "dispatcher";
+        // 先创建 Employee
+        ContactInfo dispatcherContact = new ContactInfo(
+            faker.address().fullAddress(),
+            faker.phoneNumber().phoneNumber(),
+            faker.internet().emailAddress()
+        );
+        Employee dispatcherEmployee = new Employee(
+            "EMP" + faker.number().digits(4),
+            faker.name().fullName(),
+            faker.options().option("Male", "Female"),
+            faker.number().numberBetween(28, 55),
+            new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()),
+            "Dispatcher",
+            "Dispatch",
+            dispatcherContact
+        );
+        // 然后创建账号
+        UserAccount dispatcherAccount = emergencyDispatchOrg.getUserAccountDirectory().createUserAccount( // Changed to organization's user account directory
+            dispatcherUsername,
+            dispatcherPassword,
+            dispatcherEmployee,
+            new EmergencyDispatcherRole()
+        );
+        // 绑定账号
+        dispatcherEmployee.setUserAccount(dispatcherAccount);
+        // 加入组织
         emergencyDispatchOrg.addEmployee(dispatcherEmployee);
 
         // Create Emergency Responder User and add to Emergency Response Org with Faker-generated data
-        ContactInfo responderContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee responderEmployee = new Employee(faker.name().fullName(), "responder", "responder", new EmergencyResponderRole(), "Responder", "Response");
-        responderEmployee.setContactInfo(responderContact);
-        UserAccount responderAccount = system.getUserAccountDirectory().createUserAccount(responderEmployee.getUsername(), responderEmployee.getPassword(), responderEmployee, responderEmployee.getRole());
+        String responderUsername = "responder";
+        String responderPassword = "responder";
+        ContactInfo responderContact = new ContactInfo(
+            faker.address().fullAddress(),
+            faker.phoneNumber().phoneNumber(),
+            faker.internet().emailAddress()
+        );
+        Employee responderEmployee = new Employee(
+            "EMP" + faker.number().digits(4),
+            faker.name().fullName(),
+            faker.options().option("Male", "Female"),
+            faker.number().numberBetween(20, 45),
+            new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()),
+            "Responder",
+            "Response",
+            responderContact
+        );
+        UserAccount responderAccount = emergencyResponseOrg.getUserAccountDirectory().createUserAccount( // Changed to organization's user account directory
+            responderUsername,
+            responderPassword,
+            responderEmployee,
+            new EmergencyResponderRole()
+        );
+
+        responderEmployee.setUserAccount(responderAccount);
         emergencyResponseOrg.addEmployee(responderEmployee);
 
         // Create Logistics Manager User and add to Inventory Manager Org with Faker-generated data
-        ContactInfo logisticsManagerContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee logisticsManagerEmployee = new Employee(faker.name().fullName(), "logisticsmanager", "logisticsmanager", new LogisticsManagerRole(), "Manager", "Logistics");
-        logisticsManagerEmployee.setContactInfo(logisticsManagerContact);
-        UserAccount logisticsManagerAccount = system.getUserAccountDirectory().createUserAccount(logisticsManagerEmployee.getUsername(), logisticsManagerEmployee.getPassword(), logisticsManagerEmployee, logisticsManagerEmployee.getRole());
+        ContactInfo logisticsManagerContact = new ContactInfo(
+            faker.address().fullAddress(),
+            faker.phoneNumber().phoneNumber(),
+            faker.internet().emailAddress()
+        );
+        Employee logisticsManagerEmployee = new Employee(
+            "EMP" + faker.number().digits(4),
+            faker.name().fullName(),
+            faker.options().option("Male", "Female"),
+            faker.number().numberBetween(30, 60),
+            new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()),
+            "Manager",
+            "Logistics",
+            logisticsManagerContact
+        );
+        String logisticsUsername = "logisticsmanager";
+        String logisticsPassword = "logisticsmanager";
+        UserAccount logisticsManagerAccount = inventoryManagerOrg.getUserAccountDirectory().createUserAccount( // Changed to organization's user account directory
+            logisticsUsername,
+            logisticsPassword,
+            logisticsManagerEmployee,
+            new LogisticsManagerRole()
+        );
+        logisticsManagerEmployee.setUserAccount(logisticsManagerAccount);
         inventoryManagerOrg.addEmployee(logisticsManagerEmployee);
 
+
         // Create Delivery Staff User and add to Delivery Unit Org with Faker-generated data
-        ContactInfo deliveryStaffContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee deliveryStaffEmployee = new Employee(faker.name().fullName(), "deliverystaff", "deliverystaff", new DeliveryStaffRole(), "Driver", "Delivery");
-        deliveryStaffEmployee.setContactInfo(deliveryStaffContact);
-        UserAccount deliveryStaffAccount = system.getUserAccountDirectory().createUserAccount(deliveryStaffEmployee.getUsername(), deliveryStaffEmployee.getPassword(), deliveryStaffEmployee, deliveryStaffEmployee.getRole());
+        ContactInfo deliveryStaffContact = new ContactInfo(
+            faker.address().fullAddress(),
+            faker.phoneNumber().phoneNumber(),
+            faker.internet().emailAddress()
+        );
+        Employee deliveryStaffEmployee = new Employee(
+            "EMP" + faker.number().digits(4),
+            faker.name().fullName(),
+            faker.options().option("Male", "Female"),
+            faker.number().numberBetween(20, 50),
+            new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()),
+            "Driver",
+            "Delivery",
+            deliveryStaffContact
+        );
+        String deliveryUsername = "deliverystaff";
+        String deliveryPassword = "deliverystaff";
+        UserAccount deliveryStaffAccount = deliveryUnitOrg.getUserAccountDirectory().createUserAccount( // Changed to organization's user account directory
+            deliveryUsername,
+            deliveryPassword,
+            deliveryStaffEmployee,
+            new DeliveryStaffRole()
+        );
+        deliveryStaffEmployee.setUserAccount(deliveryStaffAccount);
         deliveryUnitOrg.addEmployee(deliveryStaffEmployee);
+
 
         // Create Donation Coordinator User and add to Donation Management Unit (New)
         ContactInfo donationCoordinatorContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee donationCoordinatorEmployee = new Employee(faker.name().fullName(), "donationcoordinator", "donationcoordinator", new DonationCoordinatorRole(), "Donation Coordinator", "Donation Management");
-        donationCoordinatorEmployee.setContactInfo(donationCoordinatorContact);
-        system.getUserAccountDirectory().createUserAccount(donationCoordinatorEmployee.getUsername(), donationCoordinatorEmployee.getPassword(), donationCoordinatorEmployee, donationCoordinatorEmployee.getRole());
+        Employee donationCoordinatorEmployee = new Employee("EMP" + faker.number().digits(4), faker.name().fullName(), faker.options().option("Male", "Female"), faker.number().numberBetween(25, 55), new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()), "Donation Coordinator", "Donation Management", donationCoordinatorContact);
+        UserAccount donationCoordinatorAccount = donationManagementOrg.getUserAccountDirectory().createUserAccount("donationcoordinator", "donationcoordinator", donationCoordinatorEmployee, new DonationCoordinatorRole()); // Changed to organization's user account directory
+        donationCoordinatorEmployee.setUserAccount(donationCoordinatorAccount);
         donationManagementOrg.addEmployee(donationCoordinatorEmployee);
 
-        // Create Supply Chain Manager User and add to Operations Support Unit (New)
-        ContactInfo supplychainManagerContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-        Employee supplychainManagerEmployee = new Employee(faker.name().fullName(), "supplychainmanager", "supplychainmanager", new SupplychainManagerRole(), "Supply Chain Manager", "Operations Support");
-        supplychainManagerEmployee.setContactInfo(supplychainManagerContact);
-        system.getUserAccountDirectory().createUserAccount(supplychainManagerEmployee.getUsername(), supplychainManagerEmployee.getPassword(), supplychainManagerEmployee, supplychainManagerEmployee.getRole());
-        operationsSupportOrg.addEmployee(supplychainManagerEmployee);
+    // Create Supply Chain Manager User and add to Supply Chain Management Unit (Corrected)
+    LogisticsEnterprise logisticsEnterprise = new LogisticsEnterprise(
+        "ENT001",
+        "Logistics Corp",
+        "Handles logistics operations",
+        "Alice Manager"
+    );
+    //Step 2: 创建 Supply Chain Management Unit
+    SupplyChainManagementUnit supplyChainOrg = new SupplyChainManagementUnit("Main Warehouse");
+    logisticsEnterprise.getOrganizations().addOrganization(supplyChainOrg);  // ✅ 使用实例调用
+    //Step 3: 创建联系人信息
+    ContactInfo supplychainManagerContact = new ContactInfo(
+        faker.address().fullAddress(),
+        faker.phoneNumber().phoneNumber(),
+        faker.internet().emailAddress()
+    );
+    // Step 4: 创建员工对象
+    Employee supplychainManagerEmployee = new Employee(
+        "EMP" + faker.number().digits(4),
+        faker.name().fullName(),
+        faker.options().option("Male", "Female"),
+        faker.number().numberBetween(30, 60),
+        new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()),
+        "Supply Chain Manager",
+        "Supply Chain Unit",
+        supplychainManagerContact
+    );
+
+    system.getNetworkDirectory().getNetworkList().get(0).getEnterpriseDirectory().addEnterprise(logisticsEnterprise);
+    UserAccount supplychainManagerAccount = supplyChainOrg.getUserAccountDirectory()
+        .createUserAccount("supplymanager", "supplymanager", supplychainManagerEmployee, new SupplychainManagerRole());
+
+    supplychainManagerEmployee.setUserAccount(supplychainManagerAccount);
+    supplyChainOrg.addEmployee(supplychainManagerEmployee);
 
         // Create Patient (External User)
         // Patients are added directly to ClinicalServicesUnit, no UserAccount needed unless they log in
@@ -326,15 +443,15 @@ public class ConfigureASystem {
                 Appointment appointment = new Appointment(patient, doctor, appointmentDate, appointmentTime);
                 appointment.setAppointmentType(faker.options().option("Regular Checkup", "Follow-up", "Emergency"));
                 appointment.setLocation(faker.address().streetAddress());
-                appointment.setSender(nurse);    // Arranger
-                appointment.setReceiver(doctor); // Receiver
+                appointment.setSender(nurse.getUserAccount());    // Arranger
+                appointment.setSender(doctor.getUserAccount()); // Receiver
 
                 clinicalServicesOrg.scheduleAppointment(appointment);
             }
         }
     }
 
-    private static void generateInventory(InventoryManager inventoryManagerOrg, Faker faker) {
+    private static void generateInventory(SupplyChainManagementUnit inventoryManagerOrg, Faker faker) {
         // Generate Supply Items
         for (int i = 0; i < 15; i++) {
             String supplyName = faker.commerce().productName();
@@ -379,45 +496,63 @@ public class ConfigureASystem {
     }
 
     private static void generateDonations(DonationManagementUnit donationManagementOrg, Faker faker) {
-        // Generate Donors
-        List<Donor> donors = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            String donorName = faker.name().fullName();
-            String donorId = "DONOR" + faker.number().digits(4);
-            ContactInfo donorContact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
-            Donor donor = new Donor(donorId, donorName, donorContact);
-            donationManagementOrg.addDonor(donor);
-            donors.add(donor);
+    List<Donor> donors = new ArrayList<>();
+
+    // ➤ 创建 Donor
+    for (int i = 0; i < 10; i++) {
+    String personId = "PER" + faker.number().digits(4);
+    String donorName = faker.name().fullName();
+    String gender = faker.options().option("Male", "Female", "Other");
+    int age = faker.number().numberBetween(18, 80);
+    String dob = new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday());
+    String username = "donor" + faker.number().digits(3);
+    String password = "password";
+    String orgName = "Public Donors";
+    ContactInfo contact = new ContactInfo(faker.address().fullAddress(), faker.phoneNumber().phoneNumber(), faker.internet().emailAddress());
+
+    // ✔ 创建 Donor 本体
+    Donor donor = new Donor(personId, donorName, gender, age, dob, contact);
+
+    // ✔ 绑定账号（可登录）
+    UserAccount ua = new UserAccount(username, password, new VisitorRole(), orgName, donor);
+    donor.setUserAccount(ua);
+    // Add donor's user account to the *Donation Management Unit's* UserAccountDirectory
+    donationManagementOrg.getUserAccountDirectory().addUserAccount(ua);
+    
+    donationManagementOrg.addDonor(donor);
+    donors.add(donor);
+    }
+
+    // ➤ 创建 Donation（随机是现金或实物）
+    for (int i = 0; i < 20; i++) {
+        Donor randomDonor = donors.get(faker.number().numberBetween(0, donors.size()));
+        String purpose = faker.options().option("Medical Research", "Disaster Relief", "Community Support", "General Fund");
+
+        Donation donation;
+        if (faker.bool().bool()) {
+            double amount = faker.number().randomDouble(2, 50, 5000);
+            donation = donationManagementOrg.recordMonetaryDonation(randomDonor, amount, purpose);
+        } else {
+            List<DonatedItem> donatedItems = new ArrayList<>();
+            int numItems = faker.number().numberBetween(1, 4);
+            for (int j = 0; j < numItems; j++) {
+                String itemName = faker.commerce().productName();
+                int quantity = faker.number().numberBetween(1, 10);
+                double unitPrice = faker.number().randomDouble(2, 5, 200);
+                donatedItems.add(new DonatedItem(itemName, quantity, unitPrice));
+            }
+            donation = donationManagementOrg.recordItemDonation(randomDonor, donatedItems, purpose);
         }
 
-        // Generate Donations
-        for (int i = 0; i < 20; i++) {
-            Donor randomDonor = donors.get(faker.number().numberBetween(0, donors.size() - 1));
-            String purpose = faker.options().option("Medical Research", "Disaster Relief", "Community Support", "General Fund");
+        donation.setNotes(faker.lorem().sentence());
 
-            if (faker.bool().bool()) { // Monetary donation
-                double amount = faker.number().randomDouble(2, 50, 5000);
-                Donation donation = donationManagementOrg.recordMonetaryDonation(randomDonor, amount, purpose);
-                donation.setNotes(faker.lorem().sentence());
-            } else { // Item donation
-                List<DonatedItem> donatedItems = new ArrayList<>();
-                int numItems = faker.number().numberBetween(1, 3);
-                for (int j = 0; j < numItems; j++) {
-                    String itemName = faker.commerce().productName();
-                    int quantity = faker.number().numberBetween(1, 10);
-                    double unitPrice = faker.number().randomDouble(2, 5, 200);
-                    donatedItems.add(new DonatedItem(itemName, quantity, unitPrice));
-                }
-                Donation donation = donationManagementOrg.recordItemDonation(randomDonor, donatedItems, purpose);
-                donation.setNotes(faker.lorem().sentence());
-            }
-
-            // Simulate processing some donations
-            if (faker.bool().bool()) {
-                donationManagementOrg.getDonationRecords().get(donationManagementOrg.getDonationRecords().size() - 1).processDonation();
-            }
+        // 随机处理一部分
+        if (faker.bool().bool()) {
+            donation.processDonation();
         }
     }
+}
+
 
     private static void generateVehicles(ResourceDispatchUnit resourceDispatchUnit, Faker faker) {
         for (int i = 0; i < 10; i++) {
@@ -440,7 +575,7 @@ public class ConfigureASystem {
 
 
     private static void generateWorkRequests(ClinicalServicesUnit clinicalServicesOrg, EmergencyResponseUnit emergencyResponseOrg,
-                                             InventoryManager inventoryManagerOrg, ResourceDispatchUnit deliveryUnitOrg,
+                                             SupplyChainManagementUnit inventoryManagerOrg, ResourceDispatchUnit deliveryUnitOrg,
                                              OperationsSupportUnit operationsSupportOrg, DonationManagementUnit donationManagementOrg,
                                              Faker faker, Employee sysAdmin, Employee doctor, Employee dispatcher,
                                              Employee responder, Employee logisticsManager, Employee deliveryStaff,
@@ -452,8 +587,8 @@ public class ConfigureASystem {
             int quantity = faker.number().numberBetween(10, 100);
             SupplyWorkRequest supplyRequest = new SupplyWorkRequest(requestedSupply, quantity, faker.options().option("Emergency", "Clinical", "Logistics"));
             supplyRequest.setUrgency(faker.options().option("High", "Medium", "Low"));
-            supplyRequest.setSender(sysAdmin); // Example sender
-            supplyRequest.setReceiver(logisticsManager); // Example receiver
+            supplyRequest.setSender(sysAdmin.getUserAccount()); // Example sender
+            supplyRequest.setReceiver(logisticsManager.getUserAccount()); // Example receiver
             supplyRequest.setStatus(faker.options().option("Requested", "Approved", "Fulfilled"));
             inventoryManagerOrg.addWorkRequest(supplyRequest); // Add to InventoryManager's queue
         }
@@ -464,8 +599,8 @@ public class ConfigureASystem {
             donationsForRequest.add(donationManagementOrg.getDonationRecords().get(faker.number().numberBetween(0, donationManagementOrg.getDonationRecords().size() - 1)));
             String requestType = faker.options().option("Process", "Distribute", "Acknowledge");
             DonationRequest donationRequest = new DonationRequest(requestType, donationsForRequest);
-            donationRequest.setSender(sysAdmin); // Example sender
-            donationRequest.setReceiver(donationCoordinator); // Changed receiver to DonationCoordinator
+            donationRequest.setSender(sysAdmin.getUserAccount()); // Example sender
+            donationRequest.setReceiver(donationCoordinator.getUserAccount()); // Changed receiver to DonationCoordinator
             donationRequest.setStatus(faker.options().option("Pending", "Processed", "Distributed"));
             donationManagementOrg.addWorkRequest(donationRequest);
         }
@@ -485,8 +620,8 @@ public class ConfigureASystem {
             PayrollRequest payrollRequest = new PayrollRequest(emp, payStart, payEnd, payDate);
             payrollRequest.setHoursWorked(faker.number().randomDouble(2, 120, 160));
             payrollRequest.setOvertimeHours(faker.number().randomDouble(2, 0, 20));
-            payrollRequest.setSender(sysAdmin);
-            payrollRequest.setReceiver(payrollStaff); // Changed receiver to PayrollStaff
+            payrollRequest.setSender(sysAdmin.getUserAccount());
+            payrollRequest.setReceiver(payrollStaff.getUserAccount()); // Changed receiver to PayrollStaff
             payrollRequest.setStatus(faker.options().option("Submitted", "Processed"));
             operationsSupportOrg.addWorkRequest(payrollRequest);
         }
@@ -496,8 +631,8 @@ public class ConfigureASystem {
             String emergencyType = faker.options().option("Medical Emergency", "Fire", "Accident", "Natural Disaster");
             String location = faker.address().fullAddress();
             EmergencyWorkRequest emergencyRequest = new EmergencyWorkRequest(emergencyType, location, faker.number().numberBetween(1, 5), faker.name().fullName());
-            emergencyRequest.setSender(sysAdmin);
-            emergencyRequest.setReceiver(dispatcher);
+            emergencyRequest.setSender(sysAdmin.getUserAccount());
+            emergencyRequest.setReceiver(dispatcher.getUserAccount());
             emergencyRequest.setStatus(faker.options().option("Reported", "Dispatched", "Completed"));
             emergencyResponseOrg.addWorkRequest(emergencyRequest);
             if (emergencyRequest.getStatus().equals("Dispatched") || emergencyRequest.getStatus().equals("Completed")) {
@@ -510,9 +645,8 @@ public class ConfigureASystem {
             Patient patient = clinicalServicesOrg.getPatientList().get(faker.number().numberBetween(0, clinicalServicesOrg.getPatientList().size() - 1));
             String icuReason = faker.lorem().sentence();
             ICURequest icuRequest = new ICURequest(patient, icuReason);
-            icuRequest.setSender(doctor);
-            // Assuming clinicalServicesOrg.getAdmin() is no longer directly available or needs to be a specific employee
-            icuRequest.setReceiver(doctor); // Assign to doctor for now, or a specific nurse if suitable
+            icuRequest.setSender(doctor.getUserAccount());
+            icuRequest.setReceiver(doctor.getUserAccount());
             icuRequest.setStatus(faker.options().option("Requested", "Bed Assigned", "Completed"));
             clinicalServicesOrg.addWorkRequest(icuRequest);
             if (icuRequest.getStatus().equals("Bed Assigned") || icuRequest.getStatus().equals("Completed")) {
@@ -527,8 +661,8 @@ public class ConfigureASystem {
             Model.Supplies.Delivery delivery = new Model.Supplies.Delivery(faker.address().fullAddress(), faker.date().future(7, TimeUnit.DAYS));
             delivery.addItem(new SupplyItem(faker.commerce().productName(), "Description", "Type", faker.number().numberBetween(1, 50), faker.number().randomDouble(2, 5, 100)));
             DeliveryAssignmentRequest deliveryRequest = new DeliveryAssignmentRequest(delivery);
-            deliveryRequest.setSender(logisticsManager);
-            deliveryRequest.setReceiver(deliveryStaff);
+            deliveryRequest.setSender(logisticsManager.getUserAccount());
+            deliveryRequest.setReceiver(deliveryStaff.getUserAccount());
             deliveryRequest.setStatus(faker.options().option("Pending", "Assigned", "Completed"));
             deliveryUnitOrg.addWorkRequest(deliveryRequest);
         }
@@ -541,8 +675,8 @@ public class ConfigureASystem {
             String department = faker.options().option("Clinical", "Logistics", "Emergency");
             ResourceAnalysisRequest analysisRequest = new ResourceAnalysisRequest(analysisType, periodStart, periodEnd, department);
             analysisRequest.setPriority(faker.options().option("High", "Medium", "Low"));
-            analysisRequest.setSender(sysAdmin);
-            ICURequest.setReceiver(resourceAnalyst); // Changed receiver to ResourceAnalyst
+            analysisRequest.setSender(sysAdmin.getUserAccount());
+            analysisRequest.setReceiver(resourceAnalyst.getUserAccount());
             analysisRequest.setStatus(faker.options().option("Requested", "In Progress", "Completed"));
             operationsSupportOrg.addWorkRequest(analysisRequest);
         }
@@ -557,14 +691,14 @@ public class ConfigureASystem {
             CostReport costReport = new CostReport(reportTitle, startDate, endDate, department, reportType);
             costReport.addCost("Salaries", faker.number().randomDouble(2, 10000, 50000));
             costReport.addCost("Supplies", faker.number().randomDouble(2, 1000, 10000));
-            costReport.setSender(sysAdmin);
-            costReport.setReceiver(payrollStaff); // Changed receiver to PayrollStaff
+            costReport.setSender(sysAdmin.getUserAccount());
+            costReport.setReceiver(payrollStaff.getUserAccount());
             costReport.setStatus(faker.options().option("Pending", "Generated"));
             operationsSupportOrg.addWorkRequest(costReport);
         }
     }
 
-    private static void generateReportsAndMissionStats(OperationsSupportUnit operationsSupportOrg, EmergencyResponseUnit emergencyResponseOrg, Faker faker, Employee sysAdmin, Employee supplychainManager) { // Added supplychainManager parameter
+    private static void generateReportsAndMissionStats(OperationsSupportUnit operationsSupportOrg, EmergencyResponseUnit emergencyResponseOrg, Faker faker, Employee sysAdmin, Employee supplychainManager) {
         // Reports (internal to OperationsSupportUnit)
         for (int i = 0; i < 3; i++) {
             String reportTitle = faker.lorem().words(4).toString() + " Performance Report";
@@ -587,11 +721,11 @@ public class ConfigureASystem {
             MissionStats missionStats = new MissionStats(missionName, missionStart, missionEnd, missionType, location);
             missionStats.addStat("ResourcesDeployed", faker.number().numberBetween(5, 20));
             missionStats.addStat("PersonnelInvolved", faker.number().numberBetween(10, 50));
-            missionStats.setSender(sysAdmin); // Example sender
-            missionStats.setReceiver(supplychainManager); // Changed receiver to SupplychainManager
+            missionStats.setSender(sysAdmin.getUserAccount());
+            missionStats.setReceiver(supplychainManager.getUserAccount());
             missionStats.setStatus("Finalized");
-            operationsSupportOrg.addWorkRequest(missionStats); // Add to ops unit work queue
-            emergencyResponseOrg.addWorkRequest(missionStats); // Also add to emergency unit work queue if relevant
+            operationsSupportOrg.addWorkRequest(missionStats);
+            emergencyResponseOrg.addWorkRequest(missionStats);
         }
     }
 

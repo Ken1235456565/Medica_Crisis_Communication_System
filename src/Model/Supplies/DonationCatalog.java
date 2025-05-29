@@ -18,6 +18,14 @@ public class DonationCatalog {
     public List<Donation> getDonationList() {
         return donationList;
     }
+    
+    public int size() {
+        return donationList.size();  // donations 是内部的 List<Donation>
+    }
+    
+    public Donation get(int index) {
+    return donationList.get(index);
+}
 
     public void setDonationList(List<Donation> donationList) {
         this.donationList = donationList;

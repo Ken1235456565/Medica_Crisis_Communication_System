@@ -13,10 +13,8 @@ public class EmergencyDispatcher extends Employee {
 
     public EmergencyDispatcher(String dispatchZone, String certificationLevel,
                                String id, String name, String gender, int age, String dateOfBirth,
-                               String username, String password, String organization, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth,
-              username, password,
-              new EmergencyDispatcherRole(), organization, contactInfo);
+                               String position, String department, ContactInfo contactInfo) {
+        super(id, name, gender, age, dateOfBirth, position, department, contactInfo);
         this.dispatchZone = dispatchZone;
         this.certificationLevel = certificationLevel;
     }
