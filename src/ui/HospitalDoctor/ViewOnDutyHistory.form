@@ -26,7 +26,7 @@
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel8" min="-2" pref="124" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
-                                  <Component id="txtItemName" min="-2" pref="172" max="-2" attributes="0"/>
+                                  <Component id="txtCreateNotes" min="-2" pref="172" max="-2" attributes="0"/>
                               </Group>
                               <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
@@ -36,8 +36,8 @@
                                       </Group>
                                       <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="CmbDonationType" alignment="0" pref="172" max="32767" attributes="0"/>
-                                          <Component id="txtContactEmail" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="CmbCreateDate" alignment="0" pref="172" max="32767" attributes="0"/>
+                                          <Component id="txtCreateContactEmail" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -48,7 +48,7 @@
                                       <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="btnExportToCSV" alignment="0" min="-2" pref="129" max="-2" attributes="0"/>
-                                          <Component id="txtDonorName" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="txtCreateNurseName" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -60,7 +60,7 @@
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel16" min="-2" pref="124" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
-                                  <Component id="txtItemName1" min="-2" pref="172" max="-2" attributes="0"/>
+                                  <Component id="txtViewNotes" min="-2" pref="172" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -69,14 +69,14 @@
                                   </Group>
                                   <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="CmbDonationType3" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtContactEmail1" alignment="0" min="-2" pref="172" max="-2" attributes="0"/>
+                                      <Component id="CmbViewDate" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="txtViewContactEmail" alignment="0" min="-2" pref="172" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel11" min="-2" pref="124" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
-                                  <Component id="txtDonorName1" min="-2" pref="172" max="-2" attributes="0"/>
+                                  <Component id="txtViewNurseName" min="-2" pref="172" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -97,7 +97,7 @@
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="btnBack1" alignment="1" min="-2" pref="135" max="-2" attributes="0"/>
+                              <Component id="btnDelete" alignment="1" min="-2" pref="135" max="-2" attributes="0"/>
                               <Component id="jScrollPane1" alignment="0" min="-2" pref="787" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -121,7 +121,7 @@
                       <Component id="jScrollPane1" min="-2" pref="226" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="btnBack1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnDelete" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnExportToCSV" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnViewDetails" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -130,22 +130,22 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtDonorName" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtCreateNurseName" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtContactEmail" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtCreateContactEmail" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="CmbDonationType" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="CmbCreateDate" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtItemName" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtCreateNotes" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
@@ -153,22 +153,22 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtDonorName1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtViewNurseName" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtContactEmail1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtViewContactEmail" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="CmbDonationType3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="CmbViewDate" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtItemName1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtViewNotes" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -185,7 +185,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JTextField" name="txtDonorName">
+    <Component class="javax.swing.JTextField" name="txtCreateNurseName">
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
@@ -194,7 +194,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="tblDonationHistory">
+        <Component class="javax.swing.JTable" name="tblPatientShiftNotes">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="4" rowCount="4">
@@ -224,7 +224,7 @@
         <Property name="text" type="java.lang.String" value="Nurse Name:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtDonorName1">
+    <Component class="javax.swing.JTextField" name="txtViewNurseName">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
@@ -270,8 +270,11 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="View Details"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewDetailsActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtContactEmail1">
+    <Component class="javax.swing.JTextField" name="txtViewContactEmail">
     </Component>
     <Component class="javax.swing.JButton" name="btnCreate">
       <Properties>
@@ -289,12 +292,12 @@
         <Property name="text" type="java.lang.String" value="Contact Email :"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnBack1">
+    <Component class="javax.swing.JButton" name="btnDelete">
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBack1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">
@@ -321,7 +324,7 @@
         <Property name="text" type="java.lang.String" value="Create New Shift Note:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="CmbDonationType3">
+    <Component class="javax.swing.JComboBox" name="CmbViewDate">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="5">
@@ -345,12 +348,9 @@
         <Property name="text" type="java.lang.String" value="View Patient Shift Notes"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtItemName1">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtItemName1ActionPerformed"/>
-      </Events>
+    <Component class="javax.swing.JTextField" name="txtViewNotes">
     </Component>
-    <Component class="javax.swing.JTextField" name="txtContactEmail">
+    <Component class="javax.swing.JTextField" name="txtCreateContactEmail">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
@@ -360,12 +360,9 @@
         <Property name="text" type="java.lang.String" value="Date:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtItemName">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtItemNameActionPerformed"/>
-      </Events>
+    <Component class="javax.swing.JTextField" name="txtCreateNotes">
     </Component>
-    <Component class="javax.swing.JComboBox" name="CmbDonationType">
+    <Component class="javax.swing.JComboBox" name="CmbCreateDate">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="5">
@@ -385,6 +382,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Export to csv"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExportToCSVActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnSalaryCaculation">
       <Properties>

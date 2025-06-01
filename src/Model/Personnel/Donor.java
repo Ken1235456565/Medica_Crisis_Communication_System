@@ -1,74 +1,87 @@
-// Model/donation/Donor.java
+/*
+ * Donor Class - Merged Version
+ */
 package Model.Personnel;
 
-import Model.Person.ContactInfo;
 import Model.Person.Person;
-import Model.Role.VisitorRole;
+import Model.Person.ContactInfo;
 import Model.Supplies.Donation;
 import Model.User.UserAccount;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a donor with donation history, type, and account association.
+ * Supports recurring donor tracking.
+ * @author tiank
+ */
 public class Donor extends Person {
     private String donorId;
     private UserAccount userAccount;
-    private List<Donation> donationHistory = new ArrayList<>();
+    private List<Donation> donationHistory;
+    private double totalDonationAmount;
+    private String donorType; // "Individual", "Corporate", "Foundation"
+    private boolean isRecurringDonor;
+    private static int counter = 1;
 
-    public Donor(String id, String name, String gender, int age, String dateOfBirth, ContactInfo contactInfo) {
-        super(id, name, gender, age, dateOfBirth, contactInfo);
-        this.donorId = "DON" + personIdCounter++;
-    }
-    
-    public Donor(String id, String name, String gender, int age, String dateOfBirth,
-                ContactInfo contactInfo, UserAccount userAccount) {
-       this(id, name, gender, age, dateOfBirth, contactInfo);
-       this.userAccount = userAccount;
-   }
-
+    // Default constructor
     public Donor() {
         super();
+        this.donorId = "DNR" + counter++;
         this.donationHistory = new ArrayList<>();
+        this.totalDonationAmount = 0.0;
+        this.donorType = "Individual";
+        this.isRecurringDonor = false;
     }
 
-    public String getDonorId() {
-        return donorId;
+    // Constructor without userAccount
+    public Donor(String name, String gender, int age, String dateOfBirth, ContactInfo contactInfo) {
+        super(null, name, gender, age, dateOfBirth, contactInfo);
+        this.donorId = "DNR" + counter++;
+        this.donationHistory = new ArrayList<>();
+        this.totalDonationAmount = 0.0;
+        this.donorType = "Individual";
+        this.isRecurringDonor = false;
     }
 
-    public void setDonorId(String donorId) {
-        this.donorId = donorId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Donation> getDonationHistory() {
-        return donationHistory;
-    }
-
-    public void setDonationHistory(List<Donation> donationHistory) {
-        this.donationHistory = donationHistory;
-    }
-
-    public void addDonation(Donation donation) {
-        this.donationHistory.add(donation);
-    }
-    
-    public UserAccount getUserAccount() {
-        return userAccount;
-    }
-
-    public void setUserAccount(UserAccount userAccount) {
+    // Constructor with userAccount
+    public Donor(String name, String gender, int age, String dateOfBirth, ContactInfo contactInfo, UserAccount userAccount) {
+        this(name, gender, age, dateOfBirth, contactInfo);
         this.userAccount = userAccount;
     }
-    
-    public double getTotalDonationAmount() {
-        return donationHistory.stream()
-               .mapToDouble(Donation::getAmount)
-               .sum();
+
+    // Getters and setters
+    public String getDonorId() { return donorId; }
+
+    public List<Donation> getDonationHistory() { return donationHistory; }
+
+    public double getTotalDonationAmount() { return totalDonationAmount; }
+
+    public String getDonorType() { return donorType; }
+
+    public void setDonorType(String donorType) { this.donorType = donorType; }
+
+    public boolean isRecurringDonor() { return isRecurringDonor; }
+
+    public void setRecurringDonor(boolean recurringDonor) { isRecurringDonor = recurringDonor; }
+
+    public UserAccount getUserAccount() { return userAccount; }
+
+    public void setUserAccount(UserAccount userAccount) { this.userAccount = userAccount; }
+
+    // Add donation to history
+    public void addDonation(Donation donation) {
+        this.donationHistory.add(donation);
+        this.totalDonationAmount += donation.getAmount();
+
+        // Consider recurring if more than one donation
+        if (donationHistory.size() > 1) {
+            this.isRecurringDonor = true;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Donor: " + getName() + " (Total Donated: $" + totalDonationAmount + ")";
     }
 }

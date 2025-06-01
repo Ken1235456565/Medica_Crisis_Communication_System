@@ -9,6 +9,8 @@ package Model.PublicData;
  * @author tiankaining
  */
 
+import Model.EcoSystem;
+import Model.Personnel.PublicDataManager;
 import Model.PublicData.HealthStatistics;
 import Model.PublicData.RegionData;
 import Model.PublicData.SymptomData;
@@ -20,36 +22,42 @@ import java.util.List;
 import java.util.List;
 
 public class PublicDataService {
-    private List<RegionData> regionDataList;
+    private EcoSystem ecoSystem;
     private String currentTimeSpan;
 
     public PublicDataService() {
-        this.regionDataList = new ArrayList<>();
-        this.currentTimeSpan = "default";
-        // TODO: load regionDataList from file/database/mock/etc.
+        this.ecoSystem = EcoSystem.getInstance();
+        this.currentTimeSpan = "7 days";
     }
 
     public void filterDataByTimeSpan(String timeSpan) {
-        // TODO: implement filtering logic
         this.currentTimeSpan = timeSpan;
-        // You may update regionDataList to only contain data from timeSpan
     }
 
     public HealthStatistics generateHealthStatistics(String timeSpan) {
         filterDataByTimeSpan(timeSpan);
-        return new HealthStatistics(regionDataList, timeSpan, new Date());
+        
+        PublicDataManager pdm = ecoSystem.getPublicDataManager();
+        HealthStatistics stats = pdm.filterHealthStatisticsByTimeSpan(timeSpan);
+        
+        return stats;
     }
 
     public List<RegionData> getRegionStatistics() {
-        return regionDataList;
+        HealthStatistics stats = generateHealthStatistics(currentTimeSpan);
+        return stats != null ? stats.getRegionData() : new ArrayList<>();
     }
 
     public List<SymptomData> getSymptomSummary(String timeSpan) {
-        filterDataByTimeSpan(timeSpan);
+        HealthStatistics stats = generateHealthStatistics(timeSpan);
         List<SymptomData> result = new ArrayList<>();
-        for (RegionData region : regionDataList) {
-            result.add(region.getSymptomSummary());
+        
+        if (stats != null) {
+            for (RegionData region : stats.getRegionData()) {
+                result.add(region.getSymptomSummary());
+            }
         }
+        
         return result;
     }
 }

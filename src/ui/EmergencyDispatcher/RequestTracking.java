@@ -7,18 +7,25 @@ package ui.EmergencyDispatcher;
 import Model.EcoSystem;
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import Model.WorkQueue.WorkRequest;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.awt.CardLayout;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author tiankaining
  */
 public class RequestTracking extends javax.swing.JPanel {
-
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private EcoSystem system; // For tracking requests globally
+    private EcoSystem system;
+    private DefaultTableModel overviewTableModel;
+    private DefaultTableModel displayTableModel;
 
     public RequestTracking(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EcoSystem system) {
         this.userProcessContainer = userProcessContainer;
@@ -26,8 +33,68 @@ public class RequestTracking extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.system = system;
         initComponents();
+        
+        initializeTables();
+        loadTrackingData();
+    }
+    private void initializeTables() {
+        String[] columnNames = {"Request ID", "Request Time", "Location", "Requester", "Phone", "Status"};
+        
+        overviewTableModel = new DefaultTableModel(columnNames, 0);
+        tblRequestDataOverview.setModel(overviewTableModel);
+        
+        displayTableModel = new DefaultTableModel(columnNames, 0);
+        tblRequestDataDisplay.setModel(displayTableModel);
     }
 
+    private void loadTrackingData() {
+        overviewTableModel.setRowCount(0);
+        displayTableModel.setRowCount(0);
+        
+        List<WorkRequest> requests = organization.getWorkQueue();
+        
+        // 加载概览数据
+        for (WorkRequest request : requests) {
+            Object[] row = createRequestRow(request);
+            overviewTableModel.addRow(row);
+        }
+        
+        // 加载显示数据（可以是过滤后的数据）
+        loadFilteredData();
+    }
+
+    private void loadFilteredData() {
+        displayTableModel.setRowCount(0);
+        
+        String timeSpan = (String) cmbTimeSpan.getSelectedItem();
+        String status = (String) cmbTimeSpan1.getSelectedItem();
+        String responder = (String) cmbTimeSpan2.getSelectedItem();
+        
+        List<WorkRequest> filteredRequests = organization.getWorkQueue();
+        
+        // 应用过滤器
+        if (status != null && !status.trim().isEmpty() && !" ".equals(status)) {
+            filteredRequests = filteredRequests.stream()
+                .filter(r -> r.getStatus().equalsIgnoreCase(status))
+                .collect(Collectors.toList());
+        }
+        
+        for (WorkRequest request : filteredRequests) {
+            Object[] row = createRequestRow(request);
+            displayTableModel.addRow(row);
+        }
+    }
+
+    private Object[] createRequestRow(WorkRequest request) {
+        return new Object[]{
+            request.getRequestId(),
+            request.getRequestDate(),
+            "Emergency Location", // 从实际请求对象获取
+            request.getSender() != null ? request.getSender().getName() : "Unknown",
+            "Emergency Phone", // 从实际请求对象获取
+            request.getStatus()
+        };
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -49,15 +116,16 @@ public class RequestTracking extends javax.swing.JPanel {
         btnBack = new javax.swing.JButton();
         btnFilter = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblRequestDataOverview = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tblRequestDataDisplay = new javax.swing.JTable();
+        btnDelete = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Request Tracking");
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel2.setText("Data overview:");
+        jLabel2.setText("Request Data overview:");
 
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel3.setText("Time Span:");
@@ -78,10 +146,20 @@ public class RequestTracking extends javax.swing.JPanel {
         cmbTimeSpan2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
 
         btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         btnFilter.setText("Filter");
+        btnFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilterActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblRequestDataOverview.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -100,9 +178,9 @@ public class RequestTracking extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblRequestDataOverview);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tblRequestDataDisplay.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -121,7 +199,14 @@ public class RequestTracking extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(jTable2);
+        jScrollPane3.setViewportView(tblRequestDataDisplay);
+
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -155,10 +240,13 @@ public class RequestTracking extends javax.swing.JPanel {
                                 .addComponent(cmbTimeSpan2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(77, 77, 77))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 840, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 840, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -183,16 +271,59 @@ public class RequestTracking extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnFilter)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnFilter)
+                    .addComponent(btnDelete))
                 .addGap(26, 26, 26)
                 .addComponent(btnBack)
                 .addContainerGap(73, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
+        loadFilteredData();
+        JOptionPane.showMessageDialog(this, "Filter applied successfully!", "Filter", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnFilterActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int selectedRow = tblRequestDataDisplay.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a request to delete.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to delete this request?", 
+            "Confirm Delete", 
+            JOptionPane.YES_NO_OPTION);
+            
+        if (confirm == JOptionPane.YES_OPTION) {
+            String requestId = (String) displayTableModel.getValueAt(selectedRow, 0);
+            WorkRequest requestToDelete = findRequestById(requestId);
+            
+            if (requestToDelete != null) {
+                organization.getWorkQueue().remove(requestToDelete);
+                loadTrackingData();
+                JOptionPane.showMessageDialog(this, "Request deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+    private WorkRequest findRequestById(String requestId) {
+        for (WorkRequest request : organization.getWorkQueue()) {
+            if (request.getRequestId().equals(requestId)) {
+                return request;
+            }
+        }
+        return null;
+    }
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        ((CardLayout)userProcessContainer.getLayout()).first(userProcessContainer);
+    }//GEN-LAST:event_btnBackActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnFilter;
     private javax.swing.JComboBox<String> cmbTimeSpan;
     private javax.swing.JComboBox<String> cmbTimeSpan1;
@@ -205,7 +336,7 @@ public class RequestTracking extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable tblRequestDataDisplay;
+    private javax.swing.JTable tblRequestDataOverview;
     // End of variables declaration//GEN-END:variables
 }

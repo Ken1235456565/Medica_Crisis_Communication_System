@@ -6,8 +6,21 @@ package ui.DeliveryStaff;
 
 import Model.Organization.Organization;
 import Model.Supplies.Delivery;
+import Model.Supplies.DeliveryCatalog;
 import Model.User.UserAccount;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import javax.swing.ImageIcon;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.Image;
+import java.awt.CardLayout;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,16 +31,107 @@ public class UploadProof extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private Delivery currentDelivery; // The specific delivery to upload proof for
+    private Delivery currentDelivery;
+    private DeliveryCatalog deliveryCatalog;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private File selectedAttachment = null;
+    private List<UploadRecord> uploadHistory = new ArrayList<>();
+
+    // 内部类：上传记录
+    private static class UploadRecord {
+        String taskId;
+        String uploadTime;
+        String recipient;
+        String status;
+        
+        public UploadRecord(String taskId, String uploadTime, String recipient, String status) {
+            this.taskId = taskId;
+            this.uploadTime = uploadTime;
+            this.recipient = recipient;
+            this.status = status;
+        }
+    }
 
     public UploadProof(JPanel userProcessContainer, Organization organization, UserAccount userAccount, Delivery currentDelivery) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.currentDelivery = currentDelivery;
+        
         initComponents();
+        initializeData();
+        loadDeliveredTasks();
+        loadUploadHistory();
     }
-
+    
+    private void initializeData() {
+        // 初始化收据状态下拉框
+        cmbReceiptStatus.removeAllItems();
+        cmbReceiptStatus.addItem("请选择状态");
+        cmbReceiptStatus.addItem("Normal");
+        cmbReceiptStatus.addItem("Wrong address");
+        cmbReceiptStatus.addItem("Recipient refuses to sign");
+        cmbReceiptStatus.addItem("Other issues");
+        
+        // 如果有当前配送任务，预填充表单
+        if (currentDelivery != null) {
+            prefillFormWithDelivery(currentDelivery);
+        }
+    }
+    
+    private void prefillFormWithDelivery(Delivery delivery) {
+        // 从配送地址中提取收件人信息（简化处理）
+        txtRecipientName.setText("收件人"); // 可以从delivery.getDestination()解析
+        txtContactInfo.setText("联系方式"); // 可以从相关数据获取
+        
+        // 如果配送已完成且状态正常，默认选择Normal
+        if ("Delivered".equals(delivery.getStatus())) {
+            cmbReceiptStatus.setSelectedItem("Normal");
+        }
+    }
+    
+    private void loadDeliveredTasks() {
+        DefaultTableModel model = (DefaultTableModel) tblDeliveredTask.getModel();
+        model.setRowCount(0);
+        
+         List<Delivery> deliveredTasks = deliveryCatalog.getDeliveredTasksForUser(userAccount.getName());
+         for (Delivery delivery : deliveredTasks) {
+             addDeliveredTaskToTable(model, delivery);
+         }
+    }
+    
+        private void addDeliveredTaskToTable(DefaultTableModel model, Delivery delivery) {
+        Object[] row = {
+            delivery.getDeliveryId(),
+            getRecipientName(delivery),
+            delivery.getDestination(),
+            delivery.getStatus(),
+            delivery.getDeliveryDate() != null ? dateFormat.format(delivery.getDeliveryDate()) : "未设置",
+            delivery.getNotes() != null ? delivery.getNotes() : "无备注"
+        };
+        model.addRow(row);
+    }
+        
+    private String getRecipientName(Delivery delivery) {
+        // 简化处理，实际应该从配送信息中解析
+        return "收件人";
+    }
+    
+    private void loadUploadHistory() {
+        DefaultTableModel model = (DefaultTableModel) tblUploadHistory.getModel();
+        model.setRowCount(0);
+        
+        // 显示历史上传记录
+        for (UploadRecord record : uploadHistory) {
+            Object[] row = {
+                record.taskId,
+                record.uploadTime,
+                record.recipient,
+                record.status
+            };
+            model.addRow(row);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -110,19 +214,23 @@ public class UploadProof extends javax.swing.JPanel {
 
         jLabel4.setText("Abnormal situation description:");
 
-        txtAbnormalDesc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtAbnormalDescActionPerformed(evt);
-            }
-        });
-
         jLabel7.setText("Receipt status:");
 
         cmbReceiptStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Normal", "Wrong address", "Recipient refuses to sign" }));
 
         btnSubmitForm.setText("Submit");
+        btnSubmitForm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitFormActionPerformed(evt);
+            }
+        });
 
         btnUploadAttachment.setText("Upload attachment");
+        btnUploadAttachment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploadAttachmentActionPerformed(evt);
+            }
+        });
 
         lblAttachmentImage.setBackground(new java.awt.Color(255, 255, 255));
         lblAttachmentImage.setOpaque(true);
@@ -158,6 +266,11 @@ public class UploadProof extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tblUploadHistory);
 
         btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -243,10 +356,163 @@ public class UploadProof extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtAbnormalDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAbnormalDescActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtAbnormalDescActionPerformed
+    private void btnUploadAttachmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadAttachmentActionPerformed
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("选择证明文件");
+            
+            // 设置文件过滤器
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "图片文件 (*.jpg, *.jpeg, *.png, *.gif)", "jpg", "jpeg", "png", "gif");
+            fileChooser.setFileFilter(filter);
+            
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                selectedAttachment = fileChooser.getSelectedFile();
+                displaySelectedImage(selectedAttachment);
+                showSuccessMessage("文件选择成功: " + selectedAttachment.getName());
+            }
+        } catch (Exception e) {
+            showErrorMessage("选择文件失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnUploadAttachmentActionPerformed
+    private void displaySelectedImage(File imageFile) {
+        try {
+            ImageIcon icon = new ImageIcon(imageFile.getAbsolutePath());
+            // 缩放图片以适应标签大小
+            Image img = icon.getImage();
+            Image scaledImg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            lblAttachmentImage.setIcon(new ImageIcon(scaledImg));
+            lblAttachmentImage.setText(""); // 清除默认文本
+        } catch (Exception e) {
+            showErrorMessage("显示图片失败: " + e.getMessage());
+            lblAttachmentImage.setText("图片加载失败");
+        }
+    }
+    private void btnSubmitFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitFormActionPerformed
+        try {
+            if (!validateForm()) {
+                return;
+            }
+            
+            // 确认提交
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "确认提交配送证明？",
+                "确认提交",
+                JOptionPane.YES_NO_OPTION
+            );
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                submitProof();
+                clearForm();
+                showSuccessMessage("配送证明提交成功！");
+            }
+            
+        } catch (Exception e) {
+            showErrorMessage("提交失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnSubmitFormActionPerformed
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
+    }//GEN-LAST:event_btnBackActionPerformed
+    private boolean validateForm() {
+        if (txtRecipientName.getText().trim().isEmpty()) {
+            showWarningMessage("请输入收件人姓名");
+            txtRecipientName.requestFocus();
+            return false;
+        }
+        
+        if (txtContactInfo.getText().trim().isEmpty()) {
+            showWarningMessage("请输入联系方式");
+            txtContactInfo.requestFocus();
+            return false;
+        }
+        
+        if (cmbReceiptStatus.getSelectedIndex() == 0) {
+            showWarningMessage("请选择收据状态");
+            cmbReceiptStatus.requestFocus();
+            return false;
+        }
+        
+        String receiptStatus = (String) cmbReceiptStatus.getSelectedItem();
+        if (!"Normal".equals(receiptStatus) && txtAbnormalDesc.getText().trim().isEmpty()) {
+            showWarningMessage("非正常状态请填写异常情况描述");
+            txtAbnormalDesc.requestFocus();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private void submitProof() {
+        String recipientName = txtRecipientName.getText().trim();
+        String contactInfo = txtContactInfo.getText().trim();
+        String abnormalDesc = txtAbnormalDesc.getText().trim();
+        String receiptStatus = (String) cmbReceiptStatus.getSelectedItem();
+        
+        // 创建证明记录
+        StringBuilder proofNote = new StringBuilder();
+        proofNote.append("配送证明已上传\n");
+        proofNote.append("上传时间: ").append(dateFormat.format(new Date())).append("\n");
+        proofNote.append("上传人: ").append(userAccount.getName()).append("\n");
+        proofNote.append("收件人: ").append(recipientName).append("\n");
+        proofNote.append("联系方式: ").append(contactInfo).append("\n");
+        proofNote.append("收据状态: ").append(receiptStatus).append("\n");
+        
+        if (!abnormalDesc.isEmpty()) {
+            proofNote.append("异常描述: ").append(abnormalDesc).append("\n");
+        }
+        
+        if (selectedAttachment != null) {
+            proofNote.append("附件: ").append(selectedAttachment.getName()).append("\n");
+        }
+        
+        // 更新当前配送任务的备注
+        if (currentDelivery != null) {
+            String existingNotes = currentDelivery.getNotes();
+            currentDelivery.setNotes(existingNotes != null ? 
+                existingNotes + "\n" + proofNote.toString() : proofNote.toString());
+        }
+        
+        // 添加到上传历史
+        String taskId = currentDelivery != null ? currentDelivery.getDeliveryId() : "TASK" + System.currentTimeMillis();
+        UploadRecord record = new UploadRecord(
+            taskId,
+            dateFormat.format(new Date()),
+            recipientName,
+            "证明已上传"
+        );
+        uploadHistory.add(record);
+        
+        // 刷新上传历史表格
+        loadUploadHistory();
+    }
+
+    private void clearForm() {
+        txtRecipientName.setText("");
+        txtContactInfo.setText("");
+        txtAbnormalDesc.setText("");
+        cmbReceiptStatus.setSelectedIndex(0);
+        selectedAttachment = null;
+        lblAttachmentImage.setIcon(null);
+        lblAttachmentImage.setText(""); // 清除图片显示
+    }
+
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "错误", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showWarningMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "警告", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void showSuccessMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "成功", JOptionPane.INFORMATION_MESSAGE);
+    }
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

@@ -53,7 +53,7 @@
                                       <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
                                       <Component id="txtcreateNetworkDescription" min="-2" pref="183" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="btnSave" alignment="0" min="-2" pref="129" max="-2" attributes="0"/>
+                                  <Component id="btnCreate" alignment="0" min="-2" pref="129" max="-2" attributes="0"/>
                                   <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                                       <Component id="cmbcreateManager" alignment="1" min="-2" pref="183" max="-2" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
@@ -241,7 +241,7 @@
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Component id="btnBack" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="btnSave" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCreate" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="47" max="32767" attributes="0"/>
           </Group>
@@ -277,9 +277,6 @@
             </Property>
             <Property name="autoscrolls" type="boolean" value="false"/>
           </Properties>
-          <Events>
-            <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="tblManageNetworkAncestorAdded"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -300,14 +297,8 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtcreateNetworkName">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtcreateNetworkNameActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtcreateNetworkDescription">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtcreateNetworkDescriptionActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
@@ -326,9 +317,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtcreateNetworkLocation">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtcreateNetworkLocationActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
       <Properties>
@@ -347,14 +335,8 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtcreateNetworkContactEmail">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtcreateNetworkContactEmailActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtcreateNetworkContactNumber">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtcreateNetworkContactNumberActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
@@ -396,12 +378,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewDetailsActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnSave">
+    <Component class="javax.swing.JButton" name="btnCreate">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Save"/>
+        <Property name="text" type="java.lang.String" value="Create"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel12">
@@ -455,14 +437,8 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtviewNetworkContactEmail">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtviewNetworkContactEmailActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtviewNetworkContactNumber">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtviewNetworkContactNumberActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel16">
       <Properties>
@@ -489,14 +465,8 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtviewNetworkName">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtviewNetworkNameActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtviewNetworkDescription">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtviewNetworkDescriptionActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel20">
       <Properties>
@@ -515,9 +485,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtviewNetworkLocation">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtviewNetworkLocationActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnModify">
       <Properties>
@@ -543,9 +510,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbcreateManagerActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -558,9 +522,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbviewManagerActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -573,9 +534,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbCreateTypeActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -588,9 +546,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbViewTypeActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>

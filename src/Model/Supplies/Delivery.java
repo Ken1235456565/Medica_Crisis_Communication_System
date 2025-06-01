@@ -17,6 +17,7 @@ public class Delivery {
     private String vehicleUsed;
     private String driverName;
     private String notes;
+    private String recipientName;
 
     private static int count = 1;
 
@@ -114,6 +115,14 @@ public class Delivery {
             total += item.getUnitPrice() * item.getQuantity();
         }
         return total;
+    }
+    
+    public String getRecipientName() {
+        return recipientName;
+    }
+
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
     }
 
     public void startDelivery(String vehicle, String driver) {

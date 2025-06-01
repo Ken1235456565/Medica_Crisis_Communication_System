@@ -5,9 +5,16 @@
 package ui.EmergencyResponder;
 
 import Model.Organization.Organization;
-import Model.Supplies.Delivery;
 import Model.User.UserAccount;
+import Model.Supplies.Delivery;
+import Model.WorkQueue.MissionStats;
+import Model.Organization.EmergencyResponseUnit;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.awt.CardLayout;
+import java.util.Date;
+import util.CSVExporter;
 
 /**
  *
@@ -18,7 +25,8 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private Delivery missionToUpdate; // The specific mission to update
+    private Delivery missionToUpdate;
+    private DefaultTableModel tableModel;
 
     public UpdateMissionStatus(JPanel userProcessContainer, Organization organization, UserAccount userAccount, Delivery missionToUpdate) {
         this.userProcessContainer = userProcessContainer;
@@ -26,7 +34,34 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.missionToUpdate = missionToUpdate;
         initComponents();
+        
+        initializeTable();
+        loadMissionData();
     }
+    
+    private void initializeTable() {
+        String[] columnNames = {"Mission ID", "Location", "Type", "Responder", "Status"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        tblManageOrganization.setModel(tableModel);
+    }
+
+    private void loadMissionData() {
+        tableModel.setRowCount(0);
+        
+        if (organization instanceof EmergencyResponseUnit) {
+            EmergencyResponseUnit eru = (EmergencyResponseUnit) organization;
+            for (MissionStats mission : eru.getMissionCatalog().getMissionList()) {
+                Object[] row = {
+                    mission.getRequestId(),
+                    mission.getLocation(),
+                    mission.getMissionType(),
+                    mission.getReceiver() != null ? mission.getReceiver().getName() : "Unassigned",
+                    mission.getStatus()
+                };
+                tableModel.addRow(row);
+            }
+        }
+    }    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,28 +75,25 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         btnExportToCSV = new javax.swing.JButton();
         btnViewDetails = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
-        txtContactEmail1 = new javax.swing.JTextField();
-        txtDonorName1 = new javax.swing.JTextField();
+        btnModify = new javax.swing.JButton();
+        txtStatus = new javax.swing.JTextField();
+        txtType = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        txtContactEmail2 = new javax.swing.JTextField();
-        txtDonorName2 = new javax.swing.JTextField();
+        txtActionTaken = new javax.swing.JTextField();
+        txtResponder = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        txtDonorName = new javax.swing.JTextField();
+        txtMissionID = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         txtContactEmail = new javax.swing.JTextField();
-        picEnterpriseLOGO = new javax.swing.JLabel();
-        btnUploadPicture = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtContactEmail3 = new javax.swing.JTextField();
+        txtNotes = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblManageOrganization = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        txtDonorName3 = new javax.swing.JTextField();
+        txtSuppliesUsed = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
 
@@ -69,13 +101,23 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
         jLabel1.setText("Update Mission Status");
 
         btnExportToCSV.setText("Export to csv");
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToCSVActionPerformed(evt);
+            }
+        });
 
         btnViewDetails.setText("View Details");
-
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
+        btnViewDetails.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
+                btnViewDetailsActionPerformed(evt);
+            }
+        });
+
+        btnModify.setText("Save");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModifyActionPerformed(evt);
             }
         });
 
@@ -83,21 +125,13 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
         jLabel6.setText("Type:");
 
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel7.setText("Description:");
+        jLabel7.setText("Status:");
 
         jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel8.setText("Manager: ");
-
-        jLabel12.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel12.setText("View Location");
+        jLabel8.setText("Responder: ");
 
         jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel11.setText("Contact Email :");
-
-        picEnterpriseLOGO.setBackground(new java.awt.Color(255, 255, 255));
-        picEnterpriseLOGO.setOpaque(true);
-
-        btnUploadPicture.setText("Upload Picture");
+        jLabel11.setText("Notes:");
 
         btnBack.setText("Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -107,7 +141,7 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
         });
 
         jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel9.setText("Location:");
+        jLabel9.setText("Action Taken:");
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel5.setText("View Detail");
@@ -120,19 +154,19 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Mission ID", "Location", "Type", "Description", "Responder"
+                "Mission ID", "Location", "Type", "Responder", "Status"
             }
         ));
         jScrollPane1.setViewportView(tblManageOrganization);
 
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel3.setText("Enterprise ID:");
+        jLabel3.setText("Mission ID:");
 
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel4.setText("Enterprise Name:");
+        jLabel4.setText("Location:");
 
         jLabel10.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel10.setText("Contact Number:");
+        jLabel10.setText("Supplies Used:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -145,29 +179,29 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(77, 77, 77)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jLabel5)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel12)
-                            .addGap(196, 196, 196))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addGap(274, 832, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(81, 81, 81)
-                                    .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtMissionID, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(81, 81, 81)
-                                            .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(81, 81, 81)
-                                            .addComponent(txtContactEmail1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(81, 81, 81)
@@ -176,32 +210,27 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(81, 81, 81)
-                                            .addComponent(txtDonorName2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(txtResponder, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(81, 81, 81)
-                                            .addComponent(txtContactEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(txtActionTaken, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(81, 81, 81)
-                                            .addComponent(txtDonorName3, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(txtSuppliesUsed, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(81, 81, 81)
-                                            .addComponent(txtContactEmail3, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(txtNotes, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnSave, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(btnModify, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(picEnterpriseLOGO, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(btnUploadPicture, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGap(78, 78, 78)))
+                            .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(52, 52, 52)
+                            .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(78, 78, 78)))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,74 +247,155 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
                         .addComponent(btnViewDetails)
                         .addComponent(btnExportToCSV))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel3)
-                                .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel4))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel6)
-                                .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtContactEmail1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel7))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel8)
-                                .addComponent(txtDonorName2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtContactEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel9))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel10)
-                                .addComponent(txtDonorName3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtContactEmail3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel11)))
-                        .addComponent(picEnterpriseLOGO, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(txtMissionID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel6)
+                        .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel7))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel8)
+                        .addComponent(txtResponder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtActionTaken, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel9))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(txtSuppliesUsed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtNotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel11))
                     .addGap(18, 18, 18)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnUploadPicture)
-                            .addGap(18, 18, 18)
+                            .addGap(41, 41, 41)
                             .addComponent(btnBack))
-                        .addComponent(btnSave))
+                        .addComponent(btnModify))
                     .addContainerGap(109, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSaveActionPerformed
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        try {
+            String missionId = txtMissionID.getText();
+            String status = txtStatus.getText();
+            String actionTaken = txtActionTaken.getText();
+            String suppliesUsed = txtSuppliesUsed.getText();
+            String notes = txtNotes.getText();
 
+            if (missionId.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please select a mission first!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            MissionStats mission = findMissionById(missionId);
+            if (mission != null) {
+                mission.setStatus(status);
+                mission.setMessage(actionTaken);
+                mission.addStat("supplies_used", suppliesUsed);
+                mission.addStat("notes", notes);
+                mission.setResolveDate(new Date());
+                
+                if ("Completed".equals(status)) {
+                    mission.finalizeStats();
+                }
+                
+                JOptionPane.showMessageDialog(this, "Mission status updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                loadMissionData();
+                clearForm();
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error updating mission: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnModifyActionPerformed
+    private MissionStats findMissionById(String missionId) {
+        if (organization instanceof EmergencyResponseUnit) {
+            EmergencyResponseUnit eru = (EmergencyResponseUnit) organization;
+            for (MissionStats mission : eru.getMissionCatalog().getMissionList()) {
+                if (mission.getRequestId().equals(missionId)) {
+                    return mission;
+                }
+            }
+        }
+        return null;
+    }
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        ((CardLayout)userProcessContainer.getLayout()).first(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        try {
+            CSVExporter exporter = new CSVExporter();
+            String[] headers = {"Mission ID", "Location", "Type", "Responder", "Status"};
+            String csvContent = exporter.createCSVHeader(headers) + "\n";
+            
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                Object[] row = new Object[tableModel.getColumnCount()];
+                for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                    row[j] = tableModel.getValueAt(i, j);
+                }
+                csvContent += exporter.formatCSVRow(row) + "\n";
+            }
+            
+            JOptionPane.showMessageDialog(this, "CSV export completed!", "Export", JOptionPane.INFORMATION_MESSAGE);
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error exporting CSV: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
+
+    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnViewDetailsActionPerformed
+    private void displayMissionInForm(MissionStats mission) {
+        txtMissionID.setText(mission.getRequestId());
+        txtContactEmail.setText(mission.getLocation());
+        txtType.setText(mission.getMissionType());
+        txtStatus.setText(mission.getStatus());
+        txtResponder.setText(mission.getReceiver() != null ? mission.getReceiver().getName() : "");
+        txtActionTaken.setText(mission.getMessage());
+        
+        if (mission.getStats() != null) {
+            txtSuppliesUsed.setText((String) mission.getStats().get("supplies_used"));
+            txtNotes.setText((String) mission.getStats().get("notes"));
+        }
+    }
+
+    private void clearForm() {
+        txtMissionID.setText("");
+        txtContactEmail.setText("");
+        txtType.setText("");
+        txtStatus.setText("");
+        txtResponder.setText("");
+        txtActionTaken.setText("");
+        txtSuppliesUsed.setText("");
+        txtNotes.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnExportToCSV;
-    private javax.swing.JButton btnSave;
-    private javax.swing.JButton btnUploadPicture;
+    private javax.swing.JButton btnModify;
     private javax.swing.JButton btnViewDetails;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -294,15 +404,14 @@ public class UpdateMissionStatus extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel picEnterpriseLOGO;
     private javax.swing.JTable tblManageOrganization;
+    private javax.swing.JTextField txtActionTaken;
     private javax.swing.JTextField txtContactEmail;
-    private javax.swing.JTextField txtContactEmail1;
-    private javax.swing.JTextField txtContactEmail2;
-    private javax.swing.JTextField txtContactEmail3;
-    private javax.swing.JTextField txtDonorName;
-    private javax.swing.JTextField txtDonorName1;
-    private javax.swing.JTextField txtDonorName2;
-    private javax.swing.JTextField txtDonorName3;
+    private javax.swing.JTextField txtMissionID;
+    private javax.swing.JTextField txtNotes;
+    private javax.swing.JTextField txtResponder;
+    private javax.swing.JTextField txtStatus;
+    private javax.swing.JTextField txtSuppliesUsed;
+    private javax.swing.JTextField txtType;
     // End of variables declaration//GEN-END:variables
 }

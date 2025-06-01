@@ -4,10 +4,22 @@
  */
 package ui.HospitalNurse;
 
-import Model.Organization.Organization;
+import Model.Organization.ClinicalServicesUnit;
+import Model.Patient.CarePlanData;
+import Model.Patient.Patient;
 import Model.Patient.PatientDirectory;
 import Model.User.UserAccount;
+import Model.Personnel.Nurse;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+
 
 /**
  *
@@ -16,9 +28,10 @@ import javax.swing.JPanel;
 public class ManagePatientCarePlans extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
-    private Organization organization;
+    private ClinicalServicesUnit organization;
     private UserAccount userAccount;
     private PatientDirectory patientDirectory;
+    private Map<String, CarePlanData> carePlansMap;
 
     // NetBeans 默认构造函数（可选，建议保留仅在 GUI builder 用）
     public ManagePatientCarePlans() {
@@ -26,15 +39,61 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
     }
 
     // 推荐使用的业务构造函数
-    public ManagePatientCarePlans(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory) {
+    public ManagePatientCarePlans(JPanel userProcessContainer, ClinicalServicesUnit organization, 
+                                UserAccount userAccount, PatientDirectory patientDirectory) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.patientDirectory = patientDirectory;
-
-        initComponents(); // 仍然调用 GUI builder 自动生成的组件加载方法
+        this.carePlansMap = new HashMap<>();
+        
+        initComponents();
+        initializeData();
+    }
+    
+        private void initializeData() {
+        // 设置负责护士下拉框
+        String[] nurses = {"Alice Johnson", "Bob Smith", "Carol White", "David Brown", "Eva Green"};
+        
+        CmbcreateResponsibleNurse.removeAllItems();
+        CmbviewResponsibleNurse.removeAllItems();
+        
+        for (String nurse : nurses) {
+            CmbcreateResponsibleNurse.addItem(nurse);
+            CmbviewResponsibleNurse.addItem(nurse);
+        }
+        
+        // 填充表格数据
+        populateCarePlansTable();
+        
+        // 为表格添加选择监听器
+        tblPatientCarePlans.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                btnViewDetailsActionPerformed(null);
+            }
+        });
     }
 
+    private void populateCarePlansTable() {
+        DefaultTableModel model = (DefaultTableModel) tblPatientCarePlans.getModel();
+        model.setRowCount(0); // 清空现有数据
+        
+        // 设置正确的列标题
+        model.setColumnIdentifiers(new String[]{
+            "Patient ID", "Patient Name", "Assigned Nurse", "Risk Level", "Start Date"
+        });
+        
+        // 填充护理计划数据
+        for (CarePlanData plan : carePlansMap.values()) {
+            model.addRow(new Object[]{
+                plan.getPatient().getPatientId(),
+                plan.getPatient().getName(),
+                plan.getResponsibleNurse(),
+                plan.getRiskLevel(),
+                plan.getStartDate()
+            });
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,59 +103,53 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtContactEmail1 = new javax.swing.JTextField();
+        txtviewCarePlanStartDate = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
-        txtItemName = new javax.swing.JTextField();
+        txtcreateRiskLevel = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        btnBack1 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        txtItemName1 = new javax.swing.JTextField();
+        txtviewRiskLevel = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        txtviewHygieneNeeds = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
-        btnViewDetails3 = new javax.swing.JButton();
-        jTextField6 = new javax.swing.JTextField();
-        txtContactEmail = new javax.swing.JTextField();
-        txtQuantity2 = new javax.swing.JTextField();
+        btnModify = new javax.swing.JButton();
+        txtcreateHygieneNeeds = new javax.swing.JTextField();
+        txtcreateCarePlanStartDate = new javax.swing.JTextField();
+        txtcreateDietaryNeeds = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        btnViewDetails2 = new javax.swing.JButton();
+        btnViewDetails = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        btnViewDetails1 = new javax.swing.JButton();
-        txtDonorName1 = new javax.swing.JTextField();
+        btnCreate = new javax.swing.JButton();
+        txtviewPatientName = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtDonorName = new javax.swing.JTextField();
+        txtcreatePatientName = new javax.swing.JTextField();
         btnBack = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        CmbDonationType = new javax.swing.JComboBox<>();
+        CmbcreateResponsibleNurse = new javax.swing.JComboBox<>();
         btnExportToCSV = new javax.swing.JButton();
-        txtQuantity3 = new javax.swing.JTextField();
+        txtviewDietaryNeeds = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblDonationHistory = new javax.swing.JTable();
+        tblPatientCarePlans = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
-        CmbDonationType1 = new javax.swing.JComboBox<>();
+        CmbviewResponsibleNurse = new javax.swing.JComboBox<>();
 
         jLabel12.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel12.setText("Hygiene Needs:");
 
-        txtItemName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemNameActionPerformed(evt);
-            }
-        });
-
         jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel8.setText("Risk Level:");
 
-        btnBack1.setText("Delete");
-        btnBack1.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBack1ActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
@@ -109,50 +162,41 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel6.setText("Dietary Needs:");
 
-        txtItemName1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemName1ActionPerformed(evt);
-            }
-        });
-
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel4.setText("Nurse:");
+        jLabel4.setText("Responsible Nurse:");
 
         jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel16.setText("View Details:");
 
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
-            }
-        });
-
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel14.setText("Dietary Needs:");
 
-        btnViewDetails3.setText("Modify");
-
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        btnModify.setText("Modify");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
-            }
-        });
-
-        txtQuantity2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantity2ActionPerformed(evt);
+                btnModifyActionPerformed(evt);
             }
         });
 
         jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel9.setText("View Patient Care Plans:");
 
-        btnViewDetails2.setText("View Details");
+        btnViewDetails.setText("View Details");
+        btnViewDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDetailsActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel5.setText("Create Report:");
 
-        btnViewDetails1.setText("Create");
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel7.setText("Hygiene Needs:");
@@ -170,13 +214,12 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel3.setText("Care Plan Start Date:");
 
-        CmbDonationType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbcreateResponsibleNurse.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
 
         btnExportToCSV.setText("Export to csv");
-
-        txtQuantity3.addActionListener(new java.awt.event.ActionListener() {
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantity3ActionPerformed(evt);
+                btnExportToCSVActionPerformed(evt);
             }
         });
 
@@ -184,9 +227,9 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
         jLabel2.setText("Patient Name:");
 
         jLabel13.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel13.setText("Nurse:");
+        jLabel13.setText("Responsible Nurse:");
 
-        tblDonationHistory.setModel(new javax.swing.table.DefaultTableModel(
+        tblPatientCarePlans.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -205,12 +248,12 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblDonationHistory);
+        jScrollPane1.setViewportView(tblPatientCarePlans);
 
         jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel11.setText("Care Plan Start Date:");
 
-        CmbDonationType1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbviewResponsibleNurse.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -228,43 +271,37 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                    .addGap(52, 52, 52)
-                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(txtQuantity2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(btnViewDetails))
                                                     .addGap(81, 81, 81)
-                                                    .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                        .addGap(60, 60, 60)
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtcreatePatientName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                        .addComponent(txtcreateDietaryNeeds, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtcreateHygieneNeeds, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtcreateRiskLevel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                            .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(CmbDonationType, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(btnViewDetails2))
-                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                            .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                                            .addComponent(txtcreateCarePlanStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(CmbcreateResponsibleNurse, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                             .addComponent(jLabel5))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnViewDetails1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGap(266, 266, 266)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(btnBack1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel16)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -272,12 +309,12 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
                                             .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(52, 52, 52)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtQuantity3)
-                                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(txtviewDietaryNeeds)
+                                            .addComponent(txtviewHygieneNeeds, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(81, 81, 81)
-                                        .addComponent(txtItemName1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtviewRiskLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addGroup(layout.createSequentialGroup()
@@ -287,13 +324,13 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
                                                 .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addGap(52, 52, 52)))
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtContactEmail1)
-                                            .addComponent(CmbDonationType1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(txtviewCarePlanStartDate)
+                                            .addComponent(CmbviewResponsibleNurse, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnViewDetails3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(txtviewPatientName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(btnModify, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(96, 96, 96))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -310,114 +347,302 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnBack1)
+                    .addComponent(btnDelete)
                     .addComponent(btnExportToCSV)
-                    .addComponent(btnViewDetails2))
+                    .addComponent(btnViewDetails))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(CmbDonationType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(txtQuantity2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel2)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
-                            .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtviewPatientName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtcreatePatientName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContactEmail1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel13)
-                            .addComponent(CmbDonationType1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel15)
-                            .addComponent(txtItemName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel14)
-                            .addComponent(txtQuantity3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel12)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtviewCarePlanStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel11))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel13)
+                                    .addComponent(CmbviewResponsibleNurse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel15)
+                                    .addComponent(txtviewRiskLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel14)
+                                    .addComponent(txtviewDietaryNeeds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel12)
+                                    .addComponent(txtviewHygieneNeeds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtcreateCarePlanStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(CmbcreateResponsibleNurse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(txtcreateRiskLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel8))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(txtcreateDietaryNeeds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel6))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(txtcreateHygieneNeeds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel7)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(8, 8, 8)
+                                        .addComponent(jLabel4)))))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnViewDetails1)
-                    .addComponent(btnViewDetails3))
+                    .addComponent(btnCreate)
+                    .addComponent(btnModify))
                 .addGap(25, 25, 25)
                 .addComponent(btnBack)
                 .addContainerGap(89, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtItemNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemNameActionPerformed
-
-    private void btnBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBack1ActionPerformed
-
-    private void txtItemName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemName1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemName1ActionPerformed
-
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField7ActionPerformed
-
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
-
-    private void txtQuantity2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantity2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantity2ActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int selectedRow = tblPatientCarePlans.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "请先选择要删除的护理计划", "未选择", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int choice = JOptionPane.showConfirmDialog(this,
+            "确定要删除选中的护理计划吗？", "确认删除", JOptionPane.YES_NO_OPTION);
+        
+        if (choice == JOptionPane.YES_OPTION) {
+            try {
+                String patientId = (String) tblPatientCarePlans.getValueAt(selectedRow, 0);
+                carePlansMap.remove(patientId);
+                
+                populateCarePlansTable();
+                clearViewFields();
+                
+                JOptionPane.showMessageDialog(this, 
+                    "护理计划删除成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+                    
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, 
+                    "删除护理计划时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        userProcessContainer.remove(this);
+        ((java.awt.CardLayout) userProcessContainer.getLayout()).previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void txtQuantity3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantity3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantity3ActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        try {
+            // 获取输入数据
+            String patientName = txtcreatePatientName.getText().trim();
+            String startDate = txtcreateCarePlanStartDate.getText().trim();
+            String responsibleNurse = (String) CmbcreateResponsibleNurse.getSelectedItem();
+            String riskLevel = txtcreateRiskLevel.getText().trim();
+            String dietaryNeeds = txtcreateDietaryNeeds.getText().trim();
+            String hygieneNeeds = txtcreateHygieneNeeds.getText().trim();
+            
+            // 验证输入
+            if (patientName.isEmpty() || startDate.isEmpty() || 
+                responsibleNurse == null || responsibleNurse.trim().isEmpty() ||
+                riskLevel.isEmpty() || dietaryNeeds.isEmpty() || hygieneNeeds.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "请填写所有必需字段", "输入错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 查找患者
+            Patient patient = patientDirectory.findPatientByName(patientName);
+            if (patient == null) {
+                int choice = JOptionPane.showConfirmDialog(this,
+                    "患者不存在，是否创建新患者？", "确认", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    patient = patientDirectory.createPatient(patientName, "Unknown", 0, startDate);
+                } else {
+                    return;
+                }
+            }
+            
+            // 检查患者是否已有护理计划
+            if (carePlansMap.containsKey(patient.getPatientId())) {
+                JOptionPane.showMessageDialog(this, 
+                    "该患者已有护理计划，请使用修改功能", "重复计划", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // 创建护理计划
+            CarePlanData carePlan = new CarePlanData(patient, startDate, responsibleNurse, 
+                                                   riskLevel, dietaryNeeds, hygieneNeeds);
+            carePlansMap.put(patient.getPatientId(), carePlan);
+            
+            // 刷新表格
+            populateCarePlansTable();
+            
+            // 清空输入字段
+            clearCreateFields();
+            
+            JOptionPane.showMessageDialog(this, 
+                "护理计划创建成功！\n计划ID: " + carePlan.getPlanId(), 
+                "成功", JOptionPane.INFORMATION_MESSAGE);
+                
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "创建护理计划时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnCreateActionPerformed
 
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        int selectedRow = tblPatientCarePlans.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "请先选择要修改的护理计划", "未选择", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            // 获取选中患者信息
+            String patientId = (String) tblPatientCarePlans.getValueAt(selectedRow, 0);
+            CarePlanData carePlan = carePlansMap.get(patientId);
+            
+            if (carePlan == null) {
+                JOptionPane.showMessageDialog(this, 
+                    "找不到护理计划信息", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 获取修改后的数据
+            String newStartDate = txtviewCarePlanStartDate.getText().trim();
+            String newResponsibleNurse = (String) CmbviewResponsibleNurse.getSelectedItem();
+            String newRiskLevel = txtviewRiskLevel.getText().trim();
+            String newDietaryNeeds = txtviewDietaryNeeds.getText().trim();
+            String newHygieneNeeds = txtviewHygieneNeeds.getText().trim();
+            
+            // 验证输入
+            if (newStartDate.isEmpty() || newResponsibleNurse == null || 
+                newRiskLevel.isEmpty() || newDietaryNeeds.isEmpty() || newHygieneNeeds.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "请填写所有字段", "输入错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 更新护理计划
+            carePlan.setStartDate(newStartDate);
+            carePlan.setResponsibleNurse(newResponsibleNurse);
+            carePlan.setRiskLevel(newRiskLevel);
+            carePlan.setDietaryNeeds(newDietaryNeeds);
+            carePlan.setHygieneNeeds(newHygieneNeeds);
+            
+            // 刷新表格
+            populateCarePlansTable();
+            
+            JOptionPane.showMessageDialog(this, 
+                "护理计划更新成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "修改护理计划时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnModifyActionPerformed
 
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("保存护理计划CSV文件");
+        fileChooser.setSelectedFile(new java.io.File("care_plans.csv"));
+        
+        int userChoice = fileChooser.showSaveDialog(this);
+        if (userChoice == JFileChooser.APPROVE_OPTION) {
+            try (FileWriter writer = new FileWriter(fileChooser.getSelectedFile())) {
+                // 写入CSV头部
+                writer.write("Plan ID,Patient ID,Patient Name,Start Date,Responsible Nurse,Risk Level,Dietary Needs,Hygiene Needs\n");
+                
+                // 写入数据
+                for (CarePlanData plan : carePlansMap.values()) {
+                    writer.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s\n",
+                        plan.getPlanId(),
+                        plan.getPatient().getPatientId(),
+                        plan.getPatient().getName(),
+                        plan.getStartDate(),
+                        plan.getResponsibleNurse(),
+                        plan.getRiskLevel(),
+                        plan.getDietaryNeeds(),
+                        plan.getHygieneNeeds()));
+                }
+                
+                JOptionPane.showMessageDialog(this, 
+                    "CSV文件导出成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+                    
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "导出CSV文件时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
+
+    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
+        int selectedRow = tblPatientCarePlans.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "请先选择要查看的护理计划", "未选择", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // 获取选中行的数据并显示在查看区域
+        String patientId = (String) tblPatientCarePlans.getValueAt(selectedRow, 0);
+        CarePlanData carePlan = carePlansMap.get(patientId);
+        
+        if (carePlan != null) {
+            txtviewPatientName.setText(carePlan.getPatient().getName());
+            txtviewCarePlanStartDate.setText(carePlan.getStartDate());
+            CmbviewResponsibleNurse.setSelectedItem(carePlan.getResponsibleNurse());
+            txtviewRiskLevel.setText(carePlan.getRiskLevel());
+            txtviewDietaryNeeds.setText(carePlan.getDietaryNeeds());
+            txtviewHygieneNeeds.setText(carePlan.getHygieneNeeds());
+        }
+    }//GEN-LAST:event_btnViewDetailsActionPerformed
+    private void clearCreateFields() {
+        txtcreatePatientName.setText("");
+        txtcreateCarePlanStartDate.setText("");
+        txtcreateRiskLevel.setText("");
+        txtcreateDietaryNeeds.setText("");
+        txtcreateHygieneNeeds.setText("");
+        CmbcreateResponsibleNurse.setSelectedIndex(0);
+    }
+    private void clearViewFields() {
+        txtviewPatientName.setText("");
+        txtviewCarePlanStartDate.setText("");
+        txtviewRiskLevel.setText("");
+        txtviewDietaryNeeds.setText("");
+        txtviewHygieneNeeds.setText("");
+        CmbviewResponsibleNurse.setSelectedIndex(0);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CmbDonationType;
-    private javax.swing.JComboBox<String> CmbDonationType1;
+    private javax.swing.JComboBox<String> CmbcreateResponsibleNurse;
+    private javax.swing.JComboBox<String> CmbviewResponsibleNurse;
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnBack1;
+    private javax.swing.JButton btnCreate;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
-    private javax.swing.JButton btnViewDetails1;
-    private javax.swing.JButton btnViewDetails2;
-    private javax.swing.JButton btnViewDetails3;
+    private javax.swing.JButton btnModify;
+    private javax.swing.JButton btnViewDetails;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -435,16 +660,16 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTable tblDonationHistory;
-    private javax.swing.JTextField txtContactEmail;
-    private javax.swing.JTextField txtContactEmail1;
-    private javax.swing.JTextField txtDonorName;
-    private javax.swing.JTextField txtDonorName1;
-    private javax.swing.JTextField txtItemName;
-    private javax.swing.JTextField txtItemName1;
-    private javax.swing.JTextField txtQuantity2;
-    private javax.swing.JTextField txtQuantity3;
+    private javax.swing.JTable tblPatientCarePlans;
+    private javax.swing.JTextField txtcreateCarePlanStartDate;
+    private javax.swing.JTextField txtcreateDietaryNeeds;
+    private javax.swing.JTextField txtcreateHygieneNeeds;
+    private javax.swing.JTextField txtcreatePatientName;
+    private javax.swing.JTextField txtcreateRiskLevel;
+    private javax.swing.JTextField txtviewCarePlanStartDate;
+    private javax.swing.JTextField txtviewDietaryNeeds;
+    private javax.swing.JTextField txtviewHygieneNeeds;
+    private javax.swing.JTextField txtviewPatientName;
+    private javax.swing.JTextField txtviewRiskLevel;
     // End of variables declaration//GEN-END:variables
 }

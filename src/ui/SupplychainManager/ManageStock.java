@@ -6,8 +6,14 @@ package ui.SupplychainManager;
 
 import Model.Organization.Organization;
 import Model.Supplies.SupplyItemCatalog;
+import Model.Supplies.SupplyItem;
 import Model.User.UserAccount;
+import java.awt.CardLayout;
+import util.CSVExporter;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 /**
  *
@@ -18,16 +24,37 @@ public class ManageStock extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private SupplyItemCatalog supplyCatalog; // Catalog of supplies (inventory)
+    private SupplyItemCatalog supplyCatalog;
+    private CSVExporter csvExporter;
 
     public ManageStock(JPanel userProcessContainer, Organization organization, UserAccount userAccount, SupplyItemCatalog supplyCatalog) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.supplyCatalog = supplyCatalog;
+        this.csvExporter = new CSVExporter();
+        
         initComponents();
+        loadStockData();
     }
 
+    private void loadStockData() {
+        DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
+        model.setRowCount(0);
+        
+        if (supplyCatalog != null) {
+            List<SupplyItem> items = supplyCatalog.getAllItems();
+            for (SupplyItem item : items) {
+                Object[] row = {
+                    item.getSupplyId(),
+                    item.getName(),
+                    item.getDescription(),
+                    item.getQuantity()
+                };
+                model.addRow(row);
+            }
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -60,13 +87,13 @@ public class ManageStock extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         btnViewDetails1 = new javax.swing.JButton();
-        btnViewDetails3 = new javax.swing.JButton();
+        btnMofify = new javax.swing.JButton();
         txtContactEmail = new javax.swing.JTextField();
         txtQuantity2 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         txtItemName = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        btnBack1 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         jLabel15 = new javax.swing.JLabel();
         txtItemName1 = new javax.swing.JTextField();
 
@@ -108,18 +135,17 @@ public class ManageStock extends javax.swing.JPanel {
         jLabel11.setText("Item Quantity:");
 
         btnExportToCSV.setText("Export to csv");
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToCSVActionPerformed(evt);
+            }
+        });
 
         jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel16.setText("View Stock:");
 
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel14.setText("Priority:");
-
-        txtQuantity3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantity3ActionPerformed(evt);
-            }
-        });
 
         jLabel13.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel13.setText("Item Description:");
@@ -128,6 +154,11 @@ public class ManageStock extends javax.swing.JPanel {
         jLabel3.setText("Item Quantity:");
 
         btnViewDetails2.setText("View Details");
+        btnViewDetails2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDetails2ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel2.setText("Item Name:");
@@ -142,42 +173,34 @@ public class ManageStock extends javax.swing.JPanel {
         jLabel8.setText("Reorder Level:");
 
         btnViewDetails1.setText("Create");
-
-        btnViewDetails3.setText("Modify");
-
-        txtQuantity2.addActionListener(new java.awt.event.ActionListener() {
+        btnViewDetails1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantity2ActionPerformed(evt);
+                btnViewDetails1ActionPerformed(evt);
+            }
+        });
+
+        btnMofify.setText("Modify");
+        btnMofify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMofifyActionPerformed(evt);
             }
         });
 
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel6.setText("Priority:");
 
-        txtItemName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemNameActionPerformed(evt);
-            }
-        });
-
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel4.setText("Item Description:");
 
-        btnBack1.setText("Delete");
-        btnBack1.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBack1ActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("Reorder Level:");
-
-        txtItemName1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemName1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -187,39 +210,43 @@ public class ManageStock extends javax.swing.JPanel {
                 .addContainerGap(115, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(52, 52, 52)
-                                    .addComponent(txtQuantity2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(81, 81, 81)
-                                    .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(81, 81, 81)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtContactEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                            .addComponent(jLabel5)
-                            .addComponent(btnViewDetails1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnViewDetails2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76)
-                                .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(52, 52, 52)
+                                            .addComponent(txtQuantity2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(81, 81, 81)
+                                            .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(81, 81, 81)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(txtContactEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(jLabel5)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnViewDetails2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(76, 76, 76)
+                                        .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnViewDetails1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(266, 266, 266)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnBack1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel16)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -241,7 +268,7 @@ public class ManageStock extends javax.swing.JPanel {
                                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(btnViewDetails3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnMofify, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel9)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(286, 286, 286)
@@ -261,7 +288,7 @@ public class ManageStock extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnBack1)
+                    .addComponent(btnDelete)
                     .addComponent(btnExportToCSV)
                     .addComponent(btnViewDetails2))
                 .addGap(10, 10, 10)
@@ -312,7 +339,7 @@ public class ManageStock extends javax.swing.JPanel {
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnViewDetails1)
-                    .addComponent(btnViewDetails3))
+                    .addComponent(btnMofify))
                 .addGap(24, 24, 24)
                 .addComponent(btnBack)
                 .addContainerGap(110, Short.MAX_VALUE))
@@ -320,37 +347,202 @@ public class ManageStock extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void txtQuantity3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantity3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantity3ActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            int selectedRow = tblDonationHistory.getSelectedRow();
+            if (selectedRow == -1) {
+                showWarningMessage("请先选择要删除的库存项目");
+                return;
+            }
+            
+            String itemId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "确认删除库存项目 " + itemId + "？",
+                "确认删除",
+                JOptionPane.YES_NO_OPTION
+            );
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                SupplyItem item = findItemById(itemId);
+                if (item != null) {
+                    supplyCatalog.remove(item);
+                    loadStockData();
+                    showSuccessMessage("库存项目删除成功");
+                }
+            }
+            
+        } catch (Exception e) {
+            showErrorMessage("删除库存失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void txtQuantity2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantity2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantity2ActionPerformed
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        try {
+            exportStockToCSV();
+        } catch (Exception e) {
+            showErrorMessage("导出CSV失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
 
-    private void txtItemNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemNameActionPerformed
+    private void btnViewDetails2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetails2ActionPerformed
+        try {
+            int selectedRow = tblDonationHistory.getSelectedRow();
+            if (selectedRow == -1) {
+                showWarningMessage("请先选择一个库存项目");
+                return;
+            }
+            
+            String itemId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            SupplyItem item = findItemById(itemId);
+            
+            if (item != null) {
+                showItemDetails(item);
+            }
+            
+        } catch (Exception e) {
+            showErrorMessage("查看详情失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnViewDetails2ActionPerformed
 
-    private void btnBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBack1ActionPerformed
+    private void btnMofifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMofifyActionPerformed
+        try {
+            int selectedRow = tblDonationHistory.getSelectedRow();
+            if (selectedRow == -1) {
+                showWarningMessage("请先选择一个库存项目");
+                return;
+            }
+            
+            String itemId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            SupplyItem item = findItemById(itemId);
+            
+            if (item != null) {
+                // 填充修改表单
+                txtDonorName1.setText(item.getName());
+                txtContactEmail1.setText(String.valueOf(item.getQuantity()));
+                txtContactEmail3.setText(item.getDescription());
+                txtItemName1.setText("0"); // 重新订购级别
+                txtQuantity3.setText("Medium"); // 优先级
+            }
+            
+        } catch (Exception e) {
+            showErrorMessage("修改库存失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnMofifyActionPerformed
 
-    private void txtItemName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemName1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemName1ActionPerformed
+    private void btnViewDetails1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetails1ActionPerformed
+        try {
+            String itemName = txtDonorName.getText().trim();
+            String description = txtContactEmail2.getText().trim();
+            String quantityStr = txtContactEmail.getText().trim();
+            String reorderLevel = txtItemName.getText().trim();
+            String priority = txtQuantity2.getText().trim();
+            
+            if (itemName.isEmpty()) {
+                showWarningMessage("请输入物品名称");
+                return;
+            }
+            
+            int quantity = 0;
+            try {
+                quantity = Integer.parseInt(quantityStr);
+            } catch (NumberFormatException e) {
+                showWarningMessage("请输入有效的数量");
+                return;
+            }
+            
+            // 创建新的库存项目
+            SupplyItem newItem = new SupplyItem(itemName, description, "General", quantity, 0.0);
+            supplyCatalog.add(newItem);
+            
+            loadStockData();
+            clearAddForm();
+            showSuccessMessage("库存项目创建成功");
+            
+        } catch (Exception e) {
+            showErrorMessage("创建库存失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnViewDetails1ActionPerformed
+    private void clearAddForm() {
+        txtDonorName.setText("");
+        txtContactEmail.setText("");
+        txtContactEmail2.setText("");
+        txtItemName.setText("");
+        txtQuantity2.setText("");
+    }
+
+    private SupplyItem findItemById(String itemId) {
+        if (supplyCatalog != null) {
+            for (SupplyItem item : supplyCatalog.getAllItems()) {
+                if (item.getSupplyId().equals(itemId)) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+    
+    private void showItemDetails(SupplyItem item) {
+        StringBuilder details = new StringBuilder();
+        details.append("库存详情\n================\n");
+        details.append("ID: ").append(item.getSupplyId()).append("\n");
+        details.append("名称: ").append(item.getName()).append("\n");
+        details.append("描述: ").append(item.getDescription()).append("\n");
+        details.append("类型: ").append(item.getType()).append("\n");
+        details.append("数量: ").append(item.getQuantity()).append("\n");
+        details.append("单价: $").append(item.getUnitPrice()).append("\n");
+        details.append("总价值: $").append(item.getTotalValue()).append("\n");
+        
+        JOptionPane.showMessageDialog(this, details.toString(), "库存详情", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void exportStockToCSV() {
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append("库存报告\n");
+        csvContent.append("物品ID,物品名称,描述,数量\n");
+        
+        DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                csvContent.append(model.getValueAt(i, j));
+                if (j < model.getColumnCount() - 1) {
+                    csvContent.append(",");
+                }
+            }
+            csvContent.append("\n");
+        }
+        
+        String filename = "stock_report_" + System.currentTimeMillis() + ".csv";
+        JOptionPane.showMessageDialog(this, 
+            "库存数据已导出到: " + filename + "\n\n" + csvContent.toString(), 
+            "导出成功", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "错误", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showWarningMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "警告", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void showSuccessMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "成功", JOptionPane.INFORMATION_MESSAGE);
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnBack1;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
+    private javax.swing.JButton btnMofify;
     private javax.swing.JButton btnViewDetails1;
     private javax.swing.JButton btnViewDetails2;
-    private javax.swing.JButton btnViewDetails3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

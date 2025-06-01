@@ -67,7 +67,7 @@
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="btnExportToCSV" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="txtDelete" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnDelete" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                               <Component id="btnViewDetails" min="-2" pref="129" max="-2" attributes="0"/>
                           </Group>
@@ -160,7 +160,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnViewDetails" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnExportToCSV" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtDelete" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnDelete" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                       <Component id="jLabel13" min="-2" pref="23" max="-2" attributes="0"/>
@@ -230,9 +230,6 @@
               </Table>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="tblManageRolesAncestorAdded"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -277,24 +274,12 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtcreateRoleName">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtcreateRoleNameActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtContactEmail6">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtContactEmail6ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtcreateRoleDescription">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtcreateRoleDescriptionActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtDonorName6">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtDonorName6ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
@@ -305,9 +290,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtcreateIsAdmin">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtcreateIsAdminActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel15">
       <Properties>
@@ -376,9 +358,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbSearchActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -399,18 +378,15 @@
         <Property name="text" type="java.lang.String" value="Role Name:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="txtDelete">
+    <Component class="javax.swing.JButton" name="btnDelete">
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtDeleteActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtContactEmail5">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtContactEmail5ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnViewDetails">
       <Properties>
@@ -444,9 +420,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbcreateRoleOrganizationActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -459,9 +432,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbcreateRoleEnterpriseActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -474,9 +444,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbViewRoleOrganizationActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -489,9 +456,6 @@
           </StringArray>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbViewRoleEnterpriseActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>

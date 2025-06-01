@@ -3,12 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package ui.admin;
+import Model.EcoSystem;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Model.Enterprise.Enterprise;
 import Model.Enterprise.EnterpriseDirectory;
 import Model.Network.Network;
+import Model.Person.ContactInfo;
+import Model.User.UserAccount;
 import javax.swing.JPanel;
 /**
  *
@@ -23,46 +26,67 @@ public class ManageEnterprise extends javax.swing.JPanel {
     public ManageEnterprise(JPanel userProcessContainer, Network network) {
         this.userProcessContainer = userProcessContainer;
         this.network = network;
-        this.enterpriseDirectory = network.getEnterpriseDirectory(); // Assuming Network has an EnterpriseDirectory
+        this.enterpriseDirectory = network.getEnterpriseDirectory();
         initComponents();
-        
-        
+        populateTable();
         populateComboBoxes();
     }
     
+    private void populateTable() {
+        DefaultTableModel model = (DefaultTableModel) tblManageEnterprise.getModel();
+        model.setRowCount(0);
+        if (network != null) {
+            for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+                Object[] row = {
+                    enterprise.getId(),
+                    enterprise.getName(),
+                    enterprise.getType(),
+                    enterprise.getDescription(),
+                    enterprise.getManager()
+                };
+                model.addRow(row);
+            }
+        }
+    }
     
     // Method to populate comboboxes with data
     private void populateComboBoxes() {
-        // Populate the Type combobox
         cmbcreateType.removeAllItems();
-        cmbcreateType.addItem("Manufacturing");
-        cmbcreateType.addItem("Technology");
-        cmbcreateType.addItem("Healthcare");
-        cmbcreateType.addItem("Education");
-        cmbcreateType.addItem("Financial");
-        
-        // Populate the Manager combobox - this would come from your user database
+        for (Enterprise.EnterpriseType type : Enterprise.EnterpriseType.values()) {
+            cmbcreateType.addItem(type.name());
+        }
+
         cmbcreateManager.removeAllItems();
         cmbcreateManager.addItem("Select Manager");
-        // Add available managers from the database
-        cmbcreateManager.addItem("John Smith");
-        cmbcreateManager.addItem("Sarah Johnson");
-        cmbcreateManager.addItem("Michael Brown");
-        
-        // Populate the Network dropdown
+        cmbcreateManager.addItem("Manager A");
+        cmbcreateManager.addItem("Manager B");
+
         cmbcreateNetworkBelong.removeAllItems();
-        cmbcreateNetworkBelong.addItem("Select Network");
-        // Add available networks from the database
-        cmbcreateNetworkBelong.addItem("Network 1");
-        cmbcreateNetworkBelong.addItem("Network 2");
-        cmbcreateNetworkBelong.addItem("Network 3");
-        
-        // Populate search combobox
+        if (network != null) {
+            cmbcreateNetworkBelong.addItem(network.getName());
+            cmbcreateNetworkBelong.setSelectedItem(network.getName());
+        }
+
         cmbSearch.removeAllItems();
         cmbSearch.addItem("All");
         cmbSearch.addItem("Last 3 days");
         cmbSearch.addItem("Last 7 days");
         cmbSearch.addItem("Last 30 days");
+
+        cmbviewType.removeAllItems();
+        for (Enterprise.EnterpriseType type : Enterprise.EnterpriseType.values()) {
+            cmbviewType.addItem(type.name());
+        }
+
+        cmbViewManager.removeAllItems();
+        cmbViewManager.addItem("Select Manager");
+        cmbViewManager.addItem("Manager A");
+        cmbViewManager.addItem("Manager B");
+
+        cmbViewNetworkBelong.removeAllItems();
+        if (network != null) {
+            cmbViewNetworkBelong.addItem(network.getName());
+        }
     }
     
 
@@ -79,7 +103,7 @@ public class ManageEnterprise extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblManageEnterprise = new javax.swing.JTable();
         btnBack = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -135,15 +159,6 @@ public class ManageEnterprise extends javax.swing.JPanel {
                 "Enterprise ID", "Enterprise Name", "Type", "Description", "Manager"
             }
         ));
-        tblManageEnterprise.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                tblManageEnterpriseAncestorAdded(evt);
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
         jScrollPane1.setViewportView(tblManageEnterprise);
 
         btnBack.setText("Back");
@@ -153,10 +168,10 @@ public class ManageEnterprise extends javax.swing.JPanel {
             }
         });
 
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
+                btnCreateActionPerformed(evt);
             }
         });
 
@@ -185,6 +200,11 @@ public class ManageEnterprise extends javax.swing.JPanel {
         jLabel20.setText("Type:");
 
         btnExportToCSV.setText("Export to csv");
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToCSVActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel6.setText("Type:");
@@ -224,6 +244,11 @@ public class ManageEnterprise extends javax.swing.JPanel {
         });
 
         btnViewDetails.setText("View Details");
+        btnViewDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDetailsActionPerformed(evt);
+            }
+        });
 
         jLabel13.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel13.setText("View Enterprise Details");
@@ -232,49 +257,19 @@ public class ManageEnterprise extends javax.swing.JPanel {
         jLabel5.setText("Create Enterprise");
 
         cmbcreateManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateManagerActionPerformed(evt);
-            }
-        });
 
         cmbViewManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbViewManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbViewManagerActionPerformed(evt);
-            }
-        });
 
         cmbcreateType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateTypeActionPerformed(evt);
-            }
-        });
 
         cmbviewType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbviewType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbviewTypeActionPerformed(evt);
-            }
-        });
 
         jLabel18.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel18.setText("Network Belong:");
 
         cmbcreateNetworkBelong.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateNetworkBelong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateNetworkBelongActionPerformed(evt);
-            }
-        });
 
         cmbViewNetworkBelong.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbViewNetworkBelong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbViewNetworkBelongActionPerformed(evt);
-            }
-        });
 
         jLabel22.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel22.setText("Network Belong:");
@@ -337,7 +332,7 @@ public class ManageEnterprise extends javax.swing.JPanel {
                                                 .addComponent(cmbcreateNetworkBelong, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(cmbcreateType, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(txtcreateEnterpriseName, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(65, 65, 65)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -439,7 +434,7 @@ public class ManageEnterprise extends javax.swing.JPanel {
                                     .addComponent(txtcreateContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel11))
                                 .addGap(18, 18, 18)
-                                .addComponent(btnSave))
+                                .addComponent(btnCreate))
                             .addComponent(cmbcreateType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -489,13 +484,33 @@ public class ManageEnterprise extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
-        
+            // Navigate back to AdminWorkAreaPanel
+    userProcessContainer.removeAll();
+    userProcessContainer.add(new AdminWorkAreaPanel(userProcessContainer, 
+        getEcoSystemFromNetwork(), getUserAccountFromContext()));
+    userProcessContainer.validate();
+    userProcessContainer.repaint();
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        
-    }//GEN-LAST:event_btnSaveActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        String name = txtcreateEnterpriseName.getText();
+        Enterprise.EnterpriseType type = Enterprise.EnterpriseType.valueOf((String) cmbcreateType.getSelectedItem());
+        String description = txtcreateDescription.getText();
+        String manager = (String) cmbcreateManager.getSelectedItem();
+        String location = txtcreateLocation.getText();
+        String contactNumber = txtcreateContactNumber.getText();
+        String contactEmail = txtcreateContactEmail.getText();
+        String networkName = (String) cmbcreateNetworkBelong.getSelectedItem();
+
+        Enterprise newEnterprise = network.getEnterpriseDirectory().createAndAddEnterprise(
+            "ENT" + System.currentTimeMillis(), name, type, description, manager);
+        newEnterprise.setContactInfo(new ContactInfo(location, contactNumber, contactEmail));
+        newEnterprise.setNetworkBelong(networkName);
+
+        populateTable();
+        clearCreateForm();
+        JOptionPane.showMessageDialog(this, "Enterprise created successfully!");
+    }//GEN-LAST:event_btnCreateActionPerformed
 
     // Method to clear the create form
     private void clearCreateForm() {
@@ -509,13 +524,84 @@ public class ManageEnterprise extends javax.swing.JPanel {
         cmbcreateNetworkBelong.setSelectedIndex(0);
     }
     private void btnviewModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnviewModifyActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageEnterprise.getSelectedRow();
+        if (selectedRow >= 0) {
+            String enterpriseId = (String) tblManageEnterprise.getValueAt(selectedRow, 0);
+            Enterprise enterprise = enterpriseDirectory.findEnterpriseById(enterpriseId);
+
+            if (enterprise != null) {
+                enterprise.setName(txtviewEnterpriseName.getText());
+                enterprise.setType(Enterprise.EnterpriseType.valueOf((String) cmbviewType.getSelectedItem()));
+                enterprise.setDescription(txtviewDescription.getText());
+                enterprise.setManager((String) cmbViewManager.getSelectedItem());
+                enterprise.getContactInfo().setLocation(txtviewLocation.getText());
+                enterprise.getContactInfo().setContactNumber(txtviewContactNumber.getText());
+                enterprise.getContactInfo().setContactEmail(txtviewContactEmail.getText());
+
+                populateTable();
+                clearViewForm();
+                JOptionPane.showMessageDialog(this, "Enterprise updated successfully!");
+            }
+        }
     }//GEN-LAST:event_btnviewModifyActionPerformed
 
     
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        
+        int selectedRow = tblManageEnterprise.getSelectedRow();
+        if (selectedRow >= 0) {
+            String enterpriseId = (String) tblManageEnterprise.getValueAt(selectedRow, 0);
+            Enterprise enterprise = enterpriseDirectory.findEnterpriseById(enterpriseId);
+
+            if (enterprise != null) {
+                int confirm = JOptionPane.showConfirmDialog(this, 
+                    "Are you sure you want to delete this enterprise?", 
+                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                
+                if (confirm == JOptionPane.YES_OPTION) {
+                    enterpriseDirectory.removeEnterprise(enterprise);
+                    populateTable();
+                    clearViewForm();
+                    JOptionPane.showMessageDialog(this, "Enterprise deleted successfully!");
+                }
+            }
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append("Enterprise ID,Enterprise Name,Type,Description,Manager\n");
+        
+        for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+            csvContent.append(enterprise.getId()).append(",")
+                      .append(enterprise.getName()).append(",")
+                      .append(enterprise.getType()).append(",")
+                      .append(enterprise.getDescription()).append(",")
+                      .append(enterprise.getManager()).append("\n");
+        }
+        
+        JOptionPane.showMessageDialog(this, "CSV export functionality would save:\n" + 
+                                     csvContent.toString().substring(0, Math.min(200, csvContent.length())) + "...");
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
+
+    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
+        int selectedRow = tblManageEnterprise.getSelectedRow();
+        if (selectedRow >= 0) {
+            String enterpriseId = (String) tblManageEnterprise.getValueAt(selectedRow, 0);
+            Enterprise enterprise = enterpriseDirectory.findEnterpriseById(enterpriseId);
+
+            if (enterprise != null) {
+                txtviewEnterpriseName.setText(enterprise.getName());
+                cmbviewType.setSelectedItem(enterprise.getType().name());
+                txtviewDescription.setText(enterprise.getDescription());
+                cmbViewManager.setSelectedItem(enterprise.getManager());
+                txtviewLocation.setText(enterprise.getContactInfo().getLocation());
+                txtviewContactNumber.setText(enterprise.getContactInfo().getContactNumber());
+                txtviewContactEmail.setText(enterprise.getContactInfo().getContactEmail());
+                cmbViewNetworkBelong.setSelectedItem(enterprise.getNetworkBelong());
+            }
+        }
+    }//GEN-LAST:event_btnViewDetailsActionPerformed
+
 
     private void clearViewForm() {
         txtviewEnterpriseName.setText("");
@@ -527,40 +613,22 @@ public class ManageEnterprise extends javax.swing.JPanel {
         txtviewContactEmail.setText("");
         cmbViewNetworkBelong.setSelectedIndex(0);
     }
-    private void cmbViewManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbViewManagerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbViewManagerActionPerformed
 
-    private void tblManageEnterpriseAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_tblManageEnterpriseAncestorAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblManageEnterpriseAncestorAdded
-
-    private void cmbviewTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbviewTypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbviewTypeActionPerformed
-
-    private void cmbViewNetworkBelongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbViewNetworkBelongActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbViewNetworkBelongActionPerformed
-
-    private void cmbcreateNetworkBelongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateNetworkBelongActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateNetworkBelongActionPerformed
-
-    private void cmbcreateTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateTypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateTypeActionPerformed
-
-    private void cmbcreateManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateManagerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateManagerActionPerformed
-
-
+    private EcoSystem getEcoSystemFromNetwork() {
+        // Traverse up from network to get EcoSystem
+        return EcoSystem.getInstance(); // Assuming singleton pattern
+    }
+    
+    // Helper method to get UserAccount context
+    private UserAccount getUserAccountFromContext() {
+        // Return current user account - this would be passed from parent context
+        return null; // Would be injected from constructor
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
-    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnViewDetails;
     private javax.swing.JButton btnviewModify;
     private javax.swing.JComboBox<String> cmbSearch;

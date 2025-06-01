@@ -5,8 +5,12 @@
 package ui.admin;
 
 import Model.Enterprise.Enterprise;
+import Model.Organization.Organization;
 import Model.Organization.OrganizationDirectory;
+import Model.Person.ContactInfo;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,9 +27,65 @@ public class ManageOrganization extends javax.swing.JPanel {
         this.organizationDirectory = organizationDirectory;
         this.enterprise = enterprise;
         initComponents();
+        populateTable();
+        populateComboBoxes();
     }
 
+    private void populateTable() {
+        DefaultTableModel model = (DefaultTableModel) tblManageOrganization.getModel();
+        model.setRowCount(0);
+        if (organizationDirectory != null) {
+            for (Organization org : organizationDirectory.getOrganizationList()) {
+                Object[] row = {
+                    org.getOrganizationId(),
+                    org.getOrganizationName(),
+                    org.getClass().getSimpleName(),
+                    "Sample Description",
+                    org.getAdmin() != null ? org.getAdmin().getName() : "N/A"
+                };
+                model.addRow(row);
+            }
+        }
+    }
 
+    private void populateComboBoxes() {
+        cmbcreateType.removeAllItems();
+        for (Organization.Type type : Organization.Type.values()) {
+            cmbcreateType.addItem(type.getValue());
+        }
+        
+        cmbcreateManager.removeAllItems();
+        cmbcreateManager.addItem("Select Manager");
+        cmbcreateManager.addItem("Org Admin A");
+        cmbcreateManager.addItem("Org Admin B");
+
+        cmbcreateEnterpriseBelong.removeAllItems();
+        if (enterprise != null) {
+            cmbcreateEnterpriseBelong.addItem(enterprise.getName());
+            cmbcreateEnterpriseBelong.setSelectedItem(enterprise.getName());
+        }
+
+        cmbSearch.removeAllItems();
+        cmbSearch.addItem("All");
+        cmbSearch.addItem("Last 3 days");
+        cmbSearch.addItem("Last 7 days");
+        cmbSearch.addItem("Last 30 days");
+
+        cmbviewType.removeAllItems();
+        for (Organization.Type type : Organization.Type.values()) {
+            cmbviewType.addItem(type.getValue());
+        }
+
+        cmbViewManager.removeAllItems();
+        cmbViewManager.addItem("Select Manager");
+        cmbViewManager.addItem("Org Admin A");
+        cmbViewManager.addItem("Org Admin B");
+
+        cmbviewEnterprisebelong.removeAllItems();
+        if (enterprise != null) {
+            cmbviewEnterprisebelong.addItem(enterprise.getName());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,7 +119,7 @@ public class ManageOrganization extends javax.swing.JPanel {
         jLabel19 = new javax.swing.JLabel();
         txtViewOrgnizationName = new javax.swing.JTextField();
         btnViewDetails = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         txtcreateOrgnizationName = new javax.swing.JTextField();
         txtviewDescription = new javax.swing.JTextField();
@@ -95,15 +155,6 @@ public class ManageOrganization extends javax.swing.JPanel {
                 "Organization ID", "Organization Name", "Type", "Description", "Manager"
             }
         ));
-        tblManageOrganization.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                tblManageOrganizationAncestorAdded(evt);
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
         jScrollPane1.setViewportView(tblManageOrganization);
 
         btnBack.setText("Back");
@@ -125,18 +176,6 @@ public class ManageOrganization extends javax.swing.JPanel {
         jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel9.setText("Location:");
 
-        txtCreateContactEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCreateContactEmailActionPerformed(evt);
-            }
-        });
-
-        txtCreateContactNumber.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCreateContactNumberActionPerformed(evt);
-            }
-        });
-
         jLabel10.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel10.setText("Contact Number:");
 
@@ -149,22 +188,10 @@ public class ManageOrganization extends javax.swing.JPanel {
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("Location:");
 
-        txtViewContactEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtViewContactEmailActionPerformed(evt);
-            }
-        });
-
         btnExportToCSV.setText("Export to csv");
         btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExportToCSVActionPerformed(evt);
-            }
-        });
-
-        txtviewContactNumber.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtviewContactNumberActionPerformed(evt);
             }
         });
 
@@ -175,23 +202,12 @@ public class ManageOrganization extends javax.swing.JPanel {
         jLabel16.setText("Contact Number:");
 
         cmbSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
-        cmbSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbSearchActionPerformed(evt);
-            }
-        });
 
         jLabel17.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel17.setText("Contact Email :");
 
         jLabel19.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel19.setText("Organization Name:");
-
-        txtViewOrgnizationName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtViewOrgnizationNameActionPerformed(evt);
-            }
-        });
 
         btnViewDetails.setText("View Details");
         btnViewDetails.addActionListener(new java.awt.event.ActionListener() {
@@ -200,33 +216,15 @@ public class ManageOrganization extends javax.swing.JPanel {
             }
         });
 
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
+                btnCreateActionPerformed(evt);
             }
         });
 
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel4.setText("Organization Name:");
-
-        txtcreateOrgnizationName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateOrgnizationNameActionPerformed(evt);
-            }
-        });
-
-        txtviewDescription.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtviewDescriptionActionPerformed(evt);
-            }
-        });
-
-        txtcreateDescription.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateDescriptionActionPerformed(evt);
-            }
-        });
 
         jLabel20.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel20.setText("Type:");
@@ -239,18 +237,6 @@ public class ManageOrganization extends javax.swing.JPanel {
 
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel7.setText("Description:");
-
-        txtviewLocation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtviewLocationActionPerformed(evt);
-            }
-        });
-
-        txtCreateLocation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCreateLocationActionPerformed(evt);
-            }
-        });
 
         btnModify.setText("Modify");
         btnModify.addActionListener(new java.awt.event.ActionListener() {
@@ -267,18 +253,8 @@ public class ManageOrganization extends javax.swing.JPanel {
         });
 
         cmbcreateManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateManagerActionPerformed(evt);
-            }
-        });
 
         cmbViewManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbViewManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbViewManagerActionPerformed(evt);
-            }
-        });
 
         jLabel18.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel18.setText("Enterprise Belong:");
@@ -287,32 +263,12 @@ public class ManageOrganization extends javax.swing.JPanel {
         jLabel22.setText("Enterprise Belong:");
 
         cmbcreateType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateTypeActionPerformed(evt);
-            }
-        });
 
         cmbcreateEnterpriseBelong.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateEnterpriseBelong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateEnterpriseBelongActionPerformed(evt);
-            }
-        });
 
         cmbviewType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbviewType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbviewTypeActionPerformed(evt);
-            }
-        });
 
         cmbviewEnterprisebelong.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbviewEnterprisebelong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbviewEnterprisebelongActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -358,7 +314,7 @@ public class ManageOrganization extends javax.swing.JPanel {
                                         .addComponent(cmbcreateEnterpriseBelong, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(cmbcreateType, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtcreateOrgnizationName, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(65, 65, 65)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -455,7 +411,7 @@ public class ManageOrganization extends javax.swing.JPanel {
                             .addComponent(txtCreateContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSave))
+                        .addComponent(btnCreate))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnViewDetails)
@@ -507,105 +463,129 @@ public class ManageOrganization extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSaveActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        String name = txtcreateOrgnizationName.getText();
+        String type = (String) cmbcreateType.getSelectedItem();
+        String description = txtcreateDescription.getText();
+        String managerName = (String) cmbcreateManager.getSelectedItem();
+        String location = txtCreateLocation.getText();
+        String contactNumber = txtCreateContactNumber.getText();
+        String contactEmail = txtCreateContactEmail.getText();
+        
+        Organization newOrganization = organizationDirectory.createOrganization(
+            type.replace(" ", ""), name, null);
+        if (newOrganization != null) {
+            newOrganization.setContactInfo(new ContactInfo(location, contactNumber, contactEmail));
+            newOrganization.setOrganizationName(name);
+            populateTable();
+            clearCreateForm();
+            JOptionPane.showMessageDialog(this, "Organization created successfully!");
+        }
+    }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageOrganization.getSelectedRow();
+        if (selectedRow >= 0) {
+            String orgId = (String) tblManageOrganization.getValueAt(selectedRow, 0);
+            Organization org = organizationDirectory.findOrganizationById(orgId);
+
+            if (org != null) {
+                org.setOrganizationName(txtViewOrgnizationName.getText());
+                org.getContactInfo().setLocation(txtviewLocation.getText());
+                org.getContactInfo().setContactNumber(txtviewContactNumber.getText());
+                org.getContactInfo().setContactEmail(txtViewContactEmail.getText());
+
+                populateTable();
+                clearViewForm();
+                JOptionPane.showMessageDialog(this, "Organization updated successfully!");
+            }
+        }
     }//GEN-LAST:event_btnModifyActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageOrganization.getSelectedRow();
+        if (selectedRow >= 0) {
+            String orgId = (String) tblManageOrganization.getValueAt(selectedRow, 0);
+            Organization org = organizationDirectory.findOrganizationById(orgId);
+
+            if (org != null) {
+                int confirm = JOptionPane.showConfirmDialog(this, 
+                    "Are you sure you want to delete this organization?", 
+                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                
+                if (confirm == JOptionPane.YES_OPTION) {
+                    organizationDirectory.removeOrganization(org);
+                    populateTable();
+                    clearViewForm();
+                    JOptionPane.showMessageDialog(this, "Organization deleted successfully!");
+                }
+            }
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbSearchActionPerformed
-
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
-        // TODO add your handling code here:
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append("Organization ID,Organization Name,Type,Description,Manager\n");
+        
+        for (Organization org : organizationDirectory.getOrganizationList()) {
+            csvContent.append(org.getOrganizationId()).append(",")
+                      .append(org.getOrganizationName()).append(",")
+                      .append(org.getClass().getSimpleName()).append(",")
+                      .append("Sample Description").append(",")
+                      .append(org.getAdmin() != null ? org.getAdmin().getName() : "N/A").append("\n");
+        }
+        
+        JOptionPane.showMessageDialog(this, "CSV export functionality would save:\n" + 
+                                     csvContent.toString().substring(0, Math.min(200, csvContent.length())) + "...");
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
     private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageOrganization.getSelectedRow();
+        if (selectedRow >= 0) {
+            String orgId = (String) tblManageOrganization.getValueAt(selectedRow, 0);
+            Organization org = organizationDirectory.findOrganizationById(orgId);
+
+            if (org != null) {
+                txtViewOrgnizationName.setText(org.getOrganizationName());
+                cmbviewType.setSelectedItem(org.getClass().getSimpleName());
+                txtviewDescription.setText("Sample Description");
+                cmbViewManager.setSelectedItem(org.getAdmin() != null ? org.getAdmin().getName() : "");
+                txtviewLocation.setText(org.getContactInfo().getLocation());
+                txtviewContactNumber.setText(org.getContactInfo().getContactNumber());
+                txtViewContactEmail.setText(org.getContactInfo().getContactEmail());
+                cmbviewEnterprisebelong.setSelectedItem(enterprise != null ? enterprise.getName() : "");
+            }
+        }
     }//GEN-LAST:event_btnViewDetailsActionPerformed
 
-    private void tblManageOrganizationAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_tblManageOrganizationAncestorAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblManageOrganizationAncestorAdded
+    private void clearCreateForm() {
+        txtcreateOrgnizationName.setText("");
+        cmbcreateType.setSelectedIndex(0);
+        txtcreateDescription.setText("");
+        cmbcreateManager.setSelectedIndex(0);
+        txtCreateLocation.setText("");
+        txtCreateContactNumber.setText("");
+        txtCreateContactEmail.setText("");
+        cmbcreateEnterpriseBelong.setSelectedIndex(0);
+    }
 
-    private void cmbcreateEnterpriseBelongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateEnterpriseBelongActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateEnterpriseBelongActionPerformed
-
-    private void txtcreateOrgnizationNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateOrgnizationNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateOrgnizationNameActionPerformed
-
-    private void cmbcreateTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateTypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateTypeActionPerformed
-
-    private void txtcreateDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateDescriptionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateDescriptionActionPerformed
-
-    private void cmbcreateManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateManagerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateManagerActionPerformed
-
-    private void txtCreateLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCreateLocationActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCreateLocationActionPerformed
-
-    private void txtCreateContactNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCreateContactNumberActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCreateContactNumberActionPerformed
-
-    private void txtCreateContactEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCreateContactEmailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCreateContactEmailActionPerformed
-
-    private void cmbviewEnterprisebelongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbviewEnterprisebelongActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbviewEnterprisebelongActionPerformed
-
-    private void txtViewOrgnizationNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtViewOrgnizationNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtViewOrgnizationNameActionPerformed
-
-    private void cmbviewTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbviewTypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbviewTypeActionPerformed
-
-    private void txtviewDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtviewDescriptionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtviewDescriptionActionPerformed
-
-    private void cmbViewManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbViewManagerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbViewManagerActionPerformed
-
-    private void txtviewLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtviewLocationActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtviewLocationActionPerformed
-
-    private void txtviewContactNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtviewContactNumberActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtviewContactNumberActionPerformed
-
-    private void txtViewContactEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtViewContactEmailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtViewContactEmailActionPerformed
-
+    private void clearViewForm() {
+        txtViewOrgnizationName.setText("");
+        cmbviewType.setSelectedIndex(0);
+        txtviewDescription.setText("");
+        cmbViewManager.setSelectedIndex(0);
+        txtviewLocation.setText("");
+        txtviewContactNumber.setText("");
+        txtViewContactEmail.setText("");
+        cmbviewEnterprisebelong.setSelectedIndex(0);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
     private javax.swing.JButton btnModify;
-    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnViewDetails;
     private javax.swing.JComboBox<String> cmbSearch;
     private javax.swing.JComboBox<String> cmbViewManager;

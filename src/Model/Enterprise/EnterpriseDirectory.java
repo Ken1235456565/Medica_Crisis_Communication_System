@@ -62,4 +62,14 @@ public class EnterpriseDirectory {
         }
         return null;
     }
+    
+    // Find enterprise by ID
+    public Enterprise findEnterpriseById(String id) {
+        for (Enterprise ent : enterpriseList) {
+            if (ent.getId().equals(id)) {
+                return ent;
+            }
+        }
+        return null;
+    }
 }

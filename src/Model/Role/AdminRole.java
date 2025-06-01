@@ -13,5 +13,14 @@ public class AdminRole extends Role {
     public AdminRole() {
         super("ADMIN", "Administrator", true, "System Administrator Role");
     }
+    
+    public AdminRole(String id, String name, String desc, boolean isAdmin) {
+        super(id, name, desc, isAdmin);
+    }
+
+   
+    public String getRoleName() {
+        return "Admin";
+    }
 }
 

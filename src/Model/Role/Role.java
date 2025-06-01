@@ -16,6 +16,12 @@ public abstract class Role {
         this.isAdmin = isAdmin;
         this.description = description;
     }
+public Role(String id, String name, String description, boolean isAdmin) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.isAdmin = isAdmin;
+}
 
     public String getId() {
         return id;

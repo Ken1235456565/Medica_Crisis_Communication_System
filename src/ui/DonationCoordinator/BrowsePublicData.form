@@ -208,16 +208,25 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Back"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnDataOverviewChart">
       <Properties>
         <Property name="text" type="java.lang.String" value="Data Overview Chart"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDataOverviewChartActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnExportToCSV">
       <Properties>
         <Property name="text" type="java.lang.String" value="Export To CSV"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExportToCSVActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

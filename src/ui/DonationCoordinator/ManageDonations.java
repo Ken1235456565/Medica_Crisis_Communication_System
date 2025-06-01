@@ -4,10 +4,18 @@
  */
 package ui.DonationCoordinator;
 
+import Model.EcoSystem;
 import Model.Organization.Organization;
+import Model.Personnel.PublicDataManager;
+import Model.Supplies.Donation;
+import Model.Supplies.DonatedItem;
 import Model.Supplies.DonationCatalog;
 import Model.User.UserAccount;
+import java.awt.CardLayout;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -26,6 +34,53 @@ public class ManageDonations extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.donationCatalog = donationCatalog;
         initComponents();
+        
+        // 添加业务逻辑初始化
+        populateManageDonationsTable();
+        populateOrganizationComboBox();
+    }
+    
+    private void populateManageDonationsTable() {
+        DefaultTableModel model = (DefaultTableModel) tblManageDonations.getModel();
+        model.setRowCount(0);
+
+        for (Donation donation : donationCatalog.getDonationList()) {
+            if ("Received".equals(donation.getStatus()) || "Pending".equals(donation.getStatus())) {
+                String description = "";
+                String amountQuantity = "";
+                
+                if (donation.getAmount() > 0) {
+                    description = "Monetary donation for " + donation.getPurpose();
+                    amountQuantity = "$" + donation.getAmount();
+                } else {
+                    description = "Item donation: " + donation.getDonatedItems().get(0).getName();
+                    if (donation.getDonatedItems().size() > 1) {
+                        description += " and " + (donation.getDonatedItems().size() - 1) + " more";
+                    }
+                    amountQuantity = donation.getDonatedItems().get(0).getQuantity() + " items";
+                }
+
+                Object[] row = {
+                    donation.getDonationId(),
+                    donation.getDonor().getName(),
+                    description,
+                    amountQuantity
+                };
+                model.addRow(row);
+            }
+        }
+    }
+    
+    private void populateOrganizationComboBox() {
+    cmbOrganization.removeAllItems();
+    
+    EcoSystem system = EcoSystem.getInstance();
+        PublicDataManager pdm = system.getPublicDataManager();
+        List<String> organizations = pdm.getStandardOrganizationList();
+
+        for (String org : organizations) {
+            cmbOrganization.addItem(org);
+        }
     }
 
     /**
@@ -152,19 +207,75 @@ public class ManageDonations extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDeclineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeclineActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageDonations.getSelectedRow();
+        String reason = JOptionPane.showInputDialog(this, "Please enter reason for declining:", 
+            "Decline Reason", JOptionPane.QUESTION_MESSAGE);
+        
+        String donationId = (String) tblManageDonations.getValueAt(selectedRow, 0);
+        Donation donation = donationCatalog.findDonationById(donationId);
+
+        donation.setStatus("Declined");
+        donation.setNotes((donation.getNotes() != null ? donation.getNotes() + "; " : "") 
+            + "Declined: " + reason);
+        
+        JOptionPane.showMessageDialog(this, "Donation declined.", "Decline Complete", 
+            JOptionPane.INFORMATION_MESSAGE);
+        
+        populateManageDonationsTable();        // TODO add your handling code here:
     }//GEN-LAST:event_btnDeclineActionPerformed
 
     private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageDonations.getSelectedRow();
+        String selectedOrg = (String) cmbOrganization.getSelectedItem();
+        String donationId = (String) tblManageDonations.getValueAt(selectedRow, 0);
+        Donation donation = donationCatalog.findDonationById(donationId);
+
+        donation.processDonation();
+        donation.setNotes((donation.getNotes() != null ? donation.getNotes() + "; " : "") 
+            + "Approved for distribution to " + selectedOrg);
+        
+        JOptionPane.showMessageDialog(this, "Donation approved successfully!\nAssigned to: " + selectedOrg, 
+            "Approval Complete", JOptionPane.INFORMATION_MESSAGE);
+        
+        populateManageDonationsTable();
     }//GEN-LAST:event_btnApproveActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnViewDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageDonations.getSelectedRow();
+        
+        String donationId = (String) tblManageDonations.getValueAt(selectedRow, 0);
+        Donation donation = donationCatalog.findDonationById(donationId);
+
+        StringBuilder details = new StringBuilder();
+        details.append("Donation ID: ").append(donation.getDonationId()).append("\n");
+        details.append("Donor: ").append(donation.getDonor().getName()).append("\n");
+        details.append("Contact: ").append(donation.getDonor().getContactInfo().getContactEmail()).append("\n");
+        details.append("Date: ").append(donation.getDonationDate()).append("\n");
+        details.append("Purpose: ").append(donation.getPurpose()).append("\n");
+        details.append("Status: ").append(donation.getStatus()).append("\n");
+        
+        if (donation.getAmount() > 0) {
+            details.append("Type: Monetary\n");
+            details.append("Amount: $").append(donation.getAmount()).append("\n");
+        } else {
+            details.append("Type: Items\n");
+            details.append("Items:\n");
+            for (DonatedItem item : donation.getDonatedItems()) {
+                details.append("  - ").append(item.getName())
+                       .append(" (Qty: ").append(item.getQuantity()).append(")\n");
+            }
+        }
+        
+        details.append("Notes: ").append(donation.getNotes()).append("\n");
+
+        JOptionPane.showMessageDialog(this, details.toString(), "Donation Details", 
+            JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnViewDetailActionPerformed
 
 

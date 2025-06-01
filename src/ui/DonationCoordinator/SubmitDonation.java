@@ -10,6 +10,19 @@ import Model.User.UserAccount;
 import javax.swing.JPanel;
 import ui.VisitorDonor.*;
 
+import Model.Supplies.Donation;
+import Model.Supplies.DonatedItem;
+import Model.Personnel.Donor;
+import util.CSVExporter;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+import java.awt.CardLayout;
+import java.awt.Image;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author tiankaining
@@ -19,7 +32,9 @@ public class SubmitDonation extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private DonationCatalog donationCatalog; // Where the submitted donation will be added
+    private DonationCatalog donationCatalog; 
+    private File selectedImageFile;
+    private Donation currentDonation;    
 
     public SubmitDonation(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DonationCatalog donationCatalog) {
         this.userProcessContainer = userProcessContainer;
@@ -27,8 +42,49 @@ public class SubmitDonation extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.donationCatalog = donationCatalog;
         initComponents();
+        
+        // 添加业务逻辑初始化
+        initializeForm();
     }
 
+    private void initializeForm() {
+        btnUploadAttachment.addActionListener(e -> handleFileUpload());
+        lblPicture.setText("No image selected");
+        lblPicture.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    }
+
+    private void handleFileUpload() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+            "Image Files", "jpg", "jpeg", "png", "gif"));
+        
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            selectedImageFile = fileChooser.getSelectedFile();
+            displayImage(selectedImageFile);
+        }
+    }
+
+    private void displayImage(File imageFile) {
+        ImageIcon icon = new ImageIcon(imageFile.getAbsolutePath());
+        Image image = icon.getImage().getScaledInstance(
+            lblPicture.getWidth(), lblPicture.getHeight(), Image.SCALE_SMOOTH);
+        lblPicture.setIcon(new ImageIcon(image));
+        lblPicture.setText("");
+    }
+
+
+    private void clearForm() {
+        txtDonorName.setText("");
+        txtContactEmail.setText("");
+        txtDonationType.setText("");
+        txtItemName.setText("");
+        txtQuantity.setText("");
+        txtNotes.setText("");
+        lblPicture.setIcon(null);
+        lblPicture.setText("No image selected");
+        selectedImageFile = null;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -94,26 +150,8 @@ public class SubmitDonation extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel5.setText("Item Name:");
 
-        txtItemName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemNameActionPerformed(evt);
-            }
-        });
-
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel6.setText("Quantity:");
-
-        txtQuantity.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantityActionPerformed(evt);
-            }
-        });
-
-        txtNotes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNotesActionPerformed(evt);
-            }
-        });
 
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel7.setText("Notes :");
@@ -125,6 +163,11 @@ public class SubmitDonation extends javax.swing.JPanel {
         jLabel9.setText("Picture :");
 
         btnUploadAttachment.setText("Upload attachment");
+        btnUploadAttachment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploadAttachmentActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -220,28 +263,57 @@ public class SubmitDonation extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        // TODO add your handling code here:
+        // 创建捐赠者
+        Donor donor = new Donor();
+        donor.setName(txtDonorName.getText().trim());
+        donor.getContactInfo().setContactEmail(txtContactEmail.getText().trim());
+
+        // 创建捐赠物品
+        List<DonatedItem> items = new ArrayList<>();
+        DonatedItem item = new DonatedItem(
+            txtItemName.getText().trim(),
+            Integer.parseInt(txtQuantity.getText().trim()),
+            0.0
+        );
+        items.add(item);
+
+        // 创建捐赠记录
+        currentDonation = new Donation(donor, items, txtDonationType.getText().trim());
+        currentDonation.setNotes(txtNotes.getText().trim());
+
+        // 添加到捐赠目录
+        donationCatalog.addDonation(currentDonation);
+
+        JOptionPane.showMessageDialog(this, "Donation submitted successfully!\nDonation ID: " + 
+            currentDonation.getDonationId(), "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        clearForm();
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
-        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Donations as CSV");
+        fileChooser.setSelectedFile(new java.io.File("donations.csv"));
+
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            CSVExporter exporter = new CSVExporter();
+            exporter.exportDonations(donationCatalog.getDonationList(), 
+                fileChooser.getSelectedFile().getAbsolutePath());
+            JOptionPane.showMessageDialog(this, "Donations exported successfully!", 
+                "Export Complete", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void txtItemNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemNameActionPerformed
-
-    private void txtQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantityActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantityActionPerformed
-
-    private void txtNotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNotesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNotesActionPerformed
+    private void btnUploadAttachmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadAttachmentActionPerformed
+        handleFileUpload();
+    }//GEN-LAST:event_btnUploadAttachmentActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

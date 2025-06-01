@@ -4,10 +4,15 @@
  */
 package ui.admin;
 
+import Model.EcoSystem;
 import Model.Enterprise.Enterprise;
 import Model.Organization.Organization;
+import Model.Role.Role;
 import Model.Role.RoleDirectory;
+import Model.User.UserAccount;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,7 +23,8 @@ public class ManageRoles extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Enterprise enterprise; 
     private Organization organization; 
-    private RoleDirectory roleDirectory; 
+    private RoleDirectory roleDirectory;
+    private UserAccount currentUserAccount;
 
     public ManageRoles(JPanel userProcessContainer, Enterprise enterprise, Organization organization, RoleDirectory roleDirectory) {
         this.userProcessContainer = userProcessContainer;
@@ -26,8 +32,63 @@ public class ManageRoles extends javax.swing.JPanel {
         this.organization = organization;
         this.roleDirectory = roleDirectory;
         initComponents();
+        populateTable();
+        populateComboBoxes();
     }
 
+    private void populateTable() {
+        DefaultTableModel model = (DefaultTableModel) tblManageRoles.getModel();
+        model.setRowCount(0);
+        if (roleDirectory != null) {
+            for (Role role : roleDirectory.getRoleList()) {
+                Object[] row = {
+                    role.getId(),
+                    role.getName(),
+                    role.isAdmin() ? "Yes" : "No",
+                    role.getDescription(),
+                    "N/A"
+                };
+                model.addRow(row);
+            }
+        }
+    }
+
+    private void populateComboBoxes() {
+        cmbcreateRoleOrganization.removeAllItems();
+        cmbcreateRoleOrganization.addItem("Select Organization");
+        if (enterprise != null) {
+            for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
+                cmbcreateRoleOrganization.addItem(org.getOrganizationName());
+            }
+        }
+        
+        cmbcreateRoleEnterprise.removeAllItems();
+        cmbcreateRoleEnterprise.addItem("Select Enterprise");
+        if (enterprise != null) {
+            cmbcreateRoleEnterprise.addItem(enterprise.getName());
+            cmbcreateRoleEnterprise.setSelectedItem(enterprise.getName());
+        }
+
+        cmbSearch.removeAllItems();
+        cmbSearch.addItem("All");
+        cmbSearch.addItem("Last 3 days");
+        cmbSearch.addItem("Last 7 days");
+        cmbSearch.addItem("Last 30 days");
+
+        cmbViewRoleOrganization.removeAllItems();
+        cmbViewRoleOrganization.addItem("Select Organization");
+        if (enterprise != null) {
+            for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
+                cmbViewRoleOrganization.addItem(org.getOrganizationName());
+            }
+        }
+
+        cmbViewRoleEnterprise.removeAllItems();
+        cmbViewRoleEnterprise.addItem("Select Enterprise");
+        if (enterprise != null) {
+            cmbViewRoleEnterprise.addItem(enterprise.getName());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,7 +122,7 @@ public class ManageRoles extends javax.swing.JPanel {
         cmbSearch = new javax.swing.JComboBox<>();
         btnModify = new javax.swing.JButton();
         jLabel19 = new javax.swing.JLabel();
-        txtDelete = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         txtContactEmail5 = new javax.swing.JTextField();
         btnViewDetails = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
@@ -85,15 +146,6 @@ public class ManageRoles extends javax.swing.JPanel {
                 "Roles ID", "Roles Name", "Type", "Description", "Manager"
             }
         ));
-        tblManageRoles.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                tblManageRolesAncestorAdded(evt);
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
         jScrollPane1.setViewportView(tblManageRoles);
 
         btnBack.setText("Back");
@@ -119,38 +171,8 @@ public class ManageRoles extends javax.swing.JPanel {
         jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel9.setText("Enterprise:");
 
-        txtcreateRoleName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateRoleNameActionPerformed(evt);
-            }
-        });
-
-        txtContactEmail6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtContactEmail6ActionPerformed(evt);
-            }
-        });
-
-        txtcreateRoleDescription.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateRoleDescriptionActionPerformed(evt);
-            }
-        });
-
-        txtDonorName6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDonorName6ActionPerformed(evt);
-            }
-        });
-
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel14.setText("Organization: ");
-
-        txtcreateIsAdmin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateIsAdminActionPerformed(evt);
-            }
-        });
 
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("Enterprise:");
@@ -178,11 +200,6 @@ public class ManageRoles extends javax.swing.JPanel {
         jLabel12.setText("Search:");
 
         cmbSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
-        cmbSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbSearchActionPerformed(evt);
-            }
-        });
 
         btnModify.setText("Modify");
         btnModify.addActionListener(new java.awt.event.ActionListener() {
@@ -194,16 +211,10 @@ public class ManageRoles extends javax.swing.JPanel {
         jLabel19.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel19.setText("Role Name:");
 
-        txtDelete.setText("Delete");
-        txtDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDeleteActionPerformed(evt);
-            }
-        });
-
-        txtContactEmail5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtContactEmail5ActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
@@ -221,32 +232,12 @@ public class ManageRoles extends javax.swing.JPanel {
         jLabel5.setText("Create Role");
 
         cmbcreateRoleOrganization.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateRoleOrganization.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateRoleOrganizationActionPerformed(evt);
-            }
-        });
 
         cmbcreateRoleEnterprise.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateRoleEnterprise.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateRoleEnterpriseActionPerformed(evt);
-            }
-        });
 
         cmbViewRoleOrganization.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbViewRoleOrganization.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbViewRoleOrganizationActionPerformed(evt);
-            }
-        });
 
         cmbViewRoleEnterprise.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbViewRoleEnterprise.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbViewRoleEnterpriseActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -293,7 +284,7 @@ public class ManageRoles extends javax.swing.JPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(btnExportToCSV)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtDelete)
+                                .addComponent(btnDelete)
                                 .addGap(33, 33, 33)
                                 .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -365,7 +356,7 @@ public class ManageRoles extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnViewDetails)
                             .addComponent(btnExportToCSV)
-                            .addComponent(txtDelete))
+                            .addComponent(btnDelete))
                         .addGap(35, 35, 35)
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -398,80 +389,174 @@ public class ManageRoles extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+    // Navigate back to AdminWorkAreaPanel
+        userProcessContainer.removeAll();
+        userProcessContainer.add(new AdminWorkAreaPanel(userProcessContainer, 
+            getEcoSystemFromOrganization(), getCurrentUserAccount()));
+        userProcessContainer.validate();
+        userProcessContainer.repaint();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
+        String roleName = txtcreateRoleName.getText().trim();
+        String isAdminText = txtcreateIsAdmin.getText().trim();
+        String description = txtcreateRoleDescription.getText().trim();
+        String selectedOrg = (String) cmbcreateRoleOrganization.getSelectedItem();
+        String selectedEnterprise = (String) cmbcreateRoleEnterprise.getSelectedItem();
+
+        // Validation
+        if (roleName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Role name is required");
+            return;
+        }
+
+        boolean isAdmin = "yes".equalsIgnoreCase(isAdminText) || "true".equalsIgnoreCase(isAdminText);
+
+        // Create new role
+        String roleId = "ROLE_" + System.currentTimeMillis();
+        Role newRole = roleDirectory.createRole(roleId, roleName, description, isAdmin);
+
+        if (newRole != null) {
+            populateTable();
+            clearCreateForm();
+            JOptionPane.showMessageDialog(this, "Role created successfully");
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to create role");
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        // TODO add your handling code here:
+    int selectedRow = tblManageRoles.getSelectedRow();
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(this, "Please select a role to modify");
+        return;
+    }
+    
+    String roleId = (String) tblManageRoles.getValueAt(selectedRow, 0);
+    Role role = roleDirectory.findRoleById(roleId);
+    
+    if (role != null) {
+        String newName = txtContactEmail5.getText().trim();
+        String newIsAdminText = txtDonorName6.getText().trim();
+        String newDescription = txtContactEmail6.getText().trim();
+        
+        if (!newName.isEmpty()) {
+            role.setName(newName);
+        }
+        
+        if (!newIsAdminText.isEmpty()) {
+            boolean isAdmin = "yes".equalsIgnoreCase(newIsAdminText) || "true".equalsIgnoreCase(newIsAdminText);
+            role.setAdmin(isAdmin); 
+        }
+        
+        if (!newDescription.isEmpty()) {
+            role.setDescription(newDescription);
+        }
+        
+        populateTable();
+        clearViewForm();
+        JOptionPane.showMessageDialog(this, "Role updated successfully");
+    }
     }//GEN-LAST:event_btnModifyActionPerformed
 
-    private void txtDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDeleteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDeleteActionPerformed
-
-    private void txtcreateIsAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateIsAdminActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateIsAdminActionPerformed
-
-    private void tblManageRolesAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_tblManageRolesAncestorAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblManageRolesAncestorAdded
-
-    private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbSearchActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    int selectedRow = tblManageRoles.getSelectedRow();
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(this, "Please select a role to delete");
+        return;
+    }
+    
+    int confirm = JOptionPane.showConfirmDialog(this, 
+        "Are you sure you want to delete this role?", 
+        "Confirm Delete", 
+        JOptionPane.YES_NO_OPTION);
+    
+    if (confirm == JOptionPane.YES_OPTION) {
+        String roleId = (String) tblManageRoles.getValueAt(selectedRow, 0);
+        Role role = roleDirectory.findRoleById(roleId);
+        
+        if (role != null) {
+            roleDirectory.removeRole(role);
+            populateTable();
+            clearViewForm();
+            JOptionPane.showMessageDialog(this, "Role deleted successfully");
+        }
+    }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
-        // TODO add your handling code here:
+    StringBuilder csvContent = new StringBuilder();
+    csvContent.append("Role ID,Role Name,Is Admin,Description,Organization\n");
+    
+    for (Role role : roleDirectory.getRoleList()) {
+        csvContent.append(role.getId()).append(",")
+                  .append(role.getName()).append(",")
+                  .append(role.isAdmin() ? "Yes" : "No").append(",")
+                  .append(role.getDescription()).append(",")
+                  .append(organization.getOrganizationName()).append("\n");
+    }
+    
+    JOptionPane.showMessageDialog(this, "CSV export functionality would save:\n" + 
+                                 csvContent.toString().substring(0, Math.min(200, csvContent.length())) + "...");
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
     private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
-        // TODO add your handling code here:
+    int selectedRow = tblManageRoles.getSelectedRow();
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(this, "Please select a role to view details");
+        return;
+    }
+    
+    String roleId = (String) tblManageRoles.getValueAt(selectedRow, 0);
+    Role role = roleDirectory.findRoleById(roleId);
+    
+    if (role != null) {
+        txtContactEmail5.setText(role.getName());
+        txtDonorName6.setText(role.isAdmin() ? "Yes" : "No");
+        txtContactEmail6.setText(role.getDescription());
+        
+        // Set combobox selections if needed
+        for (int i = 0; i < cmbViewRoleOrganization.getItemCount(); i++) {
+            if (organization.getOrganizationName().equals(cmbViewRoleOrganization.getItemAt(i))) {
+                cmbViewRoleOrganization.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
     }//GEN-LAST:event_btnViewDetailsActionPerformed
 
-    private void txtcreateRoleNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateRoleNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateRoleNameActionPerformed
+private void clearCreateForm() {
+    txtcreateRoleName.setText("");
+    txtcreateIsAdmin.setText("");
+    txtcreateRoleDescription.setText("");
+    cmbcreateRoleOrganization.setSelectedIndex(0);
+    cmbcreateRoleEnterprise.setSelectedIndex(0);
+}
 
-    private void txtcreateRoleDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateRoleDescriptionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateRoleDescriptionActionPerformed
+private void clearViewForm() {
+    txtContactEmail5.setText("");
+    txtDonorName6.setText("");
+    txtContactEmail6.setText("");
+    cmbViewRoleOrganization.setSelectedIndex(0);
+    cmbViewRoleEnterprise.setSelectedIndex(0);
+}
 
-    private void cmbcreateRoleOrganizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateRoleOrganizationActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateRoleOrganizationActionPerformed
+private EcoSystem getEcoSystemFromOrganization() {
+    return EcoSystem.getInstance();
+}
 
-    private void cmbcreateRoleEnterpriseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateRoleEnterpriseActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateRoleEnterpriseActionPerformed
-
-    private void txtContactEmail5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContactEmail5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtContactEmail5ActionPerformed
-
-    private void txtDonorName6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDonorName6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDonorName6ActionPerformed
-
-    private void txtContactEmail6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContactEmail6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtContactEmail6ActionPerformed
-
-    private void cmbViewRoleOrganizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbViewRoleOrganizationActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbViewRoleOrganizationActionPerformed
-
-    private void cmbViewRoleEnterpriseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbViewRoleEnterpriseActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbViewRoleEnterpriseActionPerformed
-
+    public UserAccount getCurrentUserAccount() {
+        return currentUserAccount;
+    }
+    
+    // 设置当前用户账户的方法
+    public void setCurrentUserAccount(UserAccount userAccount) {
+        this.currentUserAccount = userAccount;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
     private javax.swing.JButton btnModify;
     private javax.swing.JButton btnSave;
@@ -499,7 +584,6 @@ public class ManageRoles extends javax.swing.JPanel {
     private javax.swing.JTable tblManageRoles;
     private javax.swing.JTextField txtContactEmail5;
     private javax.swing.JTextField txtContactEmail6;
-    private javax.swing.JButton txtDelete;
     private javax.swing.JTextField txtDonorName6;
     private javax.swing.JTextField txtcreateIsAdmin;
     private javax.swing.JTextField txtcreateRoleDescription;

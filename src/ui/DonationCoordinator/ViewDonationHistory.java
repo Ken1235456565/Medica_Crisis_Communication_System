@@ -10,6 +10,12 @@ import Model.User.UserAccount;
 import javax.swing.JPanel;
 import ui.VisitorDonor.*;
 
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+import java.awt.CardLayout;
+import Model.Supplies.Donation;
+import Model.Supplies.DonatedItem;
+
 /**
  *
  * @author tiankaining
@@ -27,6 +33,32 @@ public class ViewDonationHistory extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.donationCatalog = donationCatalog;
         initComponents();
+        
+        // 添加业务逻辑初始化
+        populateDonationHistoryTable();
+    }
+    
+    private void populateDonationHistoryTable() {
+        DefaultTableModel model = (DefaultTableModel) tblViewDonationHistory.getModel();
+        model.setRowCount(0);
+
+        for (Donation donation : donationCatalog.getDonationList()) {
+            String description = "";
+            if (donation.getAmount() > 0) {
+                description = "Monetary: $" + donation.getAmount();
+            } else {
+                description = "Items: " + donation.getDonatedItems().size() + " item(s)";
+            }
+
+            Object[] row = {
+                donation.getDonationId(),
+                donation.getDonor().getName(),
+                description,
+                donation.getAmount() > 0 ? "$" + donation.getAmount() : 
+                    donation.getDonatedItems().size() + " items"
+            };
+            model.addRow(row);
+        }
     }
 
     /**
@@ -87,7 +119,7 @@ public class ViewDonationHistory extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(388, Short.MAX_VALUE)
+                .addContainerGap(387, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(377, 377, 377))
             .addGroup(layout.createSequentialGroup()
@@ -107,7 +139,7 @@ public class ViewDonationHistory extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(48, 48, 48)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 495, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 494, Short.MAX_VALUE)
                 .addComponent(btnViewDetail)
                 .addGap(208, 208, 208))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,11 +153,38 @@ public class ViewDonationHistory extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnViewDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailActionPerformed
-        // TODO add your handling code here:
+    int selectedRow = tblViewDonationHistory.getSelectedRow();
+        
+        String donationId = (String) tblViewDonationHistory.getValueAt(selectedRow, 0);
+        Donation donation = donationCatalog.findDonationById(donationId);
+
+        StringBuilder details = new StringBuilder();
+        details.append("Donation ID: ").append(donation.getDonationId()).append("\n");
+        details.append("Donor: ").append(donation.getDonor().getName()).append("\n");
+        details.append("Date: ").append(donation.getDonationDate()).append("\n");
+        details.append("Purpose: ").append(donation.getPurpose()).append("\n");
+        details.append("Status: ").append(donation.getStatus()).append("\n");
+        
+        if (donation.getAmount() > 0) {
+            details.append("Amount: $").append(donation.getAmount()).append("\n");
+        } else {
+            details.append("Items:\n");
+            for (DonatedItem item : donation.getDonatedItems()) {
+                details.append("  - ").append(item.getName())
+                       .append(" (Qty: ").append(item.getQuantity()).append(")\n");
+            }
+        }
+        
+        details.append("Notes: ").append(donation.getNotes()).append("\n");
+
+        JOptionPane.showMessageDialog(this, details.toString(), "Donation Details", 
+            JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnViewDetailActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
 

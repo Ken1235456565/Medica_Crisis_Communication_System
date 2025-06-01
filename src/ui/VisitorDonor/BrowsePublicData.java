@@ -6,8 +6,17 @@ package ui.VisitorDonor;
 
 import Model.EcoSystem;
 import Model.Organization.Organization;
+import Model.PublicData.HealthStatistics;
+import Model.PublicData.PublicDataService;
+import Model.PublicData.RegionData;
+import Model.PublicData.SymptomData;
 import Model.User.UserAccount;
+import java.awt.CardLayout;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import util.CSVExporter;
 
 /**
  *
@@ -18,7 +27,10 @@ public class BrowsePublicData extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private EcoSystem system; // To access public data from the system
+    private EcoSystem system; // To access public data from the whole system
+    
+    private PublicDataService publicDataService;
+    private HealthStatistics currentHealthStats;
 
     public BrowsePublicData(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EcoSystem system) {
         this.userProcessContainer = userProcessContainer;
@@ -26,6 +38,63 @@ public class BrowsePublicData extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.system = system;
         initComponents();
+        
+        // 业务逻辑初始化
+        this.publicDataService = new PublicDataService();
+        initializeData();
+        populateTimeSpanComboBox();
+    }
+
+    private void initializeData() {
+        String defaultTimeSpan = "7 days";
+        loadDataForTimeSpan(defaultTimeSpan);
+    }
+
+    private void populateTimeSpanComboBox() {
+        cmbTimeSpan.addActionListener(e -> {
+            String selectedTimeSpan = (String) cmbTimeSpan.getSelectedItem();
+            loadDataForTimeSpan(selectedTimeSpan);
+        });
+    }
+
+    private void loadDataForTimeSpan(String timeSpan) {
+        currentHealthStats = publicDataService.generateHealthStatistics(timeSpan);
+        populateDataOverviewTable();
+        populateSymptomSummaryTable();
+    }
+
+    private void populateDataOverviewTable() {
+        DefaultTableModel model = (DefaultTableModel) tblDataOverview.getModel();
+        model.setRowCount(0);
+
+        for (RegionData region : currentHealthStats.getRegionData()) {
+            Object[] row = {
+                region.getRegionName(),
+                region.getTotalPatients(),
+                region.getDischargedCount(),
+                region.getHospitalizedCount(),
+                region.getDeathsCount(),
+                Math.round(region.getAverageLengthOfStay() * 100.0) / 100.0
+            };
+            model.addRow(row);
+        }
+    }
+
+    private void populateSymptomSummaryTable() {
+        DefaultTableModel model = (DefaultTableModel) tblSymptom.getModel();
+        model.setRowCount(0);
+
+        for (RegionData region : currentHealthStats.getRegionData()) {
+            SymptomData symptoms = region.getSymptomSummary();
+            Object[] row = {
+                region.getRegionName(),
+                symptoms.getFeverCount(),
+                symptoms.getCoughCount(),
+                symptoms.getChestTightnessCount(),
+                symptoms.getComaCount()
+            };
+            model.addRow(row);
+        }
     }
 
     /**
@@ -54,8 +123,18 @@ public class BrowsePublicData extends javax.swing.JPanel {
         jLabel1.setText("Browse Public Data");
 
         btnDataOverviewChart.setText("Data Overview Chart");
+        btnDataOverviewChart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDataOverviewChartActionPerformed(evt);
+            }
+        });
 
         btnExportToCSV.setText("Export To CSV");
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToCSVActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel2.setText("Data overview:");
@@ -111,6 +190,11 @@ public class BrowsePublicData extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tblSymptom);
 
         btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -168,6 +252,31 @@ public class BrowsePublicData extends javax.swing.JPanel {
                     .addGap(77, 77, 77)))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnDataOverviewChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataOverviewChartActionPerformed
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
+    }//GEN-LAST:event_btnDataOverviewChartActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Public Data as CSV");
+        fileChooser.setSelectedFile(new java.io.File("public_data.csv"));
+
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            CSVExporter exporter = new CSVExporter();
+            exporter.exportPublicData(currentHealthStats, fileChooser.getSelectedFile().getAbsolutePath());
+            JOptionPane.showMessageDialog(this, "Data exported successfully!", "Export Complete", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

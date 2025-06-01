@@ -37,12 +37,13 @@ public class UserAccountDirectory {
         return null;
     }
 
-    public UserAccount createUserAccount(String username, String password, Employee employee, Role role) {
-        // Organization can be null at creation
-        UserAccount userAccount = new UserAccount(username, password, role, null, employee);
-        userAccountList.add(userAccount);
-        return userAccount;
-    }
+public UserAccount createUserAccount(String username, String password, Employee employee, Role role) {
+    String userId = "USER_" + System.currentTimeMillis();
+    UserAccount userAccount = new UserAccount(userId, username, password, employee, role);
+    userAccountList.add(userAccount);
+    return userAccount;
+}
+
     
     public UserAccount authenticateUser(String username, String password) {
         for (UserAccount ua : userAccountList) {
@@ -64,5 +65,15 @@ public class UserAccountDirectory {
         }
         return result;
     }
+    
+    public UserAccount findUserAccountById(String userId) {
+        for (UserAccount userAccount : userAccountList) {
+            if (userAccount.getUserId().equals(userId)) {
+                return userAccount;
+            }
+        }
+        return null;
+    }
+   
 
 }

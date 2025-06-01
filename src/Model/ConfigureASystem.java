@@ -23,13 +23,17 @@ import Model.Personnel.LogisticsManager;
 import Model.Personnel.Nurse;
 import Model.Personnel.Donor;
 import Model.Personnel.PayrollStaff;
-import Model.Personnel.ResourceAnalyst;
+import Model.Personnel.PublicDataManager;
 import Model.Personnel.DonationCoordinator;
 import Model.Personnel.SupplychainManager;
+import Model.Personnel.PublicDataManager;
 
 
 import Model.Person.ContactInfo;
 import Model.Patient.Patient;
+import Model.PublicData.HealthStatistics;
+import Model.PublicData.RegionData;
+import Model.PublicData.SymptomData;
 import Model.Role.AdminRole;
 import Model.Role.DeliveryStaffRole;
 import Model.Role.DoctorRole;
@@ -67,6 +71,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -397,6 +402,15 @@ public class ConfigureASystem {
 
         // 6. Reports and Mission Stats
         generateReportsAndMissionStats(operationsSupportOrg, emergencyResponseOrg, faker, sysAdminEmployee, supplychainManagerEmployee);
+        
+        // 7. Create Public Data Manager
+        createPublicDataManager(system, faker);
+        
+        // 8. Generate Public Health Data
+        generatePublicHealthData(system, faker);
+        
+        // 9. Generate Organization Reference Data
+        generateOrganizationReferenceData(system);        
 
         return system;
     }
@@ -728,5 +742,130 @@ public class ConfigureASystem {
             emergencyResponseOrg.addWorkRequest(missionStats);
         }
     }
+    
+    // 创建公共数据管理员
+    private static void createPublicDataManager(EcoSystem system, Faker faker) {
+        ContactInfo pdmContact = new ContactInfo(
+            faker.address().fullAddress(),
+            faker.phoneNumber().phoneNumber(),
+            faker.internet().emailAddress()
+        );
+        
+        PublicDataManager pdm = new PublicDataManager(
+            "Healthcare Analytics",
+            "EMP" + faker.number().digits(4),
+            faker.name().fullName(),
+            faker.options().option("Male", "Female"),
+            faker.number().numberBetween(30, 55),
+            new SimpleDateFormat("yyyy-MM-dd").format(faker.date().birthday()),
+            "Public Data Manager",
+            "Analytics Department",
+            pdmContact
+        );
+        
+        system.setPublicDataManager(pdm);
+    }
+
+    // 生成公共健康数据
+    private static void generatePublicHealthData(EcoSystem system, Faker faker) {
+        PublicDataManager pdm = system.getPublicDataManager();
+        Random random = new Random();
+        
+        List<RegionData> regionDataList = new ArrayList<>();
+        String[] regions = {"North District", "South District", "East District", "West District", "Central District"};
+        
+        for (String regionName : regions) {
+            int totalPatients = faker.number().numberBetween(50, 200);
+            int discharged = (int) (totalPatients * (0.6 + random.nextDouble() * 0.3));
+            int hospitalized = (int) (totalPatients * (0.1 + random.nextDouble() * 0.2));
+            int deaths = (int) (totalPatients * (0.01 + random.nextDouble() * 0.04));
+            double averageLengthOfStay = 3.0 + random.nextDouble() * 7.0;
+            
+            int feverCount = (int) (totalPatients * (0.3 + random.nextDouble() * 0.4));
+            int coughCount = (int) (totalPatients * (0.2 + random.nextDouble() * 0.3));
+            int chestTightnessCount = (int) (totalPatients * (0.1 + random.nextDouble() * 0.2));
+            int comaCount = (int) (totalPatients * (0.01 + random.nextDouble() * 0.04));
+            
+            SymptomData symptomData = new SymptomData(regionName, feverCount, coughCount, 
+                                                    chestTightnessCount, comaCount);
+            
+            RegionData regionData = new RegionData(regionName, totalPatients, discharged, 
+                                                 hospitalized, deaths, averageLengthOfStay, symptomData);
+            
+            regionDataList.add(regionData);
+        }
+        
+        HealthStatistics healthStats = new HealthStatistics(regionDataList, "7 days", new Date());
+        pdm.setCurrentHealthStatistics(healthStats);
+        
+        generateHealthDataForTimeSpans(pdm, regionDataList, faker);
+    }
+    
+    private static void generateHealthDataForTimeSpans(PublicDataManager pdm, List<RegionData> baseData, Faker faker) {
+        String[] timeSpans = {"3 days", "7 days", "30 days"};
+        
+        for (String timeSpan : timeSpans) {
+            List<RegionData> adjustedData = new ArrayList<>();
+            for (RegionData region : baseData) {
+                double multiplier = getTimeSpanMultiplier(timeSpan);
+                
+                int adjustedTotal = (int) (region.getTotalPatients() * multiplier);
+                int adjustedDischarged = (int) (region.getDischargedCount() * multiplier);
+                int adjustedHospitalized = (int) (region.getHospitalizedCount() * multiplier);
+                int adjustedDeaths = (int) (region.getDeathsCount() * multiplier);
+                
+                SymptomData originalSymptoms = region.getSymptomSummary();
+                SymptomData adjustedSymptoms = new SymptomData(
+                    region.getRegionName(),
+                    (int) (originalSymptoms.getFeverCount() * multiplier),
+                    (int) (originalSymptoms.getCoughCount() * multiplier),
+                    (int) (originalSymptoms.getChestTightnessCount() * multiplier),
+                    (int) (originalSymptoms.getComaCount() * multiplier)
+                );
+                
+                RegionData adjustedRegion = new RegionData(
+                    region.getRegionName(),
+                    adjustedTotal,
+                    adjustedDischarged,
+                    adjustedHospitalized,
+                    adjustedDeaths,
+                    region.getAverageLengthOfStay(),
+                    adjustedSymptoms
+                );
+                
+                adjustedData.add(adjustedRegion);
+            }
+            
+            HealthStatistics timeSpanStats = new HealthStatistics(adjustedData, timeSpan, new Date());
+            pdm.addTimeSpanData(timeSpan, timeSpanStats);
+        }
+    }
+    
+    private static double getTimeSpanMultiplier(String timeSpan) {
+        switch (timeSpan) {
+            case "3 days": return 0.4;
+            case "7 days": return 1.0;
+            case "30 days": return 4.2;
+            default: return 1.0;
+        }
+    }
+    
+    private static void generateOrganizationReferenceData(EcoSystem system) {
+        PublicDataManager pdm = system.getPublicDataManager();
+        
+        List<String> standardOrganizations = Arrays.asList(
+            "Emergency Response Unit",
+            "Clinical Services Unit", 
+            "Supply Chain Management",
+            "Operations Support Unit",
+            "Disaster Relief Team",
+            "Community Health Center",
+            "Medical Research Division",
+            "Public Health Department"
+        );
+        
+        pdm.setStandardOrganizationList(standardOrganizations);
+    }
+
 
 }

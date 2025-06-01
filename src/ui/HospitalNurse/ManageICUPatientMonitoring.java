@@ -4,11 +4,18 @@
  */
 package ui.HospitalNurse;
 
-import Model.Organization.Organization;
+import Model.Organization.ClinicalServicesUnit;
+import Model.Patient.Patient;
 import Model.Patient.PatientDirectory;
+import Model.Supplies.ICUbed;
 import Model.Supplies.ICUbedCatalog;
 import Model.User.UserAccount;
+import Model.WorkQueue.ICURequest;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -17,20 +24,63 @@ import javax.swing.JPanel;
 public class ManageICUPatientMonitoring extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
-    private Organization organization;
+    private ClinicalServicesUnit organization;
     private UserAccount userAccount;
-    private PatientDirectory patientDirectory; // List of patients to monitor
-    private ICUbedCatalog icuBedCatalog; // Catalog of ICU beds for monitoring
+    private PatientDirectory patientDirectory;
+    private ICUbedCatalog icuBedCatalog;
 
-    public ManageICUPatientMonitoring(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory, ICUbedCatalog icuBedCatalog) {
+    public ManageICUPatientMonitoring(JPanel userProcessContainer, ClinicalServicesUnit organization, UserAccount userAccount, PatientDirectory patientDirectory, ICUbedCatalog icuBedCatalog) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.patientDirectory = patientDirectory;
         this.icuBedCatalog = icuBedCatalog;
         initComponents();
+        initializeData();
+    }
+    
+        private void populateICUPatientTable() {
+        DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
+        model.setRowCount(0); // 清空现有数据
+        
+        // 设置正确的列标题
+        model.setColumnIdentifiers(new String[]{
+            "Patient ID", "Patient Name", "Bed ID", "Admission Date", "ICU Reason"
+        });
+        
+        // 获取所有占用的ICU床位
+        List<ICUbed> icuBeds = icuBedCatalog.getIcuBedList();
+        for (ICUbed bed : icuBeds) {
+            if (bed.isOccupied() && bed.getPatient() != null) {
+                Patient patient = bed.getPatient();
+                model.addRow(new Object[]{
+                    patient.getPatientId(),
+                    patient.getName(),
+                    bed.getBedId(),
+                    bed.getAdmissionDate(),
+                    "ICU Treatment" // 可以从ICURequest中获取具体原因
+                });
+            }
+        }
     }
 
+    private void initializeData() {
+        // 设置紧急程度下拉框
+        CmbcreateUrgency.removeAllItems();
+        CmbcreateUrgency.addItem("Low");
+        CmbcreateUrgency.addItem("Medium");
+        CmbcreateUrgency.addItem("High");
+        CmbcreateUrgency.addItem("Critical");
+        
+        CmbviewUrgency.removeAllItems();
+        CmbviewUrgency.addItem("Low");
+        CmbviewUrgency.addItem("Medium");
+        CmbviewUrgency.addItem("High");
+        CmbviewUrgency.addItem("Critical");
+        
+        // 填充表格数据
+        populateICUPatientTable();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,6 +94,35 @@ public class ManageICUPatientMonitoring extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDonationHistory = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
+        btnModify = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        CmbviewUrgency = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        btnCreate = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        txtcreateDiagnosis = new javax.swing.JTextField();
+        txtcreateAdmissionDate = new javax.swing.JTextField();
+        txtcreateTreatmentPlan = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        txtviewICUReason = new javax.swing.JTextField();
+        txtIcreateICUReason = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        CmbcreateUrgency = new javax.swing.JComboBox<>();
+        txtviewTreatmentPlan = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        txtviewAdmissionDate = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        txtviewDiagnosis = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        txtcreatePatientName = new javax.swing.JTextField();
+        txtviewPatientName = new javax.swing.JTextField();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Manage ICU Patient Monitoring");
@@ -67,10 +146,86 @@ public class ManageICUPatientMonitoring extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
+        tblDonationHistory.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                tblDonationHistoryAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
         jScrollPane1.setViewportView(tblDonationHistory);
 
         jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel9.setText("ICU Patient List:");
+
+        btnModify.setText("Modify");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModifyActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel16.setText("View Details:");
+
+        jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel15.setText("ICU Reason:");
+
+        CmbviewUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+
+        jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel2.setText("Patient Name:");
+
+        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel3.setText("Admission Date:");
+
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel7.setText("Treatment Plan:");
+
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel5.setText("Create Report:");
+
+        jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel14.setText("Diagnosis:");
+
+        jLabel13.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel13.setText("Urgency:");
+
+        CmbcreateUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+
+        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel4.setText("Urgency:");
+
+        jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel6.setText("Diagnosis:");
+
+        jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel8.setText("ICU Reason:");
+
+        jLabel12.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel12.setText("Treatment Plan:");
+
+        jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel11.setText("Admission Date:");
+
+        jLabel10.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel10.setText("Patient Name:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -80,13 +235,74 @@ public class ManageICUPatientMonitoring extends javax.swing.JPanel {
                 .addContainerGap(139, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 787, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(105, 105, 105))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(314, 314, 314))))
+                        .addGap(314, 314, 314))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGap(52, 52, 52)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtcreateDiagnosis, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(txtcreateTreatmentPlan, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(81, 81, 81)
+                                            .addComponent(txtIcreateICUReason, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(btnCreate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addGap(81, 81, 81)
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(txtcreateAdmissionDate, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(CmbcreateUrgency, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(txtcreatePatientName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel16)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGap(52, 52, 52)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtviewDiagnosis)
+                                                .addComponent(txtviewTreatmentPlan, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(81, 81, 81)
+                                            .addComponent(txtviewICUReason, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGap(81, 81, 81)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtviewAdmissionDate)
+                                                .addComponent(CmbviewUrgency, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(txtviewPatientName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(btnModify, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel9)
+                            .addComponent(jScrollPane1))
+                        .addGap(96, 96, 96))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,15 +313,260 @@ public class ManageICUPatientMonitoring extends javax.swing.JPanel {
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(439, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtcreateAdmissionDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(CmbcreateUrgency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(txtIcreateICUReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(txtcreateDiagnosis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(txtcreateTreatmentPlan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(txtviewPatientName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtcreatePatientName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtviewAdmissionDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(CmbviewUrgency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel15)
+                            .addComponent(txtviewICUReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel14)
+                            .addComponent(txtviewDiagnosis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(txtviewTreatmentPlan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnCreate)
+                    .addComponent(btnModify))
+                .addGap(25, 25, 25)
+                .addComponent(btnBack)
+                .addContainerGap(141, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        int selectedRow = tblDonationHistory.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "请先选择要修改的患者记录", "未选择", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            // 获取选中患者信息
+            String patientId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            Patient patient = findPatientById(patientId);
+            
+            if (patient == null) {
+                JOptionPane.showMessageDialog(this, 
+                    "找不到患者信息", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 获取修改后的数据
+            String newDiagnosis = txtviewDiagnosis.getText().trim();
+            String newTreatmentPlan = txtviewTreatmentPlan.getText().trim();
+            String newICUReason = txtviewICUReason.getText().trim();
+            
+            if (!newDiagnosis.isEmpty() && !newTreatmentPlan.isEmpty()) {
+                // 更新医疗记录
+                patient.addMedicationAdministration(newDiagnosis, newTreatmentPlan);
+                
+                // 刷新表格
+                populateICUPatientTable();
+                
+                JOptionPane.showMessageDialog(this, 
+                    "ICU监护信息更新成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "请填写诊断和治疗计划", "输入错误", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "修改信息时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnModifyActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        userProcessContainer.remove(this);
+        ((java.awt.CardLayout) userProcessContainer.getLayout()).previous(userProcessContainer);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        try {
+            // 获取输入数据
+            String patientName = txtcreatePatientName.getText().trim();
+            String admissionDate = txtcreateAdmissionDate.getText().trim();
+            String urgency = (String) CmbcreateUrgency.getSelectedItem();
+            String icuReason = txtIcreateICUReason.getText().trim();
+            String diagnosis = txtcreateDiagnosis.getText().trim();
+            String treatmentPlan = txtcreateTreatmentPlan.getText().trim();
+            
+            // 验证输入
+            if (patientName.isEmpty() || admissionDate.isEmpty() || 
+                icuReason.isEmpty() || diagnosis.isEmpty() || treatmentPlan.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "请填写所有必需字段", "输入错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 查找患者
+            Patient patient = patientDirectory.findPatientByName(patientName);
+            if (patient == null) {
+                int choice = JOptionPane.showConfirmDialog(this,
+                    "患者不存在，是否创建新患者？", "确认", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    patient = patientDirectory.createPatient(patientName, "Unknown", 0, admissionDate);
+                } else {
+                    return;
+                }
+            }
+            
+            // 查找可用的ICU床位
+            List<ICUbed> availableBeds = icuBedCatalog.findAvailableIcuBeds();
+            if (availableBeds.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "没有可用的ICU床位", "床位不足", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // 分配床位
+            ICUbed assignedBed = availableBeds.get(0);
+            assignedBed.admitPatient(patient, new Date());
+            
+            // 创建ICU请求记录
+            ICURequest icuRequest = new ICURequest(patient, icuReason);
+            icuRequest.assignBed(assignedBed.getBedId(), new Date());
+            icuRequest.setAttendingPhysician(userAccount.getEmployee().getName());
+            
+            // 添加医疗记录
+            patient.addMedicationAdministration(diagnosis, treatmentPlan);
+            
+            // 刷新表格
+            populateICUPatientTable();
+            
+            // 清空输入字段
+            clearCreateFields();
+            
+            JOptionPane.showMessageDialog(this, 
+                "ICU监护报告创建成功！\n床位: " + assignedBed.getBedId(), 
+                "成功", JOptionPane.INFORMATION_MESSAGE);
+                
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "创建报告时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void tblDonationHistoryAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_tblDonationHistoryAncestorAdded
+         int selectedRow = tblDonationHistory.getSelectedRow();
+        if (selectedRow != -1) {
+            // 获取选中行的数据
+            String patientId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            String patientName = (String) tblDonationHistory.getValueAt(selectedRow, 1);
+            String bedId = (String) tblDonationHistory.getValueAt(selectedRow, 2);
+            String admissionDate = tblDonationHistory.getValueAt(selectedRow, 3).toString();
+            String icuReason = (String) tblDonationHistory.getValueAt(selectedRow, 4);
+            
+            // 填充查看详情区域
+            txtviewPatientName.setText(patientName);
+            txtviewAdmissionDate.setText(admissionDate);
+            txtviewICUReason.setText(icuReason);
+            
+            // 从患者医疗记录中获取最新的诊断和治疗计划
+            Patient patient = findPatientById(patientId);
+            if (patient != null && !patient.getMedicalRecord().getMedicalHistory().isEmpty()) {
+                var latestEntry = patient.getMedicalRecord().getMedicalHistory()
+                    .get(patient.getMedicalRecord().getMedicalHistory().size() - 1);
+                txtviewDiagnosis.setText(latestEntry.getDiagnosis());
+                txtviewTreatmentPlan.setText(latestEntry.getTreatment());
+            }
+        }
+    }//GEN-LAST:event_tblDonationHistoryAncestorAdded
+    private Patient findPatientById(String patientId) {
+        for (Patient patient : patientDirectory.getPatientList()) {
+            if (patient.getPatientId().equals(patientId)) {
+                return patient;
+            }
+        }
+        return null;
+    }
+    
+    private void clearCreateFields() {
+        txtcreatePatientName.setText("");
+        txtcreateAdmissionDate.setText("");
+        txtIcreateICUReason.setText("");
+        txtcreateDiagnosis.setText("");
+        txtcreateTreatmentPlan.setText("");
+        CmbcreateUrgency.setSelectedIndex(0);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> CmbcreateUrgency;
+    private javax.swing.JComboBox<String> CmbviewUrgency;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnCreate;
+    private javax.swing.JButton btnModify;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblDonationHistory;
+    private javax.swing.JTextField txtIcreateICUReason;
+    private javax.swing.JTextField txtcreateAdmissionDate;
+    private javax.swing.JTextField txtcreateDiagnosis;
+    private javax.swing.JTextField txtcreatePatientName;
+    private javax.swing.JTextField txtcreateTreatmentPlan;
+    private javax.swing.JTextField txtviewAdmissionDate;
+    private javax.swing.JTextField txtviewDiagnosis;
+    private javax.swing.JTextField txtviewICUReason;
+    private javax.swing.JTextField txtviewPatientName;
+    private javax.swing.JTextField txtviewTreatmentPlan;
     // End of variables declaration//GEN-END:variables
 }

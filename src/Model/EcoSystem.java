@@ -7,25 +7,28 @@ package Model;
 import Model.Network.Network;
 import Model.Network.NetworkDirectory;
 import Model.Personnel.Admin;
+import Model.Personnel.PublicDataManager;
+import Model.PublicData.HealthStatistics;
 import Model.User.UserAccountDirectory;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author tiankaining
  */
 public class EcoSystem {
-    private static EcoSystem business; // 单例
+    private static EcoSystem business;
     private NetworkDirectory networkDirectory;
     private UserAccountDirectory userAccountDirectory;
-    private Admin admin; // 系统管理员账号
+    private Admin admin;
+    private PublicDataManager publicDataManager; // 改为使用PublicDataManager
 
-    // 构造器私有化
     public EcoSystem() {
         networkDirectory = new NetworkDirectory();
         this.userAccountDirectory = new UserAccountDirectory();
     }
 
-    // 获取 EcoSystem 单例
     public static EcoSystem getInstance() {
         if (business == null) {
             business = new EcoSystem();
@@ -75,6 +78,14 @@ public class EcoSystem {
 
     public void setUserAccountDirectory(UserAccountDirectory UserAccountDirectory) {
         this.userAccountDirectory = UserAccountDirectory;
+    }
+
+    public PublicDataManager getPublicDataManager() {
+        return publicDataManager;
+    }
+
+    public void setPublicDataManager(PublicDataManager publicDataManager) {
+        this.publicDataManager = publicDataManager;
     }
     
     

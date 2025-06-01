@@ -9,8 +9,12 @@ import Model.User.UserAccount;
 import Model.Supplies.DonationCatalog;
 import Model.EcoSystem; // Needed for BrowsePublicData
 import Model.Organization.DonationManagementUnit;
+import Model.Supplies.Donation;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -155,32 +159,104 @@ public class DonationCoordinatorWorkAreaPanel extends javax.swing.JPanel {
 
     private void btnSubmitDonationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitDonationsActionPerformed
         // Navigate to SubmitDonation
-        userProcessContainer.add("SubmitDonation", contentPanel.getComponent(0));
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    SubmitDonation submitPanel = new SubmitDonation(userProcessContainer, null, userAccount, donationManagementUnit.getDonationRecords());
+    userProcessContainer.add("SubmitDonation", submitPanel);
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.show(userProcessContainer, "SubmitDonation");
     }//GEN-LAST:event_btnSubmitDonationsActionPerformed
 
     private void btnViewDonationHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDonationHistoryActionPerformed
         // Navigate to ViewDonationHistory
-        userProcessContainer.add("ViewDonationHistory", contentPanel.getComponent(1));
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    ViewDonationHistory historyPanel = new ViewDonationHistory(userProcessContainer, null, userAccount, donationManagementUnit.getDonationRecords());
+    userProcessContainer.add("ViewDonationHistory", historyPanel);
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.show(userProcessContainer, "ViewDonationHistory");
     }//GEN-LAST:event_btnViewDonationHistoryActionPerformed
 
     private void btnBrowsePublicDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowsePublicDataActionPerformed
         // Navigate to BrowsePublicData
-        userProcessContainer.add("BrowsePublicData", contentPanel.getComponent(3));
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    BrowsePublicData browsePanel = new BrowsePublicData(userProcessContainer, null, userAccount, system);
+    userProcessContainer.add("BrowsePublicData", browsePanel);
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.show(userProcessContainer, "BrowsePublicData");
     }//GEN-LAST:event_btnBrowsePublicDataActionPerformed
 
     private void btnManageDonationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageDonationsActionPerformed
         // Navigate to ManageDonations
-        userProcessContainer.add("ManageDonations", contentPanel.getComponent(2));
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    ManageDonations managePanel = new ManageDonations(userProcessContainer, null, userAccount, donationManagementUnit.getDonationRecords());
+    userProcessContainer.add("ManageDonations", managePanel);
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.show(userProcessContainer, "ManageDonations");
     }//GEN-LAST:event_btnManageDonationsActionPerformed
 
     private void btnDonationStatsChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDonationStatsChartActionPerformed
-        
+        generateDonationStatsChart();
     }//GEN-LAST:event_btnDonationStatsChartActionPerformed
 
+private void generateDonationStatsChart() {
+    DonationCatalog donationCatalog = donationManagementUnit.getDonationRecords();
+    
+    int totalDonations = donationCatalog.size();
+    double totalMonetaryAmount = 0.0;
+    int totalItemDonations = 0;
+    int processedDonations = 0;
+    int pendingDonations = 0;
+    
+    for (Donation donation : donationCatalog.getDonationList()) {
+        if (donation.getAmount() > 0) {
+            totalMonetaryAmount += donation.getAmount();
+        } else {
+            totalItemDonations++;
+        }
+        
+        String status = donation.getStatus();
+        if ("Processed".equals(status) || "Distributed".equals(status)) {
+            processedDonations++;
+        } else if ("Received".equals(status) || "Pending".equals(status)) {
+            pendingDonations++;
+        }
+    }
+    
+    StringBuilder chartData = new StringBuilder();
+    chartData.append("=== DONATION STATISTICS CHART ===\n\n");
+    chartData.append("📊 OVERVIEW:\n");
+    chartData.append("Total Donations: ").append(totalDonations).append("\n");
+    chartData.append("Monetary Donations: $").append(String.format("%.2f", totalMonetaryAmount)).append("\n");
+    chartData.append("Item Donations: ").append(totalItemDonations).append(" donations\n\n");
+    
+    chartData.append("📈 STATUS BREAKDOWN:\n");
+    chartData.append("Processed: ").append(processedDonations).append(" (")
+             .append(totalDonations > 0 ? String.format("%.1f%%", (processedDonations * 100.0 / totalDonations)) : "0%")
+             .append(")\n");
+    chartData.append("Pending: ").append(pendingDonations).append(" (")
+             .append(totalDonations > 0 ? String.format("%.1f%%", (pendingDonations * 100.0 / totalDonations)) : "0%")
+             .append(")\n\n");
+    
+    chartData.append("🕒 RECENT DONATIONS:\n");
+    List<Donation> recentDonations = getRecentDonations(5);
+    for (int i = 0; i < recentDonations.size(); i++) {
+        Donation donation = recentDonations.get(i);
+        chartData.append((i + 1)).append(". ").append(donation.getDonor().getName())
+                 .append(" - ");
+        if (donation.getAmount() > 0) {
+            chartData.append("$").append(donation.getAmount());
+        } else {
+            chartData.append(donation.getDonatedItems().size()).append(" items");
+        }
+        chartData.append(" (").append(donation.getStatus()).append(")\n");
+    }
+    
+    JOptionPane.showMessageDialog(this, chartData.toString(), 
+        "Donation Statistics Chart", JOptionPane.INFORMATION_MESSAGE);
+}
+private List<Donation> getRecentDonations(int count) {
+    List<Donation> allDonations = new ArrayList<>(donationManagementUnit.getDonationRecords().getDonationList());
+    
+    allDonations.sort((d1, d2) -> d2.getDonationDate().compareTo(d1.getDonationDate()));
+    
+    int size = Math.min(count, allDonations.size());
+    return allDonations.subList(0, size);
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBrowsePublicData;

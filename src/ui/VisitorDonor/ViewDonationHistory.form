@@ -29,42 +29,44 @@
                           <Component id="btnBack" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
                           <Component id="btnViewDetails" alignment="0" min="-2" pref="129" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel8" min="-2" pref="124" max="-2" attributes="0"/>
-                                          <EmptySpace max="32767" attributes="0"/>
-                                          <Component id="txtItemName" min="-2" pref="259" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel8" min="-2" pref="124" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="txtItemName" min="-2" pref="259" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel2" min="-2" pref="124" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
+                                      <Component id="txtDonorName" min="-2" pref="259" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="jLabel7" alignment="1" min="-2" pref="153" max="-2" attributes="0"/>
+                                          <Component id="jLabel6" alignment="1" min="-2" pref="153" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel2" min="-2" pref="124" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
-                                          <Component id="txtDonorName" min="-2" pref="259" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                              <Component id="jLabel7" alignment="1" min="-2" pref="153" max="-2" attributes="0"/>
-                                              <Component id="jLabel6" alignment="1" min="-2" pref="153" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace min="52" max="32767" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="txtQuantity" alignment="1" min="-2" pref="259" max="-2" attributes="0"/>
-                                              <Component id="jTextField6" alignment="1" min="-2" pref="259" max="-2" attributes="0"/>
-                                          </Group>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jLabel3" alignment="0" min="-2" pref="124" max="-2" attributes="0"/>
-                                              <Component id="jLabel4" alignment="0" min="-2" pref="124" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="txtContactEmail" pref="259" max="32767" attributes="0"/>
-                                              <Component id="CmbDonationType" max="32767" attributes="0"/>
-                                          </Group>
+                                      <EmptySpace min="52" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="txtQuantity" alignment="1" min="-2" pref="259" max="-2" attributes="0"/>
+                                          <Component id="txtNotes" alignment="1" min="-2" pref="259" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <Component id="btnExportToCSV" min="-2" pref="129" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel3" alignment="0" min="-2" pref="124" max="-2" attributes="0"/>
+                                          <Component id="jLabel4" alignment="0" min="-2" pref="124" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="txtContactEmail" pref="259" max="32767" attributes="0"/>
+                                          <Component id="CmbDonationType" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="btnExportToCSV" min="-2" pref="129" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="btnModify" min="-2" pref="129" max="-2" attributes="0"/>
+                                  </Group>
                                   <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
@@ -121,7 +123,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField6" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtNotes" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="picDonation" min="-2" pref="200" max="-2" attributes="0"/>
@@ -130,6 +132,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnExportToCSV" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnSendEmail" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnModify" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Component id="btnBack" min="-2" max="-2" attributes="0"/>
@@ -172,6 +175,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="View Details"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewDetailsActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnBack">
       <Properties>
@@ -193,16 +199,19 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Send Email"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSendEmailActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnExportToCSV">
       <Properties>
         <Property name="text" type="java.lang.String" value="Export to csv"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExportToCSVActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtItemName">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtItemNameActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtContactEmail">
     </Component>
@@ -231,14 +240,8 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtQuantity">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtQuantityActionPerformed"/>
-      </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField6">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField6ActionPerformed"/>
-      </Events>
+    <Component class="javax.swing.JTextField" name="txtNotes">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -289,6 +292,14 @@
         </Property>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnModify">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Modify"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnModifyActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

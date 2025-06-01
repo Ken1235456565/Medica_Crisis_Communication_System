@@ -7,7 +7,11 @@ package ui.EmergencyDispatcher;
 import Model.EcoSystem;
 import Model.Organization.Organization;
 import Model.User.UserAccount;
+import Model.WorkQueue.EmergencyWorkRequest;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import java.awt.CardLayout;
+import java.util.Date;
 
 /**
  *
@@ -26,8 +30,18 @@ public class RequestCreate extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.system = system;
         initComponents();
+        
+        generateRequestID();
+        setCurrentTime();
     }
 
+    private void generateRequestID() {
+        txtRequestID.setText("REQ" + System.currentTimeMillis());
+    }
+
+    private void setCurrentTime() {
+        txtRequestTime.setText(new Date().toString());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -43,27 +57,27 @@ public class RequestCreate extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtSymptomDescription = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jLabel2 = new javax.swing.JLabel();
+        txtSuppliesNeeded = new javax.swing.JTextArea();
+        piccreateLocation = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        btnModifyRequest = new javax.swing.JButton();
-        btnViewDetail = new javax.swing.JButton();
+        btnSaveRequest = new javax.swing.JButton();
+        btnEmailEmergencyContact = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
-        btnModifyRequest1 = new javax.swing.JButton();
+        btnUploadLocation = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        txtRequestID = new javax.swing.JTextField();
+        txtRequestTime = new javax.swing.JTextField();
+        txtLocation = new javax.swing.JTextField();
+        txtRequester = new javax.swing.JTextField();
+        txtPhone = new javax.swing.JTextField();
+        txtEmergencyContact = new javax.swing.JTextField();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Task Create");
@@ -80,32 +94,47 @@ public class RequestCreate extends javax.swing.JPanel {
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel7.setText("Supplies needed:");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
+        txtSymptomDescription.setColumns(20);
+        txtSymptomDescription.setRows(5);
+        jScrollPane2.setViewportView(txtSymptomDescription);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane3.setViewportView(jTextArea2);
+        txtSuppliesNeeded.setColumns(20);
+        txtSuppliesNeeded.setRows(5);
+        jScrollPane3.setViewportView(txtSuppliesNeeded);
 
-        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel2.setOpaque(true);
+        piccreateLocation.setBackground(new java.awt.Color(255, 255, 255));
+        piccreateLocation.setOpaque(true);
 
         jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel8.setText("Location:");
 
-        btnModifyRequest.setText("Save Request");
-
-        btnViewDetail.setText("email emergency contact");
-        btnViewDetail.addActionListener(new java.awt.event.ActionListener() {
+        btnSaveRequest.setText("Save Request");
+        btnSaveRequest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewDetailActionPerformed(evt);
+                btnSaveRequestActionPerformed(evt);
+            }
+        });
+
+        btnEmailEmergencyContact.setText("Email Emergency Contact");
+        btnEmailEmergencyContact.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEmailEmergencyContactActionPerformed(evt);
             }
         });
 
         btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
-        btnModifyRequest1.setText("Upload location");
+        btnUploadLocation.setText("Upload Location");
+        btnUploadLocation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploadLocationActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel4.setText("Request ID:");
@@ -123,7 +152,7 @@ public class RequestCreate extends javax.swing.JPanel {
         jLabel13.setText("Phone:");
 
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel14.setText("Emergency contact:");
+        jLabel14.setText("Emergency Contact:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -140,8 +169,8 @@ public class RequestCreate extends javax.swing.JPanel {
                                     .addComponent(jLabel13))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                                    .addComponent(jTextField5)))
+                                    .addComponent(txtEmergencyContact, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                                    .addComponent(txtPhone)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel11)
@@ -149,13 +178,13 @@ public class RequestCreate extends javax.swing.JPanel {
                                     .addComponent(jLabel10))
                                 .addGap(93, 93, 93)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField3)
-                                    .addComponent(jTextField4)
-                                    .addComponent(jTextField2)))
+                                    .addComponent(txtLocation)
+                                    .addComponent(txtRequester)
+                                    .addComponent(txtRequestTime)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(114, 114, 114)
-                                .addComponent(jTextField1))
+                                .addComponent(txtRequestID))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
@@ -163,23 +192,23 @@ public class RequestCreate extends javax.swing.JPanel {
                                     .addComponent(jLabel5)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnModifyRequest, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnSaveRequest, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(23, 23, 23)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
                                             .addComponent(jScrollPane2)
-                                            .addComponent(btnViewDetail, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                            .addComponent(btnEmailEmergencyContact, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addGap(0, 1, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnModifyRequest1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnUploadLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(piccreateLocation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(150, 150, 150)))))
@@ -203,27 +232,27 @@ public class RequestCreate extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtRequestID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtRequestTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtRequester, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel13)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtPhone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel14)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtEmergencyContact, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(55, 55, 55)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -234,37 +263,96 @@ public class RequestCreate extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(piccreateLocation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnViewDetail)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnModifyRequest)))
-                    .addComponent(btnModifyRequest1))
+                    .addComponent(btnEmailEmergencyContact)
+                    .addComponent(btnSaveRequest)
+                    .addComponent(btnUploadLocation))
                 .addGap(47, 47, 47)
                 .addComponent(btnBack)
                 .addContainerGap(63, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnViewDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnViewDetailActionPerformed
+    private void btnEmailEmergencyContactActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmailEmergencyContactActionPerformed
+        String emergencyContact = txtEmergencyContact.getText();
+        if (emergencyContact.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter emergency contact information first!", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // 模拟发送邮件
+        String message = "Emergency notification sent to: " + emergencyContact;
+        JOptionPane.showMessageDialog(this, message, "Email Sent", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnEmailEmergencyContactActionPerformed
 
+    private void btnSaveRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveRequestActionPerformed
+        try {
+            String requestID = txtRequestID.getText();
+            String location = txtLocation.getText();
+            String requester = txtRequester.getText();
+            String phone = txtPhone.getText();
+            String emergencyContact = txtEmergencyContact.getText();
+            String symptomDescription = txtSymptomDescription.getText();
+            String suppliesNeeded = txtSuppliesNeeded.getText();
+
+            // 验证必填字段
+            if (location.isEmpty() || requester.isEmpty() || phone.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all required fields!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 创建紧急工作请求
+            EmergencyWorkRequest request = new EmergencyWorkRequest("First Aid Request", location, 3, requester);
+            request.setSender(userAccount);
+            request.setMessage(symptomDescription);
+            request.setSuppliesRequired(suppliesNeeded);
+            request.setEmergencyContact(emergencyContact);
+            request.setContactPhone(phone);
+
+            // 添加到组织工作队列
+            organization.addWorkRequest(request);
+
+            JOptionPane.showMessageDialog(this, "Emergency request created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            
+            // 清空表单
+            clearForm();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error creating request: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSaveRequestActionPerformed
+
+    private void btnUploadLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadLocationActionPerformed
+        JOptionPane.showMessageDialog(this, "Location image upload functionality would be implemented here.", "Upload", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnUploadLocationActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        ((CardLayout)userProcessContainer.getLayout()).first(userProcessContainer);
+    }//GEN-LAST:event_btnBackActionPerformed
+    private void clearForm() {
+        generateRequestID();
+        setCurrentTime();
+        txtLocation.setText("");
+        txtRequester.setText("");
+        txtPhone.setText("");
+        txtEmergencyContact.setText("");
+        txtSymptomDescription.setText("");
+        txtSuppliesNeeded.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnModifyRequest;
-    private javax.swing.JButton btnModifyRequest1;
-    private javax.swing.JButton btnViewDetail;
+    private javax.swing.JButton btnEmailEmergencyContact;
+    private javax.swing.JButton btnSaveRequest;
+    private javax.swing.JButton btnUploadLocation;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -273,13 +361,14 @@ public class RequestCreate extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JLabel piccreateLocation;
+    private javax.swing.JTextField txtEmergencyContact;
+    private javax.swing.JTextField txtLocation;
+    private javax.swing.JTextField txtPhone;
+    private javax.swing.JTextField txtRequestID;
+    private javax.swing.JTextField txtRequestTime;
+    private javax.swing.JTextField txtRequester;
+    private javax.swing.JTextArea txtSuppliesNeeded;
+    private javax.swing.JTextArea txtSymptomDescription;
     // End of variables declaration//GEN-END:variables
 }

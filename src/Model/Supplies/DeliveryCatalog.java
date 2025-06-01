@@ -48,4 +48,17 @@ public class DeliveryCatalog {
         }
         return results;
     }
+public List<Delivery> getDeliveredTasksForUser(String username) {
+    List<Delivery> results = new ArrayList<>();
+    for (Delivery delivery : deliveryList) {
+        if (delivery.getDriverName() != null &&
+            delivery.getDriverName().equals(username) &&
+            delivery.getStatus().equalsIgnoreCase("Delivered")) {
+            results.add(delivery);
+        }
+    }
+    return results;
+}
+
+
 }

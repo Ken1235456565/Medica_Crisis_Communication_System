@@ -48,7 +48,7 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
         // Add sub-panels to the contentPanel
         contentPanel.add("MissionManagement", new MissionManagement(userProcessContainer, organization, userAccount, missionCatalog));
         contentPanel.add("UpdateMissionStatus", new UpdateMissionStatus(userProcessContainer, organization, userAccount, null)); // Requires a specific missionToUpdate
-        contentPanel.add("ResponderSalaryChart", new ResponderSalaryChart(userProcessContainer, organization, userAccount, employeeDirectory));
+        
         
     }
 
@@ -138,9 +138,7 @@ public class EmergencyResponderWorkAreaPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnManageMissionsActionPerformed
 
     private void btnResponderStatsChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResponderStatsChartActionPerformed
-        // Navigate to ResponderSalaryChart
-        userProcessContainer.add("ResponderStatsChart", contentPanel.getComponent(2));
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+
     }//GEN-LAST:event_btnResponderStatsChartActionPerformed
 
     private void btnUpdateMissionStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateMissionStatusActionPerformed

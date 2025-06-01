@@ -3,6 +3,7 @@ package Model.Organization;
 import Model.Employee.Employee;
 import Model.Personnel.Admin;
 import Model.Personnel.Donor;
+import Model.Supplies.DonatedItem;
 import Model.Supplies.Donation;
 import Model.Supplies.DonationCatalog;
 import Model.User.UserAccount;
@@ -122,7 +123,7 @@ public class DonationManagementUnit extends Organization {
     }
     
     // Record item donation
-    public Donation recordItemDonation(Donor donor, List<Donation.DonatedItem> items, String purpose) {
+    public Donation recordItemDonation(Donor donor, List<DonatedItem> items, String purpose) {
         Donation donation = new Donation(donor, items, purpose);
         donationRecords.addDonation(donation);
         
@@ -130,7 +131,7 @@ public class DonationManagementUnit extends Organization {
         donor.addDonation(donation);
         
         // Update donation inventory
-        for (Donation.DonatedItem item : items) {
+        for (DonatedItem item : items) {
             String itemName = item.getName();
             int quantity = item.getQuantity();
             

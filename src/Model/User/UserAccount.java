@@ -9,6 +9,7 @@ import Model.Personnel.Donor;
 
 public class UserAccount {
 
+    private String userId;
     private String username;
     private String password;
     private Role role;
@@ -28,6 +29,19 @@ public class UserAccount {
         this.employee = employee;
     }
     
+    // 缺少的方法：
+    public String getUserId() { return userId; }
+    public void setRole(Role role) { this.role = role; }
+    
+    // 构造函数
+    public UserAccount(String userId, String username, String password, Employee employee, Role role) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.employee = employee;
+        this.role = role;
+    }
+    
     public UserAccount(String username, String password, Role role, String organization, Person person) {
     this.username = username;
     this.password = password;
@@ -37,7 +51,7 @@ public class UserAccount {
     if (person instanceof Employee) {
         this.employee = (Employee) person;
     } else if (person instanceof Donor) {
-        this.donor = (Donor) person; // 👉 你可以加这个字段来引用
+        this.donor = (Donor) person; 
     }
 }
 

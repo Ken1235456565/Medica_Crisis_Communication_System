@@ -5,10 +5,14 @@
 package ui.EmergencyResponder;
 
 import Model.Organization.Organization;
-import Model.Supplies.DeliveryCatalog;
 import Model.User.UserAccount;
 import Model.WorkQueue.MissionCatalog;
+import Model.WorkQueue.MissionStats;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.awt.CardLayout;
+import java.util.Date;
 
 /**
  *
@@ -20,6 +24,7 @@ public class MissionManagement extends javax.swing.JPanel {
     private Organization organization;
     private UserAccount userAccount;
     private MissionCatalog missionCatalog;
+    private DefaultTableModel tableModel;
 
     public MissionManagement(JPanel userProcessContainer, Organization organization, UserAccount userAccount, MissionCatalog missionCatalog) {
         this.userProcessContainer = userProcessContainer;
@@ -27,8 +32,30 @@ public class MissionManagement extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.missionCatalog = missionCatalog;
         initComponents();
+        
+        initializeTable();
+        loadMissionData();
+    }
+    private void initializeTable() {
+        String[] columnNames = {"Mission ID", "Location", "Type", "Description", "Responder"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        tblManageMissions.setModel(tableModel);
     }
 
+    private void loadMissionData() {
+        tableModel.setRowCount(0);
+        
+        for (MissionStats mission : missionCatalog.getMissionList()) {
+            Object[] row = {
+                mission.getRequestId(),
+                mission.getLocation(),
+                mission.getMissionType(),
+                mission.getMessage(),
+                mission.getReceiver() != null ? mission.getReceiver().getName() : "Unassigned"
+            };
+            tableModel.addRow(row);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,43 +67,32 @@ public class MissionManagement extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        txtDonorName = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        txtContactEmail = new javax.swing.JTextField();
-        picEnterpriseLOGO = new javax.swing.JLabel();
-        btnUploadPicture = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         btnExportToCSV = new javax.swing.JButton();
         btnViewDetails = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
-        txtContactEmail1 = new javax.swing.JTextField();
-        txtDonorName1 = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        txtContactEmail2 = new javax.swing.JTextField();
-        txtDonorName2 = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtContactEmail3 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblManageOrganization = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
-        txtDonorName3 = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        tblManageMissions = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
+        txtResponder = new javax.swing.JTextField();
+        txtActionTaken = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtType = new javax.swing.JTextField();
+        txtStatus = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtSuppliesUsed = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txtNotes = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtContactEmail = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        txtMissionID = new javax.swing.JTextField();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Manage Missions");
-
-        jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel11.setText("Contact Email :");
-
-        picEnterpriseLOGO.setBackground(new java.awt.Color(255, 255, 255));
-        picEnterpriseLOGO.setOpaque(true);
-
-        btnUploadPicture.setText("Upload Picture");
 
         btnBack.setText("Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -86,8 +102,18 @@ public class MissionManagement extends javax.swing.JPanel {
         });
 
         btnExportToCSV.setText("Export to csv");
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToCSVActionPerformed(evt);
+            }
+        });
 
         btnViewDetails.setText("View Details");
+        btnViewDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDetailsActionPerformed(evt);
+            }
+        });
 
         btnSave.setText("Save");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -96,22 +122,10 @@ public class MissionManagement extends javax.swing.JPanel {
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel6.setText("Type:");
-
-        jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel7.setText("Description:");
-
-        jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel8.setText("Manager: ");
-
-        jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel9.setText("Location:");
-
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel5.setText("View Detail");
+        jLabel5.setText("Create Detail");
 
-        tblManageOrganization.setModel(new javax.swing.table.DefaultTableModel(
+        tblManageMissions.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -122,19 +136,31 @@ public class MissionManagement extends javax.swing.JPanel {
                 "Mission ID", "Location", "Type", "Description", "Responder"
             }
         ));
-        jScrollPane1.setViewportView(tblManageOrganization);
+        jScrollPane1.setViewportView(tblManageMissions);
 
-        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel3.setText("Enterprise ID:");
+        jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel8.setText("Responder: ");
 
-        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel4.setText("Enterprise Name:");
+        jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel7.setText("Status:");
+
+        jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel6.setText("Type:");
 
         jLabel10.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel10.setText("Contact Number:");
+        jLabel10.setText("Supplies Used:");
 
-        jLabel12.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel12.setText("View Location");
+        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel4.setText("Location:");
+
+        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel3.setText("Mission ID:");
+
+        jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel9.setText("Action Taken:");
+
+        jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel11.setText("Notes:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -147,31 +173,35 @@ public class MissionManagement extends javax.swing.JPanel {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(73, 73, 73)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel12)
-                                .addGap(196, 196, 196))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52)
+                                .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(81, 81, 81)
-                                        .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtMissionID, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(81, 81, 81)
-                                                .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(81, 81, 81)
-                                                .addComponent(txtContactEmail1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(81, 81, 81)
@@ -180,31 +210,22 @@ public class MissionManagement extends javax.swing.JPanel {
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(81, 81, 81)
-                                                .addComponent(txtDonorName2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(txtResponder, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(81, 81, 81)
-                                                .addComponent(txtContactEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(txtActionTaken, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(81, 81, 81)
-                                                .addComponent(txtDonorName3, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(txtSuppliesUsed, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(81, 81, 81)
-                                                .addComponent(txtContactEmail3, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(btnSave, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(picEnterpriseLOGO, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnUploadPicture, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                                .addComponent(txtNotes, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap(82, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -219,49 +240,43 @@ public class MissionManagement extends javax.swing.JPanel {
                     .addComponent(btnViewDetails)
                     .addComponent(btnExportToCSV))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContactEmail1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(txtDonorName2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContactEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(txtDonorName3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContactEmail3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11)))
-                    .addComponent(picEnterpriseLOGO, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtMissionID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtResponder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtActionTaken, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(txtSuppliesUsed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnUploadPicture)
-                        .addGap(18, 18, 18)
+                        .addGap(41, 41, 41)
                         .addComponent(btnBack))
                     .addComponent(btnSave))
                 .addContainerGap(133, Short.MAX_VALUE))
@@ -269,24 +284,113 @@ public class MissionManagement extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        ((CardLayout)userProcessContainer.getLayout()).first(userProcessContainer);
+    }
+
+    private MissionStats findMissionById(String missionId) {
+        for (MissionStats mission : missionCatalog.getMissionList()) {
+            if (mission.getRequestId().equals(missionId)) {
+                return mission;
+            }
+        }
+        return null;
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
+        try {
+            String missionId = txtMissionID.getText();
+            String location = txtContactEmail.getText(); // 重用Location字段
+            String type = txtType.getText();
+            String status = txtStatus.getText();
+            String responder = txtResponder.getText();
+            String actionTaken = txtActionTaken.getText();
+            String suppliesUsed = txtSuppliesUsed.getText();
+            String notes = txtNotes.getText();
+
+            if (missionId.isEmpty()) {
+                // 创建新任务
+                MissionStats newMission = new MissionStats();
+                newMission.setMissionName("Mission-" + System.currentTimeMillis());
+                newMission.setLocation(location);
+                newMission.setMissionType(type);
+                newMission.setStatus(status);
+                newMission.setMessage(actionTaken);
+                newMission.setMissionStart(new Date());
+                
+                missionCatalog.addMission(newMission);
+                
+                JOptionPane.showMessageDialog(this, "New mission created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // 更新现有任务
+                MissionStats mission = findMissionById(missionId);
+                if (mission != null) {
+                    mission.setLocation(location);
+                    mission.setMissionType(type);
+                    mission.setStatus(status);
+                    mission.setMessage(actionTaken);
+                    
+                    JOptionPane.showMessageDialog(this, "Mission updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            
+            loadMissionData();
+            clearForm();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saving mission: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        ((CardLayout)userProcessContainer.getLayout()).first(userProcessContainer);
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
+
+    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
+        int selectedRow = tblManageMissions.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a mission to view details.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String missionId = (String) tableModel.getValueAt(selectedRow, 0);
+        MissionStats mission = findMissionById(missionId);
+        
+        if (mission != null) {
+            displayMissionInForm(mission);
+        }
+    }//GEN-LAST:event_btnViewDetailsActionPerformed
+
+
+    private void displayMissionInForm(MissionStats mission) {
+        txtMissionID.setText(mission.getRequestId());
+        txtContactEmail.setText(mission.getLocation());
+        txtType.setText(mission.getMissionType());
+        txtStatus.setText(mission.getStatus());
+        txtResponder.setText(mission.getReceiver() != null ? mission.getReceiver().getName() : "");
+        txtActionTaken.setText(mission.getMessage());
+        txtSuppliesUsed.setText(""); // 从mission.getStats()获取
+        txtNotes.setText("Mission notes");
+    }
+
+    private void clearForm() {
+        txtMissionID.setText("");
+        txtContactEmail.setText("");
+        txtType.setText("");
+        txtStatus.setText("");
+        txtResponder.setText("");
+        txtActionTaken.setText("");
+        txtSuppliesUsed.setText("");
+        txtNotes.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnExportToCSV;
     private javax.swing.JButton btnSave;
-    private javax.swing.JButton btnUploadPicture;
     private javax.swing.JButton btnViewDetails;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -295,15 +399,14 @@ public class MissionManagement extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel picEnterpriseLOGO;
-    private javax.swing.JTable tblManageOrganization;
+    private javax.swing.JTable tblManageMissions;
+    private javax.swing.JTextField txtActionTaken;
     private javax.swing.JTextField txtContactEmail;
-    private javax.swing.JTextField txtContactEmail1;
-    private javax.swing.JTextField txtContactEmail2;
-    private javax.swing.JTextField txtContactEmail3;
-    private javax.swing.JTextField txtDonorName;
-    private javax.swing.JTextField txtDonorName1;
-    private javax.swing.JTextField txtDonorName2;
-    private javax.swing.JTextField txtDonorName3;
+    private javax.swing.JTextField txtMissionID;
+    private javax.swing.JTextField txtNotes;
+    private javax.swing.JTextField txtResponder;
+    private javax.swing.JTextField txtStatus;
+    private javax.swing.JTextField txtSuppliesUsed;
+    private javax.swing.JTextField txtType;
     // End of variables declaration//GEN-END:variables
 }

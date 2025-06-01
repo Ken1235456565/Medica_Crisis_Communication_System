@@ -59,9 +59,9 @@
                               </Group>
                           </Group>
                           <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnViewDetails1" alignment="0" min="-2" pref="129" max="-2" attributes="0"/>
+                          <Component id="btnCreate" alignment="0" min="-2" pref="129" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnViewDetails2" min="-2" pref="129" max="-2" attributes="0"/>
+                              <Component id="btnViewDetails" min="-2" pref="129" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                               <Component id="btnExportToCSV" min="-2" pref="129" max="-2" attributes="0"/>
                           </Group>
@@ -104,7 +104,7 @@
                                   <Component id="txtDonorName1" min="-2" pref="190" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="btnViewDetails3" min="-2" pref="129" max="-2" attributes="0"/>
+                          <Component id="btnModify" min="-2" pref="129" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -131,7 +131,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnBack1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnExportToCSV" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnViewDetails2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnViewDetails" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -203,8 +203,8 @@
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnViewDetails1" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnViewDetails3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCreate" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnModify" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Component id="btnBack" min="-2" max="-2" attributes="0"/>
@@ -272,6 +272,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Export to csv"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExportToCSVActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">
       <Properties>
@@ -310,9 +313,6 @@
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtQuantity3">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtQuantity3ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
@@ -322,10 +322,13 @@
         <Property name="text" type="java.lang.String" value="Priority:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewDetails1">
+    <Component class="javax.swing.JButton" name="btnCreate">
       <Properties>
         <Property name="text" type="java.lang.String" value="Create"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
@@ -357,15 +360,15 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtContactEmail1">
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewDetails2">
+    <Component class="javax.swing.JButton" name="btnViewDetails">
       <Properties>
         <Property name="text" type="java.lang.String" value="View Details"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewDetailsActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField6">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField6ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
@@ -384,9 +387,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtItemName1">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtItemName1ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel15">
       <Properties>
@@ -397,9 +397,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField7">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField7ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnBack1">
       <Properties>
@@ -418,9 +415,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtItemName">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtItemNameActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
@@ -431,16 +425,16 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtQuantity2">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtQuantity2ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtContactEmail">
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewDetails3">
+    <Component class="javax.swing.JButton" name="btnModify">
       <Properties>
         <Property name="text" type="java.lang.String" value="Modify"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnModifyActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

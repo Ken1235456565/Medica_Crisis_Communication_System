@@ -28,8 +28,8 @@
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jTextField6" pref="266" max="32767" attributes="0"/>
-                                  <Component id="jTextField5" max="32767" attributes="0"/>
+                                  <Component id="txtEmergencyContact" pref="266" max="32767" attributes="0"/>
+                                  <Component id="txtPhone" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -40,15 +40,15 @@
                               </Group>
                               <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jTextField3" max="32767" attributes="0"/>
-                                  <Component id="jTextField4" max="32767" attributes="0"/>
-                                  <Component id="jTextField2" max="32767" attributes="0"/>
+                                  <Component id="txtLocation" max="32767" attributes="0"/>
+                                  <Component id="txtRequester" max="32767" attributes="0"/>
+                                  <Component id="txtRequestTime" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="114" max="-2" attributes="0"/>
-                              <Component id="jTextField1" max="32767" attributes="0"/>
+                              <Component id="txtRequestID" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -57,7 +57,7 @@
                                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="btnModifyRequest" min="-2" pref="135" max="-2" attributes="0"/>
+                                          <Component id="btnSaveRequest" min="-2" pref="135" max="-2" attributes="0"/>
                                           <Component id="jLabel7" alignment="0" min="-2" pref="186" max="-2" attributes="0"/>
                                           <Component id="jLabel6" alignment="0" min="-2" pref="186" max="-2" attributes="0"/>
                                       </Group>
@@ -65,7 +65,7 @@
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="jScrollPane3" pref="266" max="32767" attributes="0"/>
                                           <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="btnViewDetail" alignment="1" min="-2" pref="202" max="-2" attributes="0"/>
+                                          <Component id="btnEmailEmergencyContact" alignment="1" min="-2" pref="202" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -75,12 +75,12 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="btnModifyRequest1" min="-2" pref="135" max="-2" attributes="0"/>
+                              <Component id="btnUploadLocation" min="-2" pref="135" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace pref="16" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jLabel2" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="piccreateLocation" alignment="1" max="32767" attributes="0"/>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Component id="jLabel8" min="-2" pref="198" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="150" max="-2" attributes="0"/>
@@ -114,32 +114,32 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtRequestID" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtRequestTime" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtLocation" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtRequester" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField5" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtPhone" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField6" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtEmergencyContact" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
@@ -154,13 +154,13 @@
                           <Component id="jScrollPane3" alignment="0" min="-2" pref="81" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="jLabel2" max="32767" attributes="0"/>
+                  <Component id="piccreateLocation" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnViewDetail" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnModifyRequest" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnModifyRequest1" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnEmailEmergencyContact" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnSaveRequest" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnUploadLocation" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
               <Component id="btnBack" min="-2" max="-2" attributes="0"/>
@@ -217,7 +217,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTextArea" name="jTextArea1">
+        <Component class="javax.swing.JTextArea" name="txtSymptomDescription">
           <Properties>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
@@ -232,7 +232,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTextArea" name="jTextArea2">
+        <Component class="javax.swing.JTextArea" name="txtSuppliesNeeded">
           <Properties>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
@@ -240,7 +240,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="jLabel2">
+    <Component class="javax.swing.JLabel" name="piccreateLocation">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -256,28 +256,37 @@
         <Property name="text" type="java.lang.String" value="Location:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnModifyRequest">
+    <Component class="javax.swing.JButton" name="btnSaveRequest">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save Request"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveRequestActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewDetail">
+    <Component class="javax.swing.JButton" name="btnEmailEmergencyContact">
       <Properties>
-        <Property name="text" type="java.lang.String" value="email emergency contact"/>
+        <Property name="text" type="java.lang.String" value="Email Emergency Contact"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewDetailActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEmailEmergencyContactActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnBack">
       <Properties>
         <Property name="text" type="java.lang.String" value="Back"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnModifyRequest1">
+    <Component class="javax.swing.JButton" name="btnUploadLocation">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Upload location"/>
+        <Property name="text" type="java.lang.String" value="Upload Location"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUploadLocationActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
@@ -324,20 +333,20 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Emergency contact:"/>
+        <Property name="text" type="java.lang.String" value="Emergency Contact:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField1">
+    <Component class="javax.swing.JTextField" name="txtRequestID">
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField2">
+    <Component class="javax.swing.JTextField" name="txtRequestTime">
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField3">
+    <Component class="javax.swing.JTextField" name="txtLocation">
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField4">
+    <Component class="javax.swing.JTextField" name="txtRequester">
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField5">
+    <Component class="javax.swing.JTextField" name="txtPhone">
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField6">
+    <Component class="javax.swing.JTextField" name="txtEmergencyContact">
     </Component>
   </SubComponents>
 </Form>

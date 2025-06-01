@@ -2,10 +2,13 @@
 package Model.Patient;
 
 import Model.Person.Person;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Patient extends Person {
     private String patientId;
     private MedicalRecord medicalRecord;
+    private List<MedicationAdministration> medicationHistory = new ArrayList<>();
 
     private static int patientIdCounter = 1; // Static counter for patientId
 
@@ -37,7 +40,12 @@ public class Patient extends Person {
         // You might want to pass historyId to MedicalRecord constructor if it supports it.
         this.medicalRecord.setRecordId(String.valueOf(historyId)); // Set record ID from historyId
     }
-
+    
+    public Patient(String name, String patientId) {
+        this.name = name;
+        this.patientId = patientId;
+        this.medicalRecord = medicalRecord;
+    }
 
     public String getPatientId() {
         return patientId;
@@ -53,5 +61,25 @@ public class Patient extends Person {
 
     public void setMedicalRecord(MedicalRecord medicalRecord) {
         this.medicalRecord = medicalRecord;
+    }
+    
+    public void addMedicationAdministration(String diagnosis, String treatment) {
+        this.medicalRecord.addMedicalEntry(diagnosis, treatment);
+    }
+
+    public void removeMedicationAdministration(MedicalEntry entry) {
+        this.medicalRecord.getMedicalHistory().remove(entry);
+    }
+    
+    public List<MedicationAdministration> getMedicationHistory() {
+        return medicationHistory;
+    }
+
+    public void addMedicationAdministration(MedicationAdministration record) {
+        this.medicationHistory.add(record);
+    }
+
+    public boolean removeMedicationAdministration(MedicationAdministration record) {
+        return this.medicationHistory.remove(record);
     }
 }

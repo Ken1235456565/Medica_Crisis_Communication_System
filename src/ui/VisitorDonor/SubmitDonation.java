@@ -8,6 +8,20 @@ import Model.Organization.Organization;
 import Model.Supplies.DonationCatalog;
 import Model.User.UserAccount;
 import javax.swing.JPanel;
+import ui.VisitorDonor.*;
+
+import Model.Supplies.Donation;
+import Model.Supplies.DonatedItem;
+import Model.Personnel.Donor;
+import util.CSVExporter;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+import java.awt.CardLayout;
+import java.awt.Image;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -15,10 +29,12 @@ import javax.swing.JPanel;
  */
 public class SubmitDonation extends javax.swing.JPanel {
 
-    private JPanel userProcessContainer;
+private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private DonationCatalog donationCatalog; // Where the donation will be submitted
+    private DonationCatalog donationCatalog; 
+    private File selectedImageFile;
+    private Donation currentDonation;    
 
     public SubmitDonation(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DonationCatalog donationCatalog) {
         this.userProcessContainer = userProcessContainer;
@@ -26,6 +42,48 @@ public class SubmitDonation extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.donationCatalog = donationCatalog;
         initComponents();
+        
+        // 添加业务逻辑初始化
+        initializeForm();
+    }
+
+    private void initializeForm() {
+        btnUploadAttachment.addActionListener(e -> handleFileUpload());
+        lblPicture.setText("No image selected");
+        lblPicture.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    }
+
+    private void handleFileUpload() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+            "Image Files", "jpg", "jpeg", "png", "gif"));
+        
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            selectedImageFile = fileChooser.getSelectedFile();
+            displayImage(selectedImageFile);
+        }
+    }
+
+    private void displayImage(File imageFile) {
+        ImageIcon icon = new ImageIcon(imageFile.getAbsolutePath());
+        Image image = icon.getImage().getScaledInstance(
+            lblPicture.getWidth(), lblPicture.getHeight(), Image.SCALE_SMOOTH);
+        lblPicture.setIcon(new ImageIcon(image));
+        lblPicture.setText("");
+    }
+
+
+    private void clearForm() {
+        txtDonorName.setText("");
+        txtContactEmail.setText("");
+        txtDonationType.setText("");
+        txtItemName.setText("");
+        txtQuantity.setText("");
+        txtNotes.setText("");
+        lblPicture.setIcon(null);
+        lblPicture.setText("No image selected");
+        selectedImageFile = null;
     }
 
     /**
@@ -37,25 +95,47 @@ public class SubmitDonation extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel5 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
-        btnApprove = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
-        btnExportToCSV = new javax.swing.JButton();
-        jTextField5 = new javax.swing.JTextField();
-        btnGoUpload2 = new javax.swing.JButton();
-        jTextField6 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        picDonation = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtDonorName = new javax.swing.JTextField();
+        lblPicture = new javax.swing.JLabel();
+        txtContactEmail = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        btnUploadPicture = new javax.swing.JButton();
+        btnUploadAttachment = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtDonationType = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        txtItemName = new javax.swing.JTextField();
+        btnSubmit = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        btnExportToCSV = new javax.swing.JButton();
+        txtQuantity = new javax.swing.JTextField();
+        btnBack = new javax.swing.JButton();
+        txtNotes = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+
+        jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel7.setText("Notes :");
+
+        lblPicture.setBackground(new java.awt.Color(255, 255, 255));
+        lblPicture.setOpaque(true);
+
+        jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel9.setText("Picture :");
+
+        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel3.setText("Contact Email :");
+
+        btnUploadAttachment.setText("Upload attachment");
+        btnUploadAttachment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploadAttachmentActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel4.setText("Donation Type:");
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel5.setText("Item Name:");
@@ -63,21 +143,15 @@ public class SubmitDonation extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Submit Donation");
 
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
-
-        btnApprove.setText("Submit");
-        btnApprove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnApproveActionPerformed(evt);
+                btnSubmitActionPerformed(evt);
             }
         });
 
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel6.setText("Quantity\\Amount:");
+        jLabel6.setText("Quantity:");
 
         btnExportToCSV.setText("Export To CSV");
         btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
@@ -86,49 +160,15 @@ public class SubmitDonation extends javax.swing.JPanel {
             }
         });
 
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
-            }
-        });
-
-        btnGoUpload2.setText("Back");
-        btnGoUpload2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGoUpload2ActionPerformed(evt);
-            }
-        });
-
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                btnBackActionPerformed(evt);
             }
         });
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel2.setText("Donor Name:");
-
-        jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel7.setText("Notes :");
-
-        picDonation.setBackground(new java.awt.Color(255, 255, 255));
-        picDonation.setOpaque(true);
-
-        jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel9.setText("Picture :");
-
-        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel3.setText("Contact Email :");
-
-        btnUploadPicture.setText("Upload attachment");
-        btnUploadPicture.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUploadPictureActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel4.setText("Donation Type:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -144,38 +184,37 @@ public class SubmitDonation extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(btnGoUpload2, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                                    .addComponent(btnApprove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(btnBack, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                                    .addComponent(btnSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(370, 370, 370)
-                                .addComponent(btnUploadPicture))
+                                .addComponent(btnUploadAttachment))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(81, 81, 81)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(81, 81, 81)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(txtDonationType, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
                                         .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(picDonation, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jTextField5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jTextField6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                        .addComponent(txtQuantity, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtNotes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(lblPicture, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(54, 54, 54)
                         .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(95, Short.MAX_VALUE))
@@ -188,76 +227,101 @@ public class SubmitDonation extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDonationType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(picDonation, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblPicture, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExportToCSV)
-                    .addComponent(btnApprove)
-                    .addComponent(btnUploadPicture))
+                    .addComponent(btnSubmit)
+                    .addComponent(btnUploadAttachment))
                 .addGap(35, 35, 35)
-                .addComponent(btnGoUpload2)
+                .addComponent(btnBack)
                 .addGap(111, 111, 111))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    private void btnUploadAttachmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadAttachmentActionPerformed
+        handleFileUpload();
+    }//GEN-LAST:event_btnUploadAttachmentActionPerformed
 
-    private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnApproveActionPerformed
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        // 创建捐赠者
+        Donor donor = new Donor();
+        donor.setName(txtDonorName.getText().trim());
+        donor.getContactInfo().setContactEmail(txtContactEmail.getText().trim());
+
+        // 创建捐赠物品
+        List<DonatedItem> items = new ArrayList<>();
+        DonatedItem item = new DonatedItem(
+            txtItemName.getText().trim(),
+            Integer.parseInt(txtQuantity.getText().trim()),
+            0.0
+        );
+        items.add(item);
+
+        // 创建捐赠记录
+        currentDonation = new Donation(donor, items, txtDonationType.getText().trim());
+        currentDonation.setNotes(txtNotes.getText().trim());
+
+        // 添加到捐赠目录
+        donationCatalog.addDonation(currentDonation);
+
+        JOptionPane.showMessageDialog(this, "Donation submitted successfully!\nDonation ID: " +
+            currentDonation.getDonationId(), "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        clearForm();
+    }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
-        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Donations as CSV");
+        fileChooser.setSelectedFile(new java.io.File("donations.csv"));
+
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            CSVExporter exporter = new CSVExporter();
+            exporter.exportDonations(donationCatalog.getDonationList(),
+                fileChooser.getSelectedFile().getAbsolutePath());
+            JOptionPane.showMessageDialog(this, "Donations exported successfully!",
+                "Export Complete", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
-
-    private void btnGoUpload2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoUpload2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnGoUpload2ActionPerformed
-
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
-
-    private void btnUploadPictureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadPictureActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnUploadPictureActionPerformed
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
+    }//GEN-LAST:event_btnBackActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnApprove;
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnExportToCSV;
-    private javax.swing.JButton btnGoUpload2;
-    private javax.swing.JButton btnUploadPicture;
+    private javax.swing.JButton btnSubmit;
+    private javax.swing.JButton btnUploadAttachment;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -266,12 +330,12 @@ public class SubmitDonation extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JLabel picDonation;
+    private javax.swing.JLabel lblPicture;
+    private javax.swing.JTextField txtContactEmail;
+    private javax.swing.JTextField txtDonationType;
+    private javax.swing.JTextField txtDonorName;
+    private javax.swing.JTextField txtItemName;
+    private javax.swing.JTextField txtNotes;
+    private javax.swing.JTextField txtQuantity;
     // End of variables declaration//GEN-END:variables
 }

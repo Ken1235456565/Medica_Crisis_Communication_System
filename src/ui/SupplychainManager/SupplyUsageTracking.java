@@ -7,7 +7,12 @@ package ui.SupplychainManager;
 import Model.Organization.Organization;
 import Model.Supplies.SupplyItemCatalog;
 import Model.User.UserAccount;
+import java.awt.CardLayout;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -18,16 +23,35 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private SupplyItemCatalog supplyCatalog; // Catalog of supplies to track usage
+    private SupplyItemCatalog supplyCatalog;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public SupplyUsageTracking(JPanel userProcessContainer, Organization organization, UserAccount userAccount, SupplyItemCatalog supplyCatalog) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.supplyCatalog = supplyCatalog;
+        
         initComponents();
+        loadUsageData();
     }
 
+    private void loadUsageData() {
+        DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
+        model.setRowCount(0);
+        
+        // 模拟使用活动数据
+        String[][] sampleData = {
+            {"ACT001", "医用口罩", "医院急诊科", "Boston", "张医生"},
+            {"ACT002", "防护服", "隔离病房", "Cambridge", "李护士"},
+            {"ACT003", "消毒液", "社区中心", "Somerville", "王管理员"},
+            {"ACT004", "体温计", "检查站", "Newton", "陈工作人员"}
+        };
+        
+        for (String[] row : sampleData) {
+            model.addRow(row);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,6 +89,11 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
         jLabel11.setText("Recipient Contact:");
 
         btnExportToCSV.setText("Export to csv");
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToCSVActionPerformed(evt);
+            }
+        });
 
         jLabel12.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel12.setText("Priority:");
@@ -74,12 +103,6 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
 
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel14.setText("Location:");
-
-        txtQuantity3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantity3ActionPerformed(evt);
-            }
-        });
 
         btnBack.setText("Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -95,6 +118,11 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
         jLabel13.setText("Delivery Staff:");
 
         btnViewDetails2.setText("View Details");
+        btnViewDetails2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDetails2ActionPerformed(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel10.setText("Recipient Name:");
@@ -130,29 +158,11 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Supply Usage Tracking");
 
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
-            }
-        });
-
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("Quantity:");
 
-        txtItemName1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemName1ActionPerformed(evt);
-            }
-        });
-
         jLabel18.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel18.setText("Source:");
-
-        jTextField9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField9ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -257,30 +267,129 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtQuantity3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantity3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantity3ActionPerformed
-
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack1ActionPerformed
-        // TODO add your handling code here:
+        try {
+            int selectedRow = tblDonationHistory.getSelectedRow();
+            if (selectedRow == -1) {
+                showWarningMessage("请先选择要删除的记录");
+                return;
+            }
+            
+            String activityId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "确认删除使用记录 " + activityId + "？",
+                "确认删除",
+                JOptionPane.YES_NO_OPTION
+            );
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
+                model.removeRow(selectedRow);
+                showSuccessMessage("使用记录删除成功");
+            }
+            
+        } catch (Exception e) {
+            showErrorMessage("删除记录失败: " + e.getMessage());
+        }
     }//GEN-LAST:event_btnBack1ActionPerformed
 
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField7ActionPerformed
+    private void btnViewDetails2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetails2ActionPerformed
+        try {
+            int selectedRow = tblDonationHistory.getSelectedRow();
+            if (selectedRow == -1) {
+                showWarningMessage("请先选择一个活动记录");
+                return;
+            }
+            
+            String activityId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            String item = (String) tblDonationHistory.getValueAt(selectedRow, 1);
+            String source = (String) tblDonationHistory.getValueAt(selectedRow, 2);
+            String location = (String) tblDonationHistory.getValueAt(selectedRow, 3);
+            String staff = (String) tblDonationHistory.getValueAt(selectedRow, 4);
+            
+            // 填充查看表单
+            txtDonorName1.setText("使用方");
+            txtContactEmail1.setText("联系方式");
+            txtContactEmail3.setText(staff);
+            txtItemName1.setText("10"); // 使用数量
+            txtQuantity3.setText(location);
+            jTextField7.setText("High"); // 优先级
+            jTextField9.setText(source);
+            
+            showUsageDetails(activityId, item, source, location, staff);
+            
+        } catch (Exception e) {
+            showErrorMessage("查看详情失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnViewDetails2ActionPerformed
 
-    private void txtItemName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemName1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemName1ActionPerformed
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        try {
+            exportUsageToCSV();
+        } catch (Exception e) {
+            showErrorMessage("导出CSV失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
+    private void showUsageDetails(String activityId, String item, String source, String location, String staff) {
+        StringBuilder details = new StringBuilder();
+        details.append("使用活动详情\n================\n");
+        details.append("活动ID: ").append(activityId).append("\n");
+        details.append("使用物品: ").append(item).append("\n");
+        details.append("来源: ").append(source).append("\n");
+        details.append("使用地点: ").append(location).append("\n");
+        details.append("负责人员: ").append(staff).append("\n");
+        details.append("使用时间: ").append(dateFormat.format(new Date())).append("\n");
+        details.append("使用状态: 已完成\n");
+        details.append("备注: 正常使用，无异常情况\n");
+        
+        JOptionPane.showMessageDialog(this, details.toString(), "使用详情", JOptionPane.INFORMATION_MESSAGE);
+    }
 
-    private void jTextField9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField9ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField9ActionPerformed
+    private void exportUsageToCSV() {
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append("供应使用跟踪报告\n");
+        csvContent.append("活动ID,物品,来源,地点,配送人员\n");
+        
+        DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                csvContent.append(model.getValueAt(i, j));
+                if (j < model.getColumnCount() - 1) {
+                    csvContent.append(",");
+                }
+            }
+            csvContent.append("\n");
+        }
+        
+        csvContent.append("\n统计信息:\n");
+        csvContent.append("总活动数量,").append(model.getRowCount()).append("\n");
+        csvContent.append("报告生成时间,").append(dateFormat.format(new Date())).append("\n");
+        csvContent.append("报告生成人,").append(userAccount.getName()).append("\n");
+        
+        String filename = "usage_tracking_" + System.currentTimeMillis() + ".csv";
+        JOptionPane.showMessageDialog(this, 
+            "使用跟踪数据已导出到: " + filename + "\n\n" + csvContent.toString(), 
+            "导出成功", JOptionPane.INFORMATION_MESSAGE);
+    }
 
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "错误", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showWarningMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "警告", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void showSuccessMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "成功", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

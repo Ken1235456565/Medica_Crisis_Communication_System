@@ -29,7 +29,7 @@
                       <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                       <Component id="btnViewDetail" min="-2" pref="173" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="btnBack3" min="-2" pref="173" max="-2" attributes="0"/>
+                      <Component id="btnExportToCSV" min="-2" pref="173" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -51,7 +51,7 @@
                               <Component id="jLabel8" min="-2" pref="198" max="-2" attributes="0"/>
                               <EmptySpace pref="164" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jLabel2" max="32767" attributes="0"/>
+                          <Component id="picLocation" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -61,16 +61,22 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="btnBack" alignment="0" min="-2" pref="104" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-                          <Component id="jComboBox1" min="-2" pref="186" max="-2" attributes="0"/>
+                          <Component id="cmbTimeSpan" min="-2" pref="186" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jScrollPane1" alignment="0" min="-2" pref="840" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="83" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+          <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
+                  <Component id="btnBack" min="-2" pref="104" max="-2" attributes="0"/>
+                  <EmptySpace pref="809" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -84,7 +90,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnModifyRequest" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnViewDetail" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnBack3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnExportToCSV" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -104,24 +110,29 @@
                           <Component id="jScrollPane3" min="-2" pref="81" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="jLabel2" max="32767" attributes="0"/>
+                  <Component id="picLocation" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="145" max="32767" attributes="0"/>
+              <EmptySpace pref="154" max="32767" attributes="0"/>
           </Group>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmbTimeSpan" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="208" max="-2" attributes="0"/>
-                  <EmptySpace pref="350" max="32767" attributes="0"/>
+                  <EmptySpace pref="461" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+          <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace pref="726" max="32767" attributes="0"/>
                   <Component id="btnBack" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -152,7 +163,7 @@
         <Property name="text" type="java.lang.String" value="Time Span:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBox1">
+    <Component class="javax.swing.JComboBox" name="cmbTimeSpan">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -174,7 +185,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="jTable1">
+        <Component class="javax.swing.JTable" name="tblFirstAidRequest">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="6" rowCount="4">
@@ -198,15 +209,13 @@
         <Property name="text" type="java.lang.String" value="View details:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnBack">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Back"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JButton" name="btnModifyRequest">
       <Properties>
         <Property name="text" type="java.lang.String" value="Modify Request"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnModifyRequestActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnViewDetail">
       <Properties>
@@ -216,17 +225,20 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewDetailActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnBack3">
+    <Component class="javax.swing.JButton" name="btnExportToCSV">
       <Properties>
         <Property name="text" type="java.lang.String" value="Export To CSV"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExportToCSVActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Symptom description:"/>
+        <Property name="text" type="java.lang.String" value="Symptom Description:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
@@ -234,7 +246,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Supplies needed:"/>
+        <Property name="text" type="java.lang.String" value="Supplies Needed:"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
@@ -244,7 +256,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTextArea" name="jTextArea1">
+        <Component class="javax.swing.JTextArea" name="txtSymptomDescription">
           <Properties>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
@@ -259,7 +271,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTextArea" name="jTextArea2">
+        <Component class="javax.swing.JTextArea" name="txtSuppliesNeeded">
           <Properties>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
@@ -275,13 +287,21 @@
         <Property name="text" type="java.lang.String" value="Location:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel2">
+    <Component class="javax.swing.JLabel" name="picLocation">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnBack">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Back"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

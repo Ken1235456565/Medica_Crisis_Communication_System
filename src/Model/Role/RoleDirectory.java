@@ -36,6 +36,13 @@ public class RoleDirectory {
         return null;
     }
 
+public Role createRole(String id, String name, String description, boolean isAdmin) {
+    Role role = new AdminRole(id, name, description, isAdmin);
+    roleList.add(role);
+    return role;
+}
+
+    
     public Role findRoleByName(String name) {
         for (Role r : roleList) {
             if (r.getName().equals(name)) {

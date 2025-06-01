@@ -39,8 +39,8 @@
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="btnViewDetailsNetwork" min="-2" pref="129" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane2" alignment="0" pref="845" max="32767" attributes="0"/>
-                          <Component id="jScrollPane3" alignment="0" pref="845" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="0" pref="859" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" alignment="0" pref="859" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -50,10 +50,10 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="btnBack" min="-2" pref="129" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="601" max="32767" attributes="0"/>
                               <Component id="btnExportAllToCSV" min="-2" pref="129" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane4" alignment="0" pref="845" max="32767" attributes="0"/>
+                          <Component id="jScrollPane4" alignment="0" pref="859" max="32767" attributes="0"/>
                           <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
@@ -157,9 +157,6 @@
               </Table>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="tblManageEnterpriseAncestorAdded"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -182,9 +179,6 @@
               </Table>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="tblManageOrganizationAncestorAdded"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -215,9 +209,6 @@
               </Table>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="tblManageRolesAncestorAdded"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -280,9 +271,6 @@
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="tblManageRoles1AncestorAdded"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

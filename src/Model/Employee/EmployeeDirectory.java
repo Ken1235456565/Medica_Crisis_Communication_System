@@ -1,6 +1,7 @@
 // Model/personnel/EmployeeDirectory.java
 package Model.Employee;
 
+import Model.Person.ContactInfo;
 import Model.User.UserAccount;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,5 +57,10 @@ public class EmployeeDirectory {
         return result;
     }
 
-
+    public Employee createEmployee(String id, String name, String email) {
+        ContactInfo contactInfo = new ContactInfo("", "", email);
+        Employee employee = new Employee(id, name, "", 0, "", "", "", contactInfo);
+        addEmployee(employee);
+        return employee;
+    }
 }

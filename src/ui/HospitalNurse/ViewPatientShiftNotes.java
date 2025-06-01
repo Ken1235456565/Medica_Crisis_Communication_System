@@ -4,10 +4,20 @@
  */
 package ui.HospitalNurse;
 
-import Model.Organization.Organization;
+import Model.Organization.ClinicalServicesUnit;
+import Model.Patient.Patient;
 import Model.Patient.PatientDirectory;
+import Model.Patient.ShiftNote;
 import Model.User.UserAccount;
+import Model.Personnel.Nurse;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -16,18 +26,97 @@ import javax.swing.JPanel;
 public class ViewPatientShiftNotes extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
-    private Organization organization;
+    private ClinicalServicesUnit organization;
     private UserAccount userAccount;
     private PatientDirectory patientDirectory; // To access patient shift notes
+    private List<ShiftNote> shiftNotesList;
 
-    public ViewPatientShiftNotes(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory) {
+    public ViewPatientShiftNotes(JPanel userProcessContainer, ClinicalServicesUnit organization, 
+                               UserAccount userAccount, PatientDirectory patientDirectory) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.patientDirectory = patientDirectory;
+        this.shiftNotesList = new ArrayList<>();
+        
         initComponents();
+        initializeData();
     }
-
+    private void initializeData() {
+        // 设置日期下拉框
+        String[] dates = {
+            "2024-01-01", "2024-01-02", "2024-01-03", "2024-01-04", "2024-01-05",
+            "2024-01-06", "2024-01-07", "2024-01-08", "2024-01-09", "2024-01-10"
+        };
+        
+        CmbviewDate.removeAllItems();
+        CmbDonationType3.removeAllItems();
+        
+        for (String date : dates) {
+            CmbviewDate.addItem(date);
+            CmbDonationType3.addItem(date);
+        }
+        
+        // 初始化一些示例数据
+        initializeSampleData();
+        
+        // 填充表格数据
+        populateShiftNotesTable();
+        
+        // 为表格添加选择监听器
+        tblPatientShiftNotes.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                btnViewDetailsActionPerformed(null);
+            }
+        });
+        
+        // 如果当前用户是护士，预填姓名和邮箱
+        if (userAccount.getEmployee() instanceof Nurse) {
+            Nurse nurse = (Nurse) userAccount.getEmployee();
+            txtcreateNurseName.setText(nurse.getName());
+            if (nurse.getContactInfo() != null) {
+                txtcreateContactEmail.setText(nurse.getContactInfo().getContactEmail());
+            }
+        }
+    }
+    
+    private void initializeSampleData() {
+        // 添加一些示例交班记录
+        ShiftNote note1 = new ShiftNote("NURSE001", "Alice Johnson", "alice.johnson@hospital.com", 
+                                       "2024-01-01", "患者张三血压稳定，需要继续监测。李四术后恢复良好。");
+        
+        ShiftNote note2 = new ShiftNote("NURSE002", "Bob Smith", "bob.smith@hospital.com", 
+                                       "2024-01-02", "夜班期间，患者王五出现轻微发热，已给予物理降温。");
+        
+        ShiftNote note3 = new ShiftNote("NURSE003", "Carol White", "carol.white@hospital.com", 
+                                       "2024-01-03", "ICU患者赵六生命体征平稳，家属已告知病情进展。");
+        
+        shiftNotesList.add(note1);
+        shiftNotesList.add(note2);
+        shiftNotesList.add(note3);
+    }
+    
+    private void populateShiftNotesTable() {
+        DefaultTableModel model = (DefaultTableModel) tblPatientShiftNotes.getModel();
+        model.setRowCount(0); // 清空现有数据
+        
+        // 设置正确的列标题
+        model.setColumnIdentifiers(new String[]{
+            "Nurse ID", "Nurse Name", "Date", "Contact Email", "Notes"
+        });
+        
+        // 填充交班记录数据
+        for (ShiftNote note : shiftNotesList) {
+            model.addRow(new Object[]{
+                note.getNurseId(),
+                note.getNurseName(),
+                note.getDate(),
+                note.getContactEmail(),
+                note.getNotes().length() > 50 ? 
+                    note.getNotes().substring(0, 50) + "..." : note.getNotes()
+            });
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,36 +126,36 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtDonorName = new javax.swing.JTextField();
+        txtcreateNurseName = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblDonationHistory = new javax.swing.JTable();
+        tblPatientShiftNotes = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtDonorName1 = new javax.swing.JTextField();
+        txtviewNurseName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         btnBack = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         btnViewDetails = new javax.swing.JButton();
-        txtContactEmail1 = new javax.swing.JTextField();
+        txtviewContactEmail = new javax.swing.JTextField();
         btnCreate = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
-        btnBack1 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
-        btnViewDetails3 = new javax.swing.JButton();
+        btnModify = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         CmbDonationType3 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
-        txtItemName1 = new javax.swing.JTextField();
-        txtContactEmail = new javax.swing.JTextField();
+        txtviewDate = new javax.swing.JTextField();
+        txtcreateContactEmail = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
-        txtItemName = new javax.swing.JTextField();
-        CmbDonationType = new javax.swing.JComboBox<>();
+        txtcreateNotes = new javax.swing.JTextField();
+        CmbviewDate = new javax.swing.JComboBox<>();
         btnExportToCSV = new javax.swing.JButton();
 
-        tblDonationHistory.setModel(new javax.swing.table.DefaultTableModel(
+        tblPatientShiftNotes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -85,7 +174,16 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblDonationHistory);
+        tblPatientShiftNotes.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                tblPatientShiftNotesAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+        jScrollPane1.setViewportView(tblPatientShiftNotes);
 
         jLabel10.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel10.setText("View New Shift Note:");
@@ -113,6 +211,11 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
         jLabel8.setText("Notes:");
 
         btnViewDetails.setText("View Details");
+        btnViewDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDetailsActionPerformed(evt);
+            }
+        });
 
         btnCreate.setText("Create");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
@@ -124,17 +227,22 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
         jLabel12.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel12.setText("Contact Email :");
 
-        btnBack1.setText("Delete");
-        btnBack1.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBack1ActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
         jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel11.setText("Nurse Name:");
 
-        btnViewDetails3.setText("Modify");
+        btnModify.setText("Modify");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModifyActionPerformed(evt);
+            }
+        });
 
         jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel16.setText("Notes:");
@@ -147,24 +255,17 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("View Patient Shift Notes");
 
-        txtItemName1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemName1ActionPerformed(evt);
-            }
-        });
-
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel14.setText("Date:");
 
-        txtItemName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemNameActionPerformed(evt);
-            }
-        });
-
-        CmbDonationType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbviewDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
 
         btnExportToCSV.setText("Export to csv");
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToCSVActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -180,7 +281,7 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(81, 81, 81)
-                                    .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtcreateNotes, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,16 +289,12 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(81, 81, 81)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(CmbDonationType, 0, 172, Short.MAX_VALUE)
-                                            .addComponent(txtContactEmail)))
+                                            .addComponent(CmbviewDate, 0, 172, Short.MAX_VALUE)
+                                            .addComponent(txtcreateContactEmail)))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(76, 76, 76)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtDonorName))))))
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(81, 81, 81)
+                                        .addComponent(txtcreateNurseName)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -205,8 +302,8 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(81, 81, 81)
-                                        .addComponent(txtItemName1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnViewDetails3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtviewDate, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(btnModify, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -214,11 +311,12 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                                     .addGap(81, 81, 81)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(CmbDonationType3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtContactEmail1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(txtviewContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(81, 81, 81)
-                                    .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtviewNurseName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel10)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -228,9 +326,12 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(286, 286, 286)
                                 .addComponent(jLabel1))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 787, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 787, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 1, Short.MAX_VALUE)))
                 .addGap(105, 105, 105))
         );
@@ -247,37 +348,35 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnBack1)
-                            .addComponent(btnExportToCSV)
-                            .addComponent(btnViewDetails))
+                            .addComponent(btnDelete)
+                            .addComponent(btnExportToCSV))
                         .addGap(15, 15, 15)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtcreateNurseName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtcreateContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(CmbDonationType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(CmbviewDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
-                            .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(70, 70, 70))
+                            .addComponent(txtcreateNotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
-                            .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtviewNurseName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContactEmail1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtviewContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel12))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -286,11 +385,13 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel16)
-                            .addComponent(txtItemName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(70, 70, 70)))
+                            .addComponent(txtviewDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addComponent(btnViewDetails)
+                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreate)
-                    .addComponent(btnViewDetails3))
+                    .addComponent(btnModify))
                 .addGap(25, 25, 25)
                 .addComponent(btnBack)
                 .addContainerGap(131, Short.MAX_VALUE))
@@ -298,35 +399,259 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        userProcessContainer.remove(this);
+        ((java.awt.CardLayout) userProcessContainer.getLayout()).previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        // TODO add your handling code here:
+        try {
+            // 获取输入数据
+            String nurseName = txtcreateNurseName.getText().trim();
+            String contactEmail = txtcreateContactEmail.getText().trim();
+            String date = (String) CmbviewDate.getSelectedItem();
+            String notes = txtcreateNotes.getText().trim();
+            
+            // 验证输入
+            if (nurseName.isEmpty() || contactEmail.isEmpty() || 
+                date == null || date.trim().isEmpty() || notes.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "请填写所有必需字段", "输入错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 验证邮箱格式
+            if (!contactEmail.contains("@") || !contactEmail.contains(".")) {
+                JOptionPane.showMessageDialog(this, 
+                    "请输入有效的邮箱地址", "输入错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 获取护士ID（如果当前用户是护士）
+            String nurseId = "NURSE001"; // 默认ID
+            if (userAccount.getEmployee() instanceof Nurse) {
+                Nurse nurse = (Nurse) userAccount.getEmployee();
+                nurseId = nurse.getEmployeeId();
+            }
+            
+            // 创建交班记录
+            ShiftNote shiftNote = new ShiftNote(nurseId, nurseName, contactEmail, date, notes);
+            shiftNotesList.add(shiftNote);
+            
+            // 如果当前用户是护士，也添加到护士的交班记录中
+            if (userAccount.getEmployee() instanceof Nurse) {
+                Nurse nurse = (Nurse) userAccount.getEmployee();
+                if (nurse.getShiftNotes() != null) {
+                    nurse.addShiftNote(shiftNote);
+                }
+            }
+            
+            // 刷新表格
+            populateShiftNotesTable();
+            
+            // 清空输入字段
+            clearCreateFields();
+            
+            JOptionPane.showMessageDialog(this, 
+                "交班记录创建成功！\n记录ID: " + shiftNote.getNoteId(), 
+                "成功", JOptionPane.INFORMATION_MESSAGE);
+                
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "创建交班记录时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnCreateActionPerformed
 
-    private void btnBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBack1ActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int selectedRow = tblPatientShiftNotes.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "请先选择要删除的交班记录", "未选择", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int choice = JOptionPane.showConfirmDialog(this,
+            "确定要删除选中的交班记录吗？", "确认删除", JOptionPane.YES_NO_OPTION);
+        
+        if (choice == JOptionPane.YES_OPTION) {
+            try {
+                if (selectedRow < shiftNotesList.size()) {
+                    ShiftNote noteToDelete = shiftNotesList.get(selectedRow);
+                    
+                    // 从列表中删除
+                    shiftNotesList.remove(selectedRow);
+                    
+                    // 如果当前用户是护士，也从护士的记录中删除
+                    if (userAccount.getEmployee() instanceof Nurse) {
+                        Nurse nurse = (Nurse) userAccount.getEmployee();
+                        if (nurse.getShiftNotes() != null) {
+                            nurse.removeShiftNote(noteToDelete);
+                        }
+                    }
+                    
+                    populateShiftNotesTable();
+                    clearViewFields();
+                    
+                    JOptionPane.showMessageDialog(this, 
+                        "交班记录删除成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+                }
+                    
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, 
+                    "删除交班记录时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void txtItemName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemName1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemName1ActionPerformed
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        int selectedRow = tblPatientShiftNotes.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "请先选择要修改的交班记录", "未选择", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            if (selectedRow < shiftNotesList.size()) {
+                ShiftNote selectedNote = shiftNotesList.get(selectedRow);
+                
+                // 获取修改后的数据
+                String newNurseName = txtviewNurseName.getText().trim();
+                String newContactEmail = txtviewContactEmail.getText().trim();
+                String newNotes = txtviewDate.getText().trim();
+                
+                // 验证输入
+                if (newNurseName.isEmpty() || newContactEmail.isEmpty() || newNotes.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, 
+                        "请填写所有字段", "输入错误", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // 更新交班记录
+                selectedNote.updateNote(newNurseName, newContactEmail, newNotes);
+                
+                // 刷新表格
+                populateShiftNotesTable();
+                
+                JOptionPane.showMessageDialog(this, 
+                    "交班记录更新成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "修改交班记录时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnModifyActionPerformed
 
-    private void txtItemNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemNameActionPerformed
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("保存交班记录CSV文件");
+        fileChooser.setSelectedFile(new java.io.File("shift_notes.csv"));
+        
+        int userChoice = fileChooser.showSaveDialog(this);
+        if (userChoice == JFileChooser.APPROVE_OPTION) {
+            try (FileWriter writer = new FileWriter(fileChooser.getSelectedFile())) {
+                // 写入CSV头部
+                writer.write("Note ID,Nurse ID,Nurse Name,Date,Contact Email,Shift,Status,Notes\n");
+                
+                // 写入数据
+                for (ShiftNote note : shiftNotesList) {
+                    writer.write(String.format("%s,%s,%s,%s,%s,%s,%s,\"%s\"\n",
+                        note.getNoteId(),
+                        note.getNurseId(),
+                        note.getNurseName(),
+                        note.getDate(),
+                        note.getContactEmail(),
+                        note.getShift(),
+                        note.getStatus(),
+                        note.getNotes().replace("\"", "\"\"")));  // 转义引号
+                }
+                
+                JOptionPane.showMessageDialog(this, 
+                    "CSV文件导出成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+                    
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "导出CSV文件时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
 
+    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
+        int selectedRow = tblPatientShiftNotes.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "请先选择要查看的交班记录", "未选择", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // 获取选中行的数据并显示在查看区域
+        if (selectedRow < shiftNotesList.size()) {
+            ShiftNote selectedNote = shiftNotesList.get(selectedRow);
+            
+            txtviewNurseName.setText(selectedNote.getNurseName());
+            txtviewContactEmail.setText(selectedNote.getContactEmail());
+            CmbDonationType3.setSelectedItem(selectedNote.getDate());
+            txtviewDate.setText(selectedNote.getNotes());
+        }
+    }//GEN-LAST:event_btnViewDetailsActionPerformed
 
+    private void tblPatientShiftNotesAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_tblPatientShiftNotesAncestorAdded
+//        if (evt.getClickCount() == 1) { // 单击显示详情
+//            btnViewDetailsActionPerformed(null);
+//        } else if (evt.getClickCount() == 2) { // 双击显示完整记录
+//            int selectedRow = tblPatientShiftNotes.getSelectedRow();
+//            if (selectedRow != -1 && selectedRow < shiftNotesList.size()) {
+//                ShiftNote selectedNote = shiftNotesList.get(selectedRow);
+//                
+//                String fullInfo = String.format(
+//                    "交班记录详情\n\n" +
+//                    "记录ID: %s\n" +
+//                    "护士ID: %s\n" +
+//                    "护士姓名: %s\n" +
+//                    "日期: %s\n" +
+//                    "联系邮箱: %s\n" +
+//                    "班次: %s\n" +
+//                    "状态: %s\n" +
+//                    "创建时间: %s\n\n" +
+//                    "记录内容:\n%s",
+//                    selectedNote.getNoteId(),
+//                    selectedNote.getNurseId(),
+//                    selectedNote.getNurseName(),
+//                    selectedNote.getDate(),
+//                    selectedNote.getContactEmail(),
+//                    selectedNote.getShift(),
+//                    selectedNote.getStatus(),
+//                    selectedNote.getCreatedDate(),
+//                    selectedNote.getNotes()
+//                );
+//                
+//                JOptionPane.showMessageDialog(this, fullInfo, 
+//                    "交班记录详情", JOptionPane.INFORMATION_MESSAGE);
+//            }
+//        }
+    }//GEN-LAST:event_tblPatientShiftNotesAncestorAdded
+    private void clearCreateFields() {
+        txtcreateNurseName.setText("");
+        txtcreateContactEmail.setText("");
+        txtcreateNotes.setText("");
+        CmbviewDate.setSelectedIndex(0);
+    }
+
+    private void clearViewFields() {
+        txtviewNurseName.setText("");
+        txtviewContactEmail.setText("");
+        txtviewDate.setText("");
+        CmbDonationType3.setSelectedIndex(0);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CmbDonationType;
     private javax.swing.JComboBox<String> CmbDonationType3;
+    private javax.swing.JComboBox<String> CmbviewDate;
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnBack1;
     private javax.swing.JButton btnCreate;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
+    private javax.swing.JButton btnModify;
     private javax.swing.JButton btnViewDetails;
-    private javax.swing.JButton btnViewDetails3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -340,12 +665,12 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblDonationHistory;
-    private javax.swing.JTextField txtContactEmail;
-    private javax.swing.JTextField txtContactEmail1;
-    private javax.swing.JTextField txtDonorName;
-    private javax.swing.JTextField txtDonorName1;
-    private javax.swing.JTextField txtItemName;
-    private javax.swing.JTextField txtItemName1;
+    private javax.swing.JTable tblPatientShiftNotes;
+    private javax.swing.JTextField txtcreateContactEmail;
+    private javax.swing.JTextField txtcreateNotes;
+    private javax.swing.JTextField txtcreateNurseName;
+    private javax.swing.JTextField txtviewContactEmail;
+    private javax.swing.JTextField txtviewDate;
+    private javax.swing.JTextField txtviewNurseName;
     // End of variables declaration//GEN-END:variables
 }

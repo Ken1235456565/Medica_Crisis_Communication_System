@@ -5,9 +5,17 @@
 package ui.VisitorDonor;
 
 import Model.Organization.Organization;
+import Model.Personnel.Donor;
+import Model.Supplies.DonatedItem;
+import Model.Supplies.Donation;
 import Model.Supplies.DonationCatalog;
 import Model.User.UserAccount;
+import java.awt.CardLayout;
+import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import util.CSVExporter;
+import util.EmailSender;
 
 /**
  *
@@ -17,7 +25,8 @@ public class ViewDonationHistory extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private DonationCatalog donationCatalog; // List of donations to display
+    private DonationCatalog donationCatalog; 
+    private Donation selectedDonation;
 
     public ViewDonationHistory(JPanel userProcessContainer, Organization organization, UserAccount userAccount, DonationCatalog donationCatalog) {
         this.userProcessContainer = userProcessContainer;
@@ -25,12 +34,61 @@ public class ViewDonationHistory extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.donationCatalog = donationCatalog;
         initComponents();
+        
+        // 初始化GUI组件后加载数据
+        initComponents();
+        loadDonationHistory();
     }
     /**
      * Creates new form ViewDonationHistory
      */
     public ViewDonationHistory() {
         initComponents();
+    }
+    
+    private void loadDonationHistory() {
+        DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
+        model.setRowCount(0); // 清空现有数据
+        
+        if (donationCatalog != null) {
+            List<Donation> donations = donationCatalog.getDonationList();
+            
+            for (Donation donation : donations) {
+                Object[] row = new Object[4];
+                row[0] = donation.getDonationId();
+                row[1] = donation.getDonor() != null ? donation.getDonor().getName() : "Unknown";
+                row[2] = getDescription(donation);
+                row[3] = getAmountOrQuantity(donation);
+                
+                model.addRow(row);
+            }
+        }
+    }
+    
+    private String getDescription(Donation donation) {
+        if (donation.getAmount() > 0) {
+            return "Monetary donation: " + donation.getPurpose();
+        } else if (donation.getDonatedItems() != null && !donation.getDonatedItems().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (DonatedItem item : donation.getDonatedItems()) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(item.getName());
+            }
+            return "Items: " + sb.toString();
+        }
+        return donation.getPurpose() != null ? donation.getPurpose() : "No description";
+    }
+    
+    private Object getAmountOrQuantity(Donation donation) {
+        if (donation.getAmount() > 0) {
+            return String.format("$%.2f", donation.getAmount());
+        } else if (donation.getDonatedItems() != null && !donation.getDonatedItems().isEmpty()) {
+            int totalQuantity = donation.getDonatedItems().stream()
+                    .mapToInt(DonatedItem::getQuantity)
+                    .sum();
+            return totalQuantity;
+        }
+        return 0;
     }
 
     /**
@@ -56,13 +114,14 @@ public class ViewDonationHistory extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txtQuantity = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        txtNotes = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         txtDonorName = new javax.swing.JTextField();
         CmbDonationType = new javax.swing.JComboBox<>();
         picDonation = new javax.swing.JLabel();
+        btnModify = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("View Donation History");
@@ -89,6 +148,11 @@ public class ViewDonationHistory extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblDonationHistory);
 
         btnViewDetails.setText("View Details");
+        btnViewDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDetailsActionPerformed(evt);
+            }
+        });
 
         btnBack.setText("Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -101,12 +165,16 @@ public class ViewDonationHistory extends javax.swing.JPanel {
         jLabel5.setText("View details:");
 
         btnSendEmail.setText("Send Email");
+        btnSendEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendEmailActionPerformed(evt);
+            }
+        });
 
         btnExportToCSV.setText("Export to csv");
-
-        txtItemName.addActionListener(new java.awt.event.ActionListener() {
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemNameActionPerformed(evt);
+                btnExportToCSVActionPerformed(evt);
             }
         });
 
@@ -118,18 +186,6 @@ public class ViewDonationHistory extends javax.swing.JPanel {
 
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel6.setText("Quantity\\Amount:");
-
-        txtQuantity.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantityActionPerformed(evt);
-            }
-        });
-
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
-            }
-        });
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel2.setText("Donor Name:");
@@ -144,6 +200,13 @@ public class ViewDonationHistory extends javax.swing.JPanel {
 
         picDonation.setBackground(new java.awt.Color(255, 255, 255));
         picDonation.setOpaque(true);
+
+        btnModify.setText("Modify");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModifyActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -161,33 +224,35 @@ public class ViewDonationHistory extends javax.swing.JPanel {
                             .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(81, 81, 81)
-                                            .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(txtQuantity, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jTextField6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGap(81, 81, 81)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(txtContactEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                                                .addComponent(CmbDonationType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                                    .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(81, 81, 81)
+                                        .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtQuantity, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtNotes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(81, 81, 81)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtContactEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                                            .addComponent(CmbDonationType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnModify, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel5))
                                 .addGap(64, 64, 64)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -231,12 +296,13 @@ public class ViewDonationHistory extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtNotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(picDonation, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExportToCSV)
-                    .addComponent(btnSendEmail))
+                    .addComponent(btnSendEmail)
+                    .addComponent(btnModify))
                 .addGap(25, 25, 25)
                 .addComponent(btnBack)
                 .addContainerGap(133, Short.MAX_VALUE))
@@ -244,26 +310,251 @@ public class ViewDonationHistory extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void txtItemNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemNameActionPerformed
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        try {
+            CSVExporter exporter = new CSVExporter();
+            
+            // 选择保存位置
+            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+            fileChooser.setDialogTitle("Save Donation History as CSV");
+            fileChooser.setSelectedFile(new java.io.File("donation_history.csv"));
+            
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
+                String filepath = fileChooser.getSelectedFile().getAbsolutePath();
+                
+                if (donationCatalog != null) {
+                    exporter.exportDonations(donationCatalog.getDonationList(), filepath);
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "Donation history exported successfully to: " + filepath, 
+                        "Export Complete", 
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "No donation data to export.", 
+                        "No Data", 
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Error exporting to CSV: " + e.getMessage(), 
+                "Export Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
 
-    private void txtQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantityActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantityActionPerformed
+    private void btnSendEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendEmailActionPerformed
+        if (selectedDonation == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Please select a donation record first.", 
+                "No Selection", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            EmailSender emailSender = new EmailSender();
+            Donor donor = selectedDonation.getDonor();
+            
+            if (donor != null && donor.getContactInfo() != null && 
+                donor.getContactInfo().getContactEmail() != null) {
+                
+                String recipientEmail = donor.getContactInfo().getContactEmail();
+                String subject = "Thank you for your donation - " + selectedDonation.getDonationId();
+                String body = generateEmailBody(selectedDonation);
+                
+                // 发送邮件
+                emailSender.sendEmail(recipientEmail, subject, body);
+                
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Thank you email sent successfully to " + recipientEmail, 
+                    "Email Sent", 
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "No valid email address found for this donor.", 
+                    "No Email", 
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Error sending email: " + e.getMessage(), 
+                "Email Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSendEmailActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    private String generateEmailBody(Donation donation) {
+        StringBuilder body = new StringBuilder();
+        body.append("Dear ").append(donation.getDonor().getName()).append(",\n\n");
+        body.append("Thank you for your generous donation!\n\n");
+        body.append("Donation Details:\n");
+        body.append("Donation ID: ").append(donation.getDonationId()).append("\n");
+        body.append("Date: ").append(donation.getDonationDate()).append("\n");
+        
+        if (donation.getAmount() > 0) {
+            body.append("Amount: $").append(String.format("%.2f", donation.getAmount())).append("\n");
+        } else if (donation.getDonatedItems() != null && !donation.getDonatedItems().isEmpty()) {
+            body.append("Items donated:\n");
+            for (DonatedItem item : donation.getDonatedItems()) {
+                body.append("- ").append(item.getName())
+                    .append(" (Quantity: ").append(item.getQuantity()).append(")\n");
+            }
+        }
+        
+        if (donation.getPurpose() != null) {
+            body.append("Purpose: ").append(donation.getPurpose()).append("\n");
+        }
+        
+        body.append("\nYour contribution makes a real difference in our community.\n");
+        body.append("Thank you again for your kindness and generosity.\n\n");
+        body.append("Best regards,\n");
+        body.append(organization.getOrganizationName());
+        
+        return body.toString();
+    }
+    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
+        int selectedRow = tblDonationHistory.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Please select a donation record to view details.", 
+                "No Selection", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // 获取选中的捐赠ID
+        String donationId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+        selectedDonation = donationCatalog.findDonationById(donationId);
+        
+        if (selectedDonation != null) {
+            displayDonationDetails(selectedDonation);
+        }
+    }//GEN-LAST:event_btnViewDetailsActionPerformed
 
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        if (selectedDonation == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Please select a donation record first.", 
+                "No Selection", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            // 更新捐赠者信息
+            Donor donor = selectedDonation.getDonor();
+            if (donor != null) {
+                donor.setName(txtDonorName.getText().trim());
+                if (donor.getContactInfo() != null) {
+                    donor.getContactInfo().setContactEmail(txtContactEmail.getText().trim());
+                }
+            }
+            
+            // 更新捐赠信息
+            String donationType = (String) CmbDonationType.getSelectedItem();
+            if ("money".equals(donationType)) {
+                // 更新金钱捐赠
+                double amount = Double.parseDouble(txtQuantity.getText().trim());
+                selectedDonation.setAmount(amount);
+            } else if (selectedDonation.getDonatedItems() != null && 
+                      !selectedDonation.getDonatedItems().isEmpty()) {
+                // 更新物品捐赠
+                DonatedItem item = selectedDonation.getDonatedItems().get(0);
+                item.setName(txtItemName.getText().trim());
+                item.setQuantity(Integer.parseInt(txtQuantity.getText().trim()));
+            }
+            
+            // 更新备注
+            selectedDonation.setNotes(txtNotes.getText().trim());
+            
+            // 刷新表格
+            loadDonationHistory();
+            
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Donation record updated successfully!", 
+                "Success", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Please enter valid numbers for quantity/amount.", 
+                "Invalid Input", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Error updating donation record: " + e.getMessage(), 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnModifyActionPerformed
+
+    private void displayDonationDetails(Donation donation) {
+        // 清空所有字段
+        clearDetailFields();
+        
+        // 填充捐赠者信息
+        Donor donor = donation.getDonor();
+        if (donor != null) {
+            txtDonorName.setText(donor.getName());
+            if (donor.getContactInfo() != null) {
+                txtContactEmail.setText(donor.getContactInfo().getContactEmail());
+            }
+        }
+        
+        // 填充捐赠信息
+        if (donation.getAmount() > 0) {
+            // 金钱捐赠
+            CmbDonationType.setSelectedItem("money");
+            txtItemName.setText("Monetary Donation");
+            txtQuantity.setText(String.format("%.2f", donation.getAmount()));
+        } else if (donation.getDonatedItems() != null && !donation.getDonatedItems().isEmpty()) {
+            // 物品捐赠
+            DonatedItem firstItem = donation.getDonatedItems().get(0);
+            txtItemName.setText(firstItem.getName());
+            txtQuantity.setText(String.valueOf(firstItem.getQuantity()));
+            
+            // 根据物品类型设置捐赠类型
+            String itemName = firstItem.getName().toLowerCase();
+            if (itemName.contains("medical") || itemName.contains("medicine")) {
+                CmbDonationType.setSelectedItem("Medical supplies");
+            } else if (itemName.contains("food")) {
+                CmbDonationType.setSelectedItem("food");
+            } else if (itemName.contains("daily") || itemName.contains("necessity")) {
+                CmbDonationType.setSelectedItem("daily necessities");
+            } else {
+                CmbDonationType.setSelectedIndex(0); // 空选项
+            }
+        }
+        
+        // 填充备注
+        txtNotes.setText(donation.getNotes() != null ? donation.getNotes() : "");
+        
+        // TODO: 如果有图片，在这里设置到 picDonation
+        // picDonation.setIcon(loadDonationImage(donation));
+    }
+    
+    private void clearDetailFields() {
+        txtDonorName.setText("");
+        txtContactEmail.setText("");
+        txtItemName.setText("");
+        txtQuantity.setText("");
+        txtNotes.setText("");
+        CmbDonationType.setSelectedIndex(0);
+        picDonation.setIcon(null);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CmbDonationType;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnExportToCSV;
+    private javax.swing.JButton btnModify;
     private javax.swing.JButton btnSendEmail;
     private javax.swing.JButton btnViewDetails;
     private javax.swing.JLabel jLabel1;
@@ -275,12 +566,12 @@ public class ViewDonationHistory extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JLabel picDonation;
     private javax.swing.JTable tblDonationHistory;
     private javax.swing.JTextField txtContactEmail;
     private javax.swing.JTextField txtDonorName;
     private javax.swing.JTextField txtItemName;
+    private javax.swing.JTextField txtNotes;
     private javax.swing.JTextField txtQuantity;
     // End of variables declaration//GEN-END:variables
 }

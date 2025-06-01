@@ -5,7 +5,16 @@
 package ui.admin;
 
 import Model.EcoSystem;
-import Model.Network.NetworkDirectory;
+import Model.Network.Network;
+import Model.Person.ContactInfo;
+import Model.User.UserAccount;
+
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 
 /**
@@ -19,9 +28,55 @@ public class ManageNetwork extends javax.swing.JPanel {
     public ManageNetwork(JPanel userProcessContainer, EcoSystem ecoSystem) {
         this.userProcessContainer = userProcessContainer;
         this.ecoSystem = ecoSystem;
-        initComponents();
+        // initComponents() would be called here in the actual GUI code
+        populateTable();
+        populateComboBoxes();
     }
 
+    private void populateTable() {
+        DefaultTableModel model = (DefaultTableModel) tblManageNetwork.getModel();
+        model.setRowCount(0);
+        for (Network network : ecoSystem.getNetworkDirectory().getNetworkList()) {
+            Object[] row = {
+                network.getId(),
+                network.getName(),
+                network.getType(),
+                network.getDescription(),
+                network.getManager()
+            };
+            model.addRow(row);
+        }
+    }
+
+    private void populateComboBoxes() {
+        cmbCreateType.removeAllItems();
+        cmbCreateType.addItem("Healthcare");
+        cmbCreateType.addItem("Education");
+        cmbCreateType.addItem("Commerce");
+        cmbCreateType.addItem("Public Services");
+        
+        cmbcreateManager.removeAllItems();
+        cmbcreateManager.addItem("Select Manager");
+        cmbcreateManager.addItem("Admin User A");
+        cmbcreateManager.addItem("Admin User B");
+
+        cmbSearch.removeAllItems();
+        cmbSearch.addItem("All");
+        cmbSearch.addItem("Last 3 days");
+        cmbSearch.addItem("Last 7 days");
+        cmbSearch.addItem("Last 30 days");
+        
+        cmbViewType.removeAllItems();
+        cmbViewType.addItem("Healthcare");
+        cmbViewType.addItem("Education");
+        cmbViewType.addItem("Commerce");
+        cmbViewType.addItem("Public Services");
+        
+        cmbviewManager.removeAllItems();
+        cmbviewManager.addItem("Select Manager");
+        cmbviewManager.addItem("Admin User A");
+        cmbviewManager.addItem("Admin User B");
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -50,7 +105,7 @@ public class ManageNetwork extends javax.swing.JPanel {
         btnExportToCSV = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         btnViewDetails = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
         cmbSearch = new javax.swing.JComboBox<>();
         jLabel13 = new javax.swing.JLabel();
@@ -88,15 +143,6 @@ public class ManageNetwork extends javax.swing.JPanel {
             }
         ));
         tblManageNetwork.setAutoscrolls(false);
-        tblManageNetwork.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                tblManageNetworkAncestorAdded(evt);
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
         jScrollPane1.setViewportView(tblManageNetwork);
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
@@ -105,47 +151,17 @@ public class ManageNetwork extends javax.swing.JPanel {
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel4.setText("Network Name:");
 
-        txtcreateNetworkName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateNetworkNameActionPerformed(evt);
-            }
-        });
-
-        txtcreateNetworkDescription.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateNetworkDescriptionActionPerformed(evt);
-            }
-        });
-
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel6.setText("Type:");
 
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel7.setText("Description:");
 
-        txtcreateNetworkLocation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateNetworkLocationActionPerformed(evt);
-            }
-        });
-
         jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel8.setText("Manager: ");
 
         jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel9.setText("Location:");
-
-        txtcreateNetworkContactEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateNetworkContactEmailActionPerformed(evt);
-            }
-        });
-
-        txtcreateNetworkContactNumber.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtcreateNetworkContactNumberActionPerformed(evt);
-            }
-        });
 
         jLabel10.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel10.setText("Contact Number:");
@@ -174,10 +190,10 @@ public class ManageNetwork extends javax.swing.JPanel {
             }
         });
 
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
+                btnCreateActionPerformed(evt);
             }
         });
 
@@ -200,18 +216,6 @@ public class ManageNetwork extends javax.swing.JPanel {
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("Location:");
 
-        txtviewNetworkContactEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtviewNetworkContactEmailActionPerformed(evt);
-            }
-        });
-
-        txtviewNetworkContactNumber.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtviewNetworkContactNumberActionPerformed(evt);
-            }
-        });
-
         jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel16.setText("Contact Number:");
 
@@ -221,29 +225,11 @@ public class ManageNetwork extends javax.swing.JPanel {
         jLabel19.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel19.setText("Network Name:");
 
-        txtviewNetworkName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtviewNetworkNameActionPerformed(evt);
-            }
-        });
-
-        txtviewNetworkDescription.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtviewNetworkDescriptionActionPerformed(evt);
-            }
-        });
-
         jLabel20.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel20.setText("Type:");
 
         jLabel21.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel21.setText("Description:");
-
-        txtviewNetworkLocation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtviewNetworkLocationActionPerformed(evt);
-            }
-        });
 
         btnModify.setText("Modify");
         btnModify.addActionListener(new java.awt.event.ActionListener() {
@@ -260,32 +246,12 @@ public class ManageNetwork extends javax.swing.JPanel {
         });
 
         cmbcreateManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbcreateManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbcreateManagerActionPerformed(evt);
-            }
-        });
 
         cmbviewManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbviewManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbviewManagerActionPerformed(evt);
-            }
-        });
 
         cmbCreateType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbCreateType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbCreateTypeActionPerformed(evt);
-            }
-        });
 
         cmbViewType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        cmbViewType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbViewTypeActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -322,7 +288,7 @@ public class ManageNetwork extends javax.swing.JPanel {
                                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(81, 81, 81)
                                         .addComponent(txtcreateNetworkDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(cmbcreateManager, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -464,106 +430,170 @@ public class ManageNetwork extends javax.swing.JPanel {
                         .addComponent(btnModify)
                         .addGap(30, 30, 30)
                         .addComponent(btnBack))
-                    .addComponent(btnSave))
+                    .addComponent(btnCreate))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+    userProcessContainer.removeAll();
+    userProcessContainer.add(new AdminWorkAreaPanel(userProcessContainer, 
+        ecoSystem, getCurrentUserAccount()));
+    userProcessContainer.validate();
+    userProcessContainer.repaint();
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSaveActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        String name = txtcreateNetworkName.getText();
+        String type = (String) cmbCreateType.getSelectedItem();
+        String description = txtcreateNetworkDescription.getText();
+        String manager = (String) cmbcreateManager.getSelectedItem();
+        String location = txtcreateNetworkLocation.getText();
+        String contactNumber = txtcreateNetworkContactNumber.getText();
+        String contactEmail = txtcreateNetworkContactEmail.getText();
+
+        Network newNetwork = ecoSystem.createAndAddNetwork(name);
+        newNetwork.setType(type);
+        newNetwork.setDescription(description);
+        newNetwork.setManager(manager);
+        newNetwork.setContactInfo(new ContactInfo(location, contactNumber, contactEmail));
+        
+        populateTable();
+        clearCreateForm();
+        JOptionPane.showMessageDialog(this, "Network created successfully!");
+    }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageNetwork.getSelectedRow();
+        if (selectedRow >= 0) {
+            String networkId = (String) tblManageNetwork.getValueAt(selectedRow, 0);
+            Network network = ecoSystem.getNetworkDirectory().findNetworkById(networkId);
+
+            if (network != null) {
+                network.setName(txtviewNetworkName.getText());
+                network.setType((String) cmbViewType.getSelectedItem());
+                network.setDescription(txtviewNetworkDescription.getText());
+                network.setManager((String) cmbviewManager.getSelectedItem());
+                network.getContactInfo().setLocation(txtviewNetworkLocation.getText());
+                network.getContactInfo().setContactNumber(txtviewNetworkContactNumber.getText());
+                network.getContactInfo().setContactEmail(txtviewNetworkContactEmail.getText());
+
+                populateTable();
+                clearViewForm();
+                JOptionPane.showMessageDialog(this, "Network updated successfully!");
+            }
+        }
     }//GEN-LAST:event_btnModifyActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageNetwork.getSelectedRow();
+        if (selectedRow >= 0) {
+            String networkId = (String) tblManageNetwork.getValueAt(selectedRow, 0);
+            Network network = ecoSystem.getNetworkDirectory().findNetworkById(networkId);
+
+            if (network != null) {
+                int confirm = JOptionPane.showConfirmDialog(this, 
+                    "Are you sure you want to delete this network?", 
+                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                
+                if (confirm == JOptionPane.YES_OPTION) {
+                    ecoSystem.removeNetwork(network);
+                    populateTable();
+                    clearViewForm();
+                    JOptionPane.showMessageDialog(this, "Network deleted successfully!");
+                }
+            }
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void tblManageNetworkAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_tblManageNetworkAncestorAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblManageNetworkAncestorAdded
-
-    private void txtcreateNetworkNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateNetworkNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateNetworkNameActionPerformed
-
-    private void cmbCreateTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCreateTypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbCreateTypeActionPerformed
-
-    private void txtcreateNetworkDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateNetworkDescriptionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateNetworkDescriptionActionPerformed
-
-    private void cmbcreateManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbcreateManagerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbcreateManagerActionPerformed
-
-    private void txtcreateNetworkLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateNetworkLocationActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateNetworkLocationActionPerformed
-
-    private void txtcreateNetworkContactNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateNetworkContactNumberActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateNetworkContactNumberActionPerformed
-
-    private void txtcreateNetworkContactEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcreateNetworkContactEmailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtcreateNetworkContactEmailActionPerformed
-
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
-        // TODO add your handling code here:
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append("Network ID,Network Name,Type,Description,Manager\n");
+        
+        for (Network network : ecoSystem.getNetworkDirectory().getNetworkList()) {
+            csvContent.append(network.getId()).append(",")
+                      .append(network.getName()).append(",")
+                      .append(network.getType()).append(",")
+                      .append(network.getDescription()).append(",")
+                      .append(network.getManager()).append("\n");
+        }
+        
+        JOptionPane.showMessageDialog(this, "CSV export functionality would save:\n" + 
+                                     csvContent.toString().substring(0, Math.min(200, csvContent.length())) + "...");
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
     private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblManageNetwork.getSelectedRow();
+        if (selectedRow >= 0) {
+            String networkId = (String) tblManageNetwork.getValueAt(selectedRow, 0);
+            Network network = ecoSystem.getNetworkDirectory().findNetworkById(networkId);
+
+            if (network != null) {
+                txtviewNetworkName.setText(network.getName());
+                cmbViewType.setSelectedItem(network.getType());
+                txtviewNetworkDescription.setText(network.getDescription());
+                cmbviewManager.setSelectedItem(network.getManager());
+                txtviewNetworkLocation.setText(network.getContactInfo().getLocation());
+                txtviewNetworkContactNumber.setText(network.getContactInfo().getContactNumber());
+                txtviewNetworkContactEmail.setText(network.getContactInfo().getContactEmail());
+            }
+        }
     }//GEN-LAST:event_btnViewDetailsActionPerformed
 
     private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
-        // TODO add your handling code here:
+        String searchFilter = (String) cmbSearch.getSelectedItem();
+        DefaultTableModel model = (DefaultTableModel) tblManageNetwork.getModel();
+        model.setRowCount(0);
+        
+        for (Network network : ecoSystem.getNetworkDirectory().getNetworkList()) {
+            boolean shouldInclude = true;
+            
+            if (searchFilter.equals("Last 3 days") || searchFilter.equals("Last 7 days") || searchFilter.equals("Last 30 days")) {
+                shouldInclude = true;
+            }
+            
+            if (shouldInclude) {
+                Object[] row = {
+                    network.getId(),
+                    network.getName(),
+                    network.getType(),
+                    network.getDescription(),
+                    network.getManager()
+                };
+                model.addRow(row);
+            }
+        }
     }//GEN-LAST:event_cmbSearchActionPerformed
+    private void clearCreateForm() {
+        txtcreateNetworkName.setText("");
+        cmbCreateType.setSelectedIndex(0);
+        txtcreateNetworkDescription.setText("");
+        cmbcreateManager.setSelectedIndex(0);
+        txtcreateNetworkLocation.setText("");
+        txtcreateNetworkContactNumber.setText("");
+        txtcreateNetworkContactEmail.setText("");
+    }
 
-    private void txtviewNetworkNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtviewNetworkNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtviewNetworkNameActionPerformed
-
-    private void cmbViewTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbViewTypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbViewTypeActionPerformed
-
-    private void txtviewNetworkDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtviewNetworkDescriptionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtviewNetworkDescriptionActionPerformed
-
-    private void cmbviewManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbviewManagerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbviewManagerActionPerformed
-
-    private void txtviewNetworkLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtviewNetworkLocationActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtviewNetworkLocationActionPerformed
-
-    private void txtviewNetworkContactNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtviewNetworkContactNumberActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtviewNetworkContactNumberActionPerformed
-
-    private void txtviewNetworkContactEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtviewNetworkContactEmailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtviewNetworkContactEmailActionPerformed
-
-
+    private void clearViewForm() {
+        txtviewNetworkName.setText("");
+        cmbViewType.setSelectedIndex(0);
+        txtviewNetworkDescription.setText("");
+        cmbviewManager.setSelectedIndex(0);
+        txtviewNetworkLocation.setText("");
+        txtviewNetworkContactNumber.setText("");
+        txtviewNetworkContactEmail.setText("");
+    }
+    
+    private UserAccount getCurrentUserAccount() {
+    // Return current user account context
+        return null; // Would be injected from constructor
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
     private javax.swing.JButton btnModify;
-    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnViewDetails;
     private javax.swing.JComboBox<String> cmbCreateType;
     private javax.swing.JComboBox<String> cmbSearch;

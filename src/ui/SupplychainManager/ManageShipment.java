@@ -6,8 +6,14 @@ package ui.SupplychainManager;
 
 import Model.Organization.Organization;
 import Model.Supplies.DeliveryCatalog;
+import Model.Supplies.Delivery;
 import Model.User.UserAccount;
+import java.awt.CardLayout;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -25,8 +31,31 @@ public class ManageShipment extends javax.swing.JPanel {
         this.organization = organization;
         this.userAccount = userAccount;
         this.deliveryCatalog = deliveryCatalog;
+        
         initComponents();
+        loadShipmentData();
     }
+    
+    private void loadShipmentData() {
+        DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
+        model.setRowCount(0);
+        
+        if (deliveryCatalog != null) {
+            List<Delivery> deliveries = deliveryCatalog.getDeliveryList();
+            for (Delivery delivery : deliveries) {
+                Object[] row = {
+                    delivery.getDeliveryId(),
+                    getRecipientName(delivery),
+                    String.valueOf(getTotalQuantity(delivery)),
+                    delivery.getDestination(),
+                    delivery.getDriverName() != null ? delivery.getDriverName() : "未分配"
+                };
+                model.addRow(row);
+            }
+        }
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,14 +81,14 @@ public class ManageShipment extends javax.swing.JPanel {
         btnBack = new javax.swing.JButton();
         txtQuantity3 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        btnViewDetails1 = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         txtDonorName = new javax.swing.JTextField();
         txtDonorName1 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtContactEmail1 = new javax.swing.JTextField();
-        btnViewDetails2 = new javax.swing.JButton();
+        btnViewDetails = new javax.swing.JButton();
         jTextField6 = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -72,7 +101,7 @@ public class ManageShipment extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         txtQuantity2 = new javax.swing.JTextField();
         txtContactEmail = new javax.swing.JTextField();
-        btnViewDetails3 = new javax.swing.JButton();
+        btnModify = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Manage Shipment");
@@ -108,6 +137,11 @@ public class ManageShipment extends javax.swing.JPanel {
         jLabel12.setText("Priority:");
 
         btnExportToCSV.setText("Export to csv");
+        btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToCSVActionPerformed(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel11.setText("Recipient Contact:");
@@ -125,16 +159,15 @@ public class ManageShipment extends javax.swing.JPanel {
             }
         });
 
-        txtQuantity3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantity3ActionPerformed(evt);
-            }
-        });
-
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel7.setText("Priority:");
 
-        btnViewDetails1.setText("Create");
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel10.setText("Recipient Name:");
@@ -145,11 +178,10 @@ public class ManageShipment extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel2.setText("Recipient Name:");
 
-        btnViewDetails2.setText("View Details");
-
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        btnViewDetails.setText("View Details");
+        btnViewDetails.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                btnViewDetailsActionPerformed(evt);
             }
         });
 
@@ -159,20 +191,8 @@ public class ManageShipment extends javax.swing.JPanel {
         jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel16.setText("View Shipment Details:");
 
-        txtItemName1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemName1ActionPerformed(evt);
-            }
-        });
-
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("Quantity:");
-
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
-            }
-        });
 
         btnBack1.setText("Delete");
         btnBack1.addActionListener(new java.awt.event.ActionListener() {
@@ -184,22 +204,15 @@ public class ManageShipment extends javax.swing.JPanel {
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel4.setText("Delivery Staff:");
 
-        txtItemName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtItemNameActionPerformed(evt);
-            }
-        });
-
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel6.setText("Location:");
 
-        txtQuantity2.addActionListener(new java.awt.event.ActionListener() {
+        btnModify.setText("Modify");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantity2ActionPerformed(evt);
+                btnModifyActionPerformed(evt);
             }
         });
-
-        btnViewDetails3.setText("Modify");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -238,9 +251,9 @@ public class ManageShipment extends javax.swing.JPanel {
                                             .addComponent(txtContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(txtContactEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addComponent(jLabel5)
-                            .addComponent(btnViewDetails1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnViewDetails2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(76, 76, 76)
                                 .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -272,7 +285,7 @@ public class ManageShipment extends javax.swing.JPanel {
                                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(btnViewDetails3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnModify, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel9)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(286, 286, 286)
@@ -293,7 +306,7 @@ public class ManageShipment extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBack1)
                     .addComponent(btnExportToCSV)
-                    .addComponent(btnViewDetails2))
+                    .addComponent(btnViewDetails))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -349,8 +362,8 @@ public class ManageShipment extends javax.swing.JPanel {
                             .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnViewDetails1)
-                    .addComponent(btnViewDetails3))
+                    .addComponent(btnCreate)
+                    .addComponent(btnModify))
                 .addGap(25, 25, 25)
                 .addComponent(btnBack)
                 .addContainerGap(121, Short.MAX_VALUE))
@@ -358,45 +371,199 @@ public class ManageShipment extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void txtQuantity3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantity3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantity3ActionPerformed
-
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
-
-    private void txtItemName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemName1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemName1ActionPerformed
-
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField7ActionPerformed
-
     private void btnBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack1ActionPerformed
-        // TODO add your handling code here:
+        try {
+            int selectedRow = tblDonationHistory.getSelectedRow();
+            if (selectedRow == -1) {
+                showWarningMessage("请先选择要删除的货运任务");
+                return;
+            }
+            
+            String shipmentId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "确认删除货运任务 " + shipmentId + "？",
+                "确认删除",
+                JOptionPane.YES_NO_OPTION
+            );
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                Delivery delivery = deliveryCatalog.findDeliveryById(shipmentId);
+                if (delivery != null) {
+                    deliveryCatalog.removeDelivery(delivery);
+                    loadShipmentData();
+                    showSuccessMessage("货运任务删除成功");
+                }
+            }
+            
+        } catch (Exception e) {
+            showErrorMessage("删除货运失败: " + e.getMessage());
+        }
     }//GEN-LAST:event_btnBack1ActionPerformed
 
-    private void txtItemNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtItemNameActionPerformed
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        try {
+            int selectedRow = tblDonationHistory.getSelectedRow();
+            if (selectedRow == -1) {
+                showWarningMessage("请先选择要修改的货运任务");
+                return;
+            }
+            
+            String shipmentId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            Delivery delivery = deliveryCatalog.findDeliveryById(shipmentId);
+            
+            if (delivery != null) {
+                // 从右侧表单获取修改数据
+                String newRecipient = txtDonorName1.getText().trim();
+                String newContact = txtContactEmail1.getText().trim();
+                String newStaff = txtContactEmail3.getText().trim();
+                String newQuantity = txtItemName1.getText().trim();
+                String newLocation = txtQuantity3.getText().trim();
+                String newPriority = jTextField7.getText().trim();
+                
+                // 更新配送信息
+                if (!newLocation.isEmpty()) {
+                    delivery.setDestination(newLocation);
+                }
+                if (!newStaff.isEmpty()) {
+                    delivery.setDriverName(newStaff);
+                }
+                
+                String updatedNotes = "优先级: " + newPriority + ", 联系方式: " + newContact + 
+                                     " [修改于: " + new Date() + "]";
+                delivery.setNotes(updatedNotes);
+                
+                loadShipmentData();
+                showSuccessMessage("货运任务修改成功");
+            }
+            
+        } catch (Exception e) {
+            showErrorMessage("修改货运失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnModifyActionPerformed
 
-    private void txtQuantity2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantity2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantity2ActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        try {
+            String recipientName = txtDonorName.getText().trim();
+            String contactInfo = txtContactEmail.getText().trim();
+            String deliveryStaff = txtContactEmail2.getText().trim();
+            String quantity = txtItemName.getText().trim();
+            String location = txtQuantity2.getText().trim();
+            String priority = jTextField6.getText().trim();
+            
+            if (recipientName.isEmpty() || location.isEmpty()) {
+                showWarningMessage("请填写收件人和配送地点");
+                return;
+            }
+            
+            // 创建新配送任务
+            Delivery newDelivery = new Delivery(location, new Date());
+            newDelivery.setDriverName(deliveryStaff);
+            newDelivery.setNotes("优先级: " + priority + ", 联系方式: " + contactInfo);
+            
+            deliveryCatalog.addDelivery(newDelivery);
+            
+            loadShipmentData();
+            clearCreateForm();
+            showSuccessMessage("货运任务创建成功");
+            
+        } catch (Exception e) {
+            showErrorMessage("创建货运失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnCreateActionPerformed
 
+    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
+        try {
+            int selectedRow = tblDonationHistory.getSelectedRow();
+            if (selectedRow == -1) {
+                showWarningMessage("请先选择一个货运任务");
+                return;
+            }
+            
+            String shipmentId = (String) tblDonationHistory.getValueAt(selectedRow, 0);
+            Delivery delivery = deliveryCatalog.findDeliveryById(shipmentId);
+            
+            if (delivery != null) {
+                showShipmentDetails(delivery);
+                // 填充查看表单
+                fillViewForm(delivery);
+            }
+            
+        } catch (Exception e) {
+            showErrorMessage("查看详情失败: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnViewDetailsActionPerformed
+
+    private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnExportToCSVActionPerformed
+    private String getRecipientName(Delivery delivery) {
+        return "收件人"; // 可以从delivery.getDestination()解析
+    }
+
+    private int getTotalQuantity(Delivery delivery) {
+        if (delivery.getItems() != null) {
+            return delivery.getItems().stream().mapToInt(item -> item.getQuantity()).sum();
+        }
+        return 0;
+    }
+
+    private void clearCreateForm() {
+        txtDonorName.setText("");
+        txtContactEmail.setText("");
+        txtContactEmail2.setText("");
+        txtItemName.setText("");
+        txtQuantity2.setText("");
+        jTextField6.setText("");
+    }
+
+    private void fillViewForm(Delivery delivery) {
+        txtDonorName1.setText(getRecipientName(delivery));
+        txtContactEmail1.setText("联系方式");
+        txtContactEmail3.setText(delivery.getDriverName() != null ? delivery.getDriverName() : "");
+        txtItemName1.setText(String.valueOf(getTotalQuantity(delivery)));
+        txtQuantity3.setText(delivery.getDestination());
+        jTextField7.setText("Medium");
+    }
+
+    private void showShipmentDetails(Delivery delivery) {
+        StringBuilder details = new StringBuilder();
+        details.append("货运详情\n================\n");
+        details.append("任务ID: ").append(delivery.getDeliveryId()).append("\n");
+        details.append("目的地: ").append(delivery.getDestination()).append("\n");
+        details.append("状态: ").append(delivery.getStatus()).append("\n");
+        details.append("配送员: ").append(delivery.getDriverName() != null ? delivery.getDriverName() : "未分配").append("\n");
+        details.append("车辆: ").append(delivery.getVehicleUsed() != null ? delivery.getVehicleUsed() : "未分配").append("\n");
+        details.append("配送日期: ").append(delivery.getDeliveryDate() != null ? delivery.getDeliveryDate() : "未设置").append("\n");
+        details.append("备注: ").append(delivery.getNotes() != null ? delivery.getNotes() : "无").append("\n");
+        
+        JOptionPane.showMessageDialog(this, details.toString(), "货运详情", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "错误", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showWarningMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "警告", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void showSuccessMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "成功", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnBack1;
+    private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnExportToCSV;
-    private javax.swing.JButton btnViewDetails1;
-    private javax.swing.JButton btnViewDetails2;
-    private javax.swing.JButton btnViewDetails3;
+    private javax.swing.JButton btnModify;
+    private javax.swing.JButton btnViewDetails;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

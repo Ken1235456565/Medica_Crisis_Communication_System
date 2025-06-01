@@ -6,8 +6,14 @@ package ui.EmergencyDispatcher;
 
 import Model.EcoSystem;
 import Model.Organization.Organization;
+import Model.Organization.EmergencyResponseUnit;
 import Model.User.UserAccount;
+import Model.Employee.Employee;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.awt.CardLayout;
+import java.util.List;
 
 /**
  *
@@ -18,7 +24,9 @@ public class ResponderStats extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private EcoSystem system; // For system-wide responder stats
+    private EcoSystem system;
+    private DefaultTableModel overviewTableModel;
+    private DefaultTableModel displayTableModel;
 
     public ResponderStats(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EcoSystem system) {
         this.userProcessContainer = userProcessContainer;
@@ -26,8 +34,43 @@ public class ResponderStats extends javax.swing.JPanel {
         this.userAccount = userAccount;
         this.system = system;
         initComponents();
+        
+        initializeTables();
+        loadResponderData();
     }
 
+    private void initializeTables() {
+        String[] columnNames = {"Responder ID", "Responder Name", "Task ID", "Task Type", "Status", "Time Taken"};
+        
+        overviewTableModel = new DefaultTableModel(columnNames, 0);
+        tblResponderDataOverview.setModel(overviewTableModel);
+        
+        displayTableModel = new DefaultTableModel(columnNames, 0);
+        tblResponderDataDisplay.setModel(displayTableModel);
+    }
+
+    private void loadResponderData() {
+        overviewTableModel.setRowCount(0);
+        displayTableModel.setRowCount(0);
+        
+        if (organization instanceof EmergencyResponseUnit) {
+            EmergencyResponseUnit eru = (EmergencyResponseUnit) organization;
+            List<Employee> responders = eru.getEmergencyStaff();
+            
+            for (Employee responder : responders) {
+                Object[] row = {
+                    responder.getId(),
+                    responder.getName(),
+                    "TASK-" + Math.random() * 1000, // 模拟任务ID
+                    responder.getPosition(),
+                    responder.isActive() ? "Active" : "Inactive",
+                    (int)(Math.random() * 120) + " min" // 模拟时间
+                };
+                overviewTableModel.addRow(row);
+                displayTableModel.addRow(row);
+            }
+        }  
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -42,24 +85,34 @@ public class ResponderStats extends javax.swing.JPanel {
         btnFilter = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        cmbTimeSpan1 = new javax.swing.JComboBox<>();
+        cmbStatus = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
-        cmbTimeSpan2 = new javax.swing.JComboBox<>();
+        cmbResponder = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         cmbTimeSpan = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblDataOverview = new javax.swing.JTable();
-        btnFilter1 = new javax.swing.JButton();
+        tblResponderDataOverview = new javax.swing.JTable();
+        btnDelete = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tblDataOverview2 = new javax.swing.JTable();
+        tblResponderDataDisplay = new javax.swing.JTable();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Responder Status");
 
         btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         btnFilter.setText("Filter");
+        btnFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilterActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel5.setText("Filters");
@@ -67,19 +120,19 @@ public class ResponderStats extends javax.swing.JPanel {
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel6.setText("Status:");
 
-        cmbTimeSpan1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
 
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel7.setText("Responder:");
 
-        cmbTimeSpan2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
+        cmbResponder.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
 
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel3.setText("Time Span:");
 
         cmbTimeSpan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
 
-        tblDataOverview.setModel(new javax.swing.table.DefaultTableModel(
+        tblResponderDataOverview.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -98,14 +151,19 @@ public class ResponderStats extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblDataOverview);
+        jScrollPane1.setViewportView(tblResponderDataOverview);
 
-        btnFilter1.setText("Create Task");
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel2.setText("Data overview:");
+        jLabel2.setText("Responder Data overview:");
 
-        tblDataOverview2.setModel(new javax.swing.table.DefaultTableModel(
+        tblResponderDataDisplay.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -124,7 +182,7 @@ public class ResponderStats extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(tblDataOverview2);
+        jScrollPane3.setViewportView(tblResponderDataDisplay);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -148,7 +206,7 @@ public class ResponderStats extends javax.swing.JPanel {
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(btnFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnFilter1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(83, 83, 83))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -164,12 +222,12 @@ public class ResponderStats extends javax.swing.JPanel {
                                     .addGap(73, 73, 73)
                                     .addComponent(jLabel6)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(cmbTimeSpan1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jLabel5))
                             .addGap(73, 73, 73)
                             .addComponent(jLabel7)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cmbTimeSpan2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(cmbResponder, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGap(81, 81, 81)))
         );
         layout.setVerticalGroup(
@@ -179,11 +237,11 @@ public class ResponderStats extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 309, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnFilter1)
+                    .addComponent(btnDelete)
                     .addComponent(btnFilter))
                 .addGap(18, 18, 18)
                 .addComponent(btnBack)
@@ -199,21 +257,73 @@ public class ResponderStats extends javax.swing.JPanel {
                         .addComponent(jLabel3)
                         .addComponent(cmbTimeSpan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel6)
-                        .addComponent(cmbTimeSpan1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7)
-                        .addComponent(cmbTimeSpan2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(395, Short.MAX_VALUE)))
+                        .addComponent(cmbResponder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(398, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
+        displayTableModel.setRowCount(0);
+        
+        String timeSpan = (String) cmbTimeSpan.getSelectedItem();
+        String status = (String) cmbStatus.getSelectedItem();
+        String responderFilter = (String) cmbResponder.getSelectedItem();
+        
+        // 从概览表格复制过滤后的数据
+        for (int i = 0; i < overviewTableModel.getRowCount(); i++) {
+            boolean includeRow = true;
+            
+            if (status != null && !status.trim().isEmpty() && !" ".equals(status)) {
+                String rowStatus = (String) overviewTableModel.getValueAt(i, 4);
+                if (!rowStatus.equalsIgnoreCase(status)) {
+                    includeRow = false;
+                }
+            }
+            
+            if (includeRow) {
+                Object[] row = new Object[overviewTableModel.getColumnCount()];
+                for (int j = 0; j < overviewTableModel.getColumnCount(); j++) {
+                    row[j] = overviewTableModel.getValueAt(i, j);
+                }
+                displayTableModel.addRow(row);
+            }
+        }
+        
+        JOptionPane.showMessageDialog(this, "Filter applied successfully!", "Filter", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnFilterActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        ((CardLayout)userProcessContainer.getLayout()).first(userProcessContainer);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int selectedRow = tblResponderDataDisplay.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a responder record to delete.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to delete this responder record?", 
+            "Confirm Delete", 
+            JOptionPane.YES_NO_OPTION);
+            
+        if (confirm == JOptionPane.YES_OPTION) {
+            displayTableModel.removeRow(selectedRow);
+            JOptionPane.showMessageDialog(this, "Responder record deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnFilter;
-    private javax.swing.JButton btnFilter1;
+    private javax.swing.JComboBox<String> cmbResponder;
+    private javax.swing.JComboBox<String> cmbStatus;
     private javax.swing.JComboBox<String> cmbTimeSpan;
-    private javax.swing.JComboBox<String> cmbTimeSpan1;
-    private javax.swing.JComboBox<String> cmbTimeSpan2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -222,7 +332,7 @@ public class ResponderStats extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable tblDataOverview;
-    private javax.swing.JTable tblDataOverview2;
+    private javax.swing.JTable tblResponderDataDisplay;
+    private javax.swing.JTable tblResponderDataOverview;
     // End of variables declaration//GEN-END:variables
 }
