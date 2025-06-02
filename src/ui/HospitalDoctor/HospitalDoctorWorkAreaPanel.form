@@ -24,12 +24,12 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="btnDutyHistory" min="-2" pref="284" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="btnSubmitICURequest" min="-2" pref="284" max="-2" attributes="0"/>
+                              <Component id="btnICURequest" min="-2" pref="284" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnViewPatientList" min="-2" pref="284" max="-2" attributes="0"/>
+                              <Component id="btnPatientList" min="-2" pref="284" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
-                              <Component id="btnSubmitMedicalOrder" min="-2" pref="284" max="-2" attributes="0"/>
+                              <Component id="btnMedicalRequest" min="-2" pref="284" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -49,12 +49,12 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnViewPatientList" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="btnSubmitMedicalOrder" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnPatientList" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnMedicalRequest" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnSubmitICURequest" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnICURequest" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
                   <Component id="btnDutyHistory" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="231" max="32767" attributes="0"/>
@@ -71,7 +71,7 @@
         <Property name="text" type="java.lang.String" value="Hospital Doctor WorkArea"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnViewPatientList">
+    <Component class="javax.swing.JButton" name="btnPatientList">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -79,10 +79,10 @@
         <Property name="text" type="java.lang.String" value="Manage Patient List"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewPatientListActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPatientListActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnSubmitICURequest">
+    <Component class="javax.swing.JButton" name="btnICURequest">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -90,10 +90,10 @@
         <Property name="text" type="java.lang.String" value="Manage ICU Request"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitICURequestActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnICURequestActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnSubmitMedicalOrder">
+    <Component class="javax.swing.JButton" name="btnMedicalRequest">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -101,7 +101,7 @@
         <Property name="text" type="java.lang.String" value="Manage Medical Order"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitMedicalOrderActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMedicalRequestActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnDutyHistory">

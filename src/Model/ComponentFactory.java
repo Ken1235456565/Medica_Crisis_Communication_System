@@ -198,21 +198,47 @@ private <T extends Organization> T findOrCreateOrganization(Enterprise enterpris
     
     public void createHospitalUsers() {
         // 创建医生
-        context.doctor = createUser("doctor", "doctor", "Physician", "Medical", 
-            context.clinicalServicesOrg, new DoctorRole());
-        
-        // 创建护士
-        context.nurse = createUser("nurse", "nurse", "Registered Nurse", "Nursing", 
-            context.clinicalServicesOrg, new NurseRole());
-        
-        // 创建财务人员
-        context.payrollStaff = createUser("payrollstaff", "payrollstaff", "Payroll Staff", "Finance", 
-            context.hospitalAdminOrg, new PayrollStaffRole());
-        
-        // 创建资源分析师
-        context.resourceAnalyst = createUser("resourceanalyst", "resourceanalyst", "Resource Analyst", "Administration", 
-            context.hospitalAdminOrg, new ResourceAnalystRole());
-    }
+    // 1. 创建基础 Employee（但只是临时中转）
+    Employee temp = createUser("doctor", "doctor", "Physician", "Medical", 
+        context.clinicalServicesOrg, new DoctorRole());
+
+    // 2. 用 temp 的数据构造 Doctor 子类实例（复制字段）
+        Doctor doctor = new Doctor(
+            "Cardiology", // 你可以自己换成别的专业
+            "DOC" + System.currentTimeMillis(), // license number（模拟唯一）
+            temp.getId(),
+            temp.getName(),
+            temp.getGender(),
+            temp.getAge(),
+            temp.getDateOfBirth(),
+            temp.getPosition(),
+            temp.getDepartment(),
+            temp.getContactInfo()
+        );
+
+        // 3. 更新 UserAccount 中的 employee 引用
+        doctor.setUserAccount(temp.getUserAccount());
+        temp.getUserAccount().setEmployee(doctor);
+
+        // 4. 替换原组织里的 Employee（删旧加新）
+        context.clinicalServicesOrg.getEmployeeDirectory().getEmployeeList().remove(temp);
+        context.clinicalServicesOrg.addEmployee(doctor);
+
+        // 5. 存到 context
+        context.doctor = doctor;
+
+            // 创建护士
+            context.nurse = createUser("nurse", "nurse", "Registered Nurse", "Nursing", 
+                context.clinicalServicesOrg, new NurseRole());
+
+            // 创建财务人员
+            context.payrollStaff = createUser("payrollstaff", "payrollstaff", "Payroll Staff", "Finance", 
+                context.hospitalAdminOrg, new PayrollStaffRole());
+
+            // 创建资源分析师
+            context.resourceAnalyst = createUser("resourceanalyst", "resourceanalyst", "Resource Analyst", "Administration", 
+                context.hospitalAdminOrg, new ResourceAnalystRole());
+        }
     
     public void createEmergencyUsers() {
         // 创建调度员

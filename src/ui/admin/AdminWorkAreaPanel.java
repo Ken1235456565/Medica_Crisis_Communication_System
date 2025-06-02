@@ -182,7 +182,33 @@ public class AdminWorkAreaPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnManageEnterpriseActionPerformed
 
     private void btnManageRolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageRolesActionPerformed
-        // TODO add your handling code here:
+        // 获取默认的 Enterprise 和 Organization
+        Model.Enterprise.Enterprise defaultEnterprise = getDefaultEnterprise();
+        Model.Organization.Organization defaultOrganization = getDefaultOrganization();
+
+        if (defaultOrganization != null && defaultEnterprise != null) {
+            // 获取 RoleDirectory，如果不存在则创建
+            Model.Role.RoleDirectory roleDirectory = defaultOrganization.getRoleDirectory();
+            if (roleDirectory == null) {
+                roleDirectory = new Model.Role.RoleDirectory();
+                defaultOrganization.setRoleDirectory(roleDirectory);
+            }
+
+            // ✅ 按照其他按钮的模式：清空容器并添加新面板
+            userProcessContainer.removeAll();
+            ManageRoles manageRolesPanel = new ManageRoles(
+                userProcessContainer, 
+                defaultEnterprise, 
+                defaultOrganization, 
+                roleDirectory
+            );
+            userProcessContainer.add(manageRolesPanel);
+            userProcessContainer.validate();
+            userProcessContainer.repaint();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Please create a Network, Enterprise, and Organization first before managing roles.");
+        }
     }//GEN-LAST:event_btnManageRolesActionPerformed
     // 辅助方法
     private Model.Network.Network getDefaultNetwork() {

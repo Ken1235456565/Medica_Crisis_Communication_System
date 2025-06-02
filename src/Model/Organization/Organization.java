@@ -6,6 +6,7 @@ import Model.WorkQueue.WorkQueue;
 import Model.Person.ContactInfo;
 import Model.Personnel.Admin;
 import Model.Employee.EmployeeDirectory;
+import Model.Enterprise.Enterprise;
 import Model.Role.RoleDirectory;
 import Model.Supplies.EquipmentsCatalog;
 import Model.User.UserAccount;
@@ -27,7 +28,7 @@ public abstract class Organization {
     protected RoleDirectory roleDirectory;
     protected UserAccountDirectory userAccountDirectory;
     protected Admin admin;
-    
+    protected Enterprise enterprise;
     
     
     // Static ID counter
@@ -145,6 +146,14 @@ public abstract class Organization {
 
     public void setUserAccountDirectory(UserAccountDirectory userAccountDirectory) {
         this.userAccountDirectory = userAccountDirectory;
+    }
+
+    public Enterprise getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(Enterprise enterprise) {
+        this.enterprise = enterprise;
     }
 
     

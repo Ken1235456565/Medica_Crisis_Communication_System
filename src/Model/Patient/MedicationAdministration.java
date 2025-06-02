@@ -10,6 +10,7 @@ package Model.Patient;
  */
 public class MedicationAdministration {
     Patient patient;
+    private String requestId;
     private String admissionDate;
     private String urgency;
     private String treatmentPlan;
@@ -20,12 +21,14 @@ public class MedicationAdministration {
     private int dosage;
     private String sideEffect;
     private String nurseNotes;
+    private static int idCounter = 1;
      // Assuming a link to patient by ID
 
     public MedicationAdministration(String patientId, String patientName, String admissionDate, 
                                String urgency, String treatmentPlan, String specialInstructions, 
                                String doctorNotes, String prescriptionDate, String medication, 
                                int dosage, String sideEffect, String nurseNotes) {
+        this.requestId = "REQ-" + (idCounter++);
         this.patient = patient;
         this.admissionDate = admissionDate;
         this.urgency = urgency;
@@ -39,11 +42,32 @@ public class MedicationAdministration {
         this.nurseNotes = nurseNotes;
     }
 
-    public MedicationAdministration(Patient patient, String admissionDate, String urgency, String treatmentPlan, String specialInstructions, String doctorNotes, String prescriptionDate, String medication, int dosage, String sideEffect, String nurseNotes) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+public MedicationAdministration(Patient patient, String admissionDate, String urgency,
+                                String treatmentPlan, String specialInstructions, String doctorNotes,
+                                String prescriptionDate, String medication, int dosage,
+                                String sideEffect, String nurseNotes) {
+    this.patient = patient;
+    this.admissionDate = admissionDate;
+    this.urgency = urgency;
+    this.treatmentPlan = treatmentPlan;
+    this.specialInstructions = specialInstructions;
+    this.doctorNotes = doctorNotes;
+    this.prescriptionDate = prescriptionDate;
+    this.medication = medication;
+    this.dosage = dosage;
+    this.sideEffect = sideEffect;
+    this.nurseNotes = nurseNotes;
+
+    // 自动生成唯一 Request ID
+    this.requestId = "REQ-" + (idCounter++);
+}
+
 
     // Getters for all fields (omitted for brevity)
+
+    public String getRequestId() {
+    return requestId;
+}
 
     public Patient getPatient() {
         return patient;

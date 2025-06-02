@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.awt.CardLayout;
+import java.awt.Container;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,12 +58,38 @@ public class ManageMedicalRequest extends javax.swing.JPanel {
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Make table read-only
+                return false;
             }
         };
         tblMedicalRequest.setModel(tableModel);
+
+        // 添加演示数据
+        addDemoData();
+
+        // 刷新视图
         refreshTable();
     }
+    
+    private void addDemoData() {
+        Patient p1 = patientDirectory.createPatient("John Doe", "Male", 35, "1989-02-15");
+        Patient p2 = patientDirectory.createPatient("Alice Smith", "Female", 28, "1996-03-20");
+
+        MedicationAdministration m1 = new MedicationAdministration(
+            p1, "2025-06-01", "High", "", "Take with food", "Created by Admin",
+            "2025-06-02", "Amoxicillin", 500, "", "Pending");
+
+        MedicationAdministration m2 = new MedicationAdministration(
+            p2, "2025-05-30", "Low", "", "Before bedtime", "Created by Admin",
+            "2025-06-01", "Ibuprofen", 200, "", "Approved");
+
+        medicationRequests.add(m1);
+        medicationRequests.add(m2);
+
+        // 添加到患者历史
+        p1.addMedicationAdministration(m1);
+        p2.addMedicationAdministration(m2);
+    }
+
 
     private void setupEventHandlers() {
         // Add table selection listener
@@ -77,21 +104,22 @@ public class ManageMedicalRequest extends javax.swing.JPanel {
         });
     }
 
-    private void refreshTable() {
-        tableModel.setRowCount(0);
-        for (int i = 0; i < medicationRequests.size(); i++) {
-            MedicationAdministration request = medicationRequests.get(i);
-            Object[] row = {
-                "MED" + (i + 1), // Generate a simple ID
-                request.getPatient() != null ? request.getPatient().getName() : "Unknown",
-                request.getMedication() != null ? request.getMedication() : "",
-                request.getDosage(),
-                formatDate(parseDate(request.getPrescriptionDate())),
-                "Active" // Default status
-            };
-            tableModel.addRow(row);
-        }
+private void refreshTable() {
+    tableModel.setRowCount(0); // 清空表格
+
+    for (MedicationAdministration request : medicationRequests) {
+        Object[] row = new Object[]{
+            request.getRequestId(),
+            request.getPatient() != null ? request.getPatient().getName() : "Unknown",
+            request.getMedication(),
+            request.getDosage(),
+            request.getPrescriptionDate(),
+            
+        };
+        tableModel.addRow(row);
     }
+}
+
 
     private void populateViewFields() {
         if (selectedRequest != null) {
@@ -279,6 +307,11 @@ public class ManageMedicalRequest extends javax.swing.JPanel {
         jLabel13.setText("Urgency:");
 
         CmbcreateUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbcreateUrgency.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CmbcreateUrgencyActionPerformed(evt);
+            }
+        });
 
         btnDelete.setText("Delete");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -475,8 +508,8 @@ public class ManageMedicalRequest extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-        layout.previous(userProcessContainer);
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
@@ -730,6 +763,10 @@ private String escapeCSV(String value) {
 
         JOptionPane.showMessageDialog(this, details.toString(), "Prescription Details", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnViewPrescriptionDetailsActionPerformed
+
+    private void CmbcreateUrgencyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CmbcreateUrgencyActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CmbcreateUrgencyActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

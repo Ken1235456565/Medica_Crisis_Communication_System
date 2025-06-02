@@ -8,6 +8,8 @@ import Model.Organization.Organization;
 import Model.Patient.MedicationAdministration;
 import Model.Patient.Patient;
 import Model.User.UserAccount;
+import java.awt.CardLayout;
+import java.awt.Container;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -186,6 +188,7 @@ public class PersonalHistorylinked extends javax.swing.JFrame {
         txtcreateSpecialInstructions = new javax.swing.JTextField();
         txtcreateAdmissionDate = new javax.swing.JTextField();
         btnView = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -293,6 +296,13 @@ public class PersonalHistorylinked extends javax.swing.JFrame {
             }
         });
 
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -334,7 +344,8 @@ public class PersonalHistorylinked extends javax.swing.JFrame {
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(76, 76, 76)
-                                    .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -442,7 +453,9 @@ public class PersonalHistorylinked extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCreate)
                     .addComponent(btnView))
-                .addContainerGap(147, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnBack)
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
         pack();
@@ -638,6 +651,11 @@ public class PersonalHistorylinked extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.show(userProcessContainer, "HospitalDoctorWorkAreaPanel");
+    }//GEN-LAST:event_btnBackActionPerformed
+
     private String escapeCSV(String value) {
             if (value == null) {
                 return "";
@@ -658,6 +676,7 @@ public class PersonalHistorylinked extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;

@@ -10,6 +10,7 @@ import Model.Network.Network;
 import Model.Organization.Organization;
 import Model.Organization.OrganizationDirectory;
 import Model.Person.ContactInfo;
+import Model.User.UserAccount;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -20,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  * @author tiankaining
  */
 public class ManageOrganization extends javax.swing.JPanel {
-    
+    private EcoSystem ecoSystem;
     private JPanel userProcessContainer;
     private Enterprise enterprise;
     private OrganizationDirectory organizationDirectory;
@@ -29,6 +30,7 @@ public class ManageOrganization extends javax.swing.JPanel {
         this.userProcessContainer = userProcessContainer;
         this.organizationDirectory = organizationDirectory;
         this.enterprise = enterprise;
+        this.ecoSystem = ecoSystem;
         initComponents();
         populateTable();
         populateComboBoxes();
@@ -473,8 +475,12 @@ private void populateComboBoxes() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-        layout.previous(userProcessContainer);
+    // Navigate back to AdminWorkAreaPanel
+    userProcessContainer.removeAll();
+    userProcessContainer.add(new AdminWorkAreaPanel(userProcessContainer, 
+        getEcoSystemFromOrganization(), getCurrentUserAccount()));
+    userProcessContainer.validate();
+    userProcessContainer.repaint();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
@@ -486,7 +492,7 @@ private void populateComboBoxes() {
     String contactNumber = txtCreateContactNumber.getText();
     String contactEmail = txtCreateContactEmail.getText();
     
-    // ✅ 修改：直接使用当前的 organizationDirectory 创建并添加
+    //  修改：直接使用当前的 organizationDirectory 创建并添加
     Organization newOrganization = organizationDirectory.createOrganization(
         type.replace(" ", ""), name, null);
         
@@ -494,7 +500,7 @@ private void populateComboBoxes() {
         newOrganization.setContactInfo(new ContactInfo(location, contactNumber, contactEmail));
         newOrganization.setOrganizationName(name);
         
-        // ✅ 确保组织被添加到正确的 Enterprise 中
+        //  确保组织被添加到正确的 Enterprise 中
         if (enterprise != null) {
             enterprise.addOrganization(newOrganization);
         }
@@ -604,6 +610,14 @@ private void populateComboBoxes() {
         cmbviewEnterprisebelong.setSelectedIndex(0);
     }
 
+    private UserAccount getCurrentUserAccount() {
+    // Return current user account context
+        return null; // Would be injected from constructor
+    }
+    
+    private EcoSystem getEcoSystemFromOrganization() {
+    return EcoSystem.getInstance();
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnCreate;

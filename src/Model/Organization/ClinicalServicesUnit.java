@@ -1,6 +1,7 @@
 // Model/organization/ClinicalServicesUnit.java
 package Model.Organization;
 
+import Model.EcoSystem;
 import Model.Employee.Employee;
 import Model.Patient.Patient;
 import Model.Patient.PatientDirectory;
@@ -29,6 +30,7 @@ public class ClinicalServicesUnit extends Organization {
     private ICUbedCatalog ICUbedCatalog;
     private PatientDirectory patientDirectory = new PatientDirectory();
     private SupplyItemCatalog supplyItemCatalog = new SupplyItemCatalog();
+    private EcoSystem ecoSystem;
 
     // Default constructor
 public ClinicalServicesUnit() {
@@ -130,6 +132,16 @@ public ClinicalServicesUnit(String unitName, ICUbedCatalog ICUbedCatalog, boolea
     public void setEmergencyReady(boolean emergencyReady) {
         this.emergencyReady = emergencyReady;
     }
+
+    public EcoSystem getEcoSystem() {
+        return ecoSystem;
+    }
+
+    public void setEcoSystem(EcoSystem ecoSystem) {
+        this.ecoSystem = ecoSystem;
+    }
+    
+    
 
     // Add medical staff
     public void addMedicalStaff(Employee employee) {

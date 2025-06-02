@@ -36,6 +36,8 @@ public class ManageUserAccounts extends javax.swing.JPanel {
         this.employeeDirectory = organization.getEmployeeDirectory(); // Assuming Organization has an EmployeeDirectory
         this.roleDirectory = organization.getRoleDirectory(); // Assuming Organization has a RoleDirectory
         initComponents();
+        populateTable();
+        populateComboBoxes();
     }
 
     /**

@@ -21,8 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.awt.CardLayout;
+import java.awt.Container;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import ui.admin.AdminWorkAreaPanel;
 
 /**
  *
@@ -116,7 +118,7 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
         if (selectedShiftNote != null) {
             txtViewNurseName.setText(selectedShiftNote.getNurseName());
             txtViewContactEmail.setText(selectedShiftNote.getContactEmail());
-            CmbViewDate.setSelectedItem(selectedShiftNote.getDate());
+            txtCreateDate.setText(selectedShiftNote.getDate());
             txtViewNotes.setText(selectedShiftNote.getNotes());
         }
     }
@@ -124,14 +126,14 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
     private void clearCreateFields() {
         txtCreateNurseName.setText("");
         txtCreateContactEmail.setText("");
-        CmbCreateDate.setSelectedIndex(0);
+        txtCreateDate.setText("");
         txtCreateNotes.setText("");
     }
 
     private void clearViewFields() {
         txtViewNurseName.setText("");
         txtViewContactEmail.setText("");
-        CmbViewDate.setSelectedIndex(0);
+        txtCreateDate.setText("");
         txtViewNotes.setText("");
     }
 
@@ -188,15 +190,15 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
         jLabel11 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        CmbViewDate = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         txtViewNotes = new javax.swing.JTextField();
         txtCreateContactEmail = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         txtCreateNotes = new javax.swing.JTextField();
-        CmbCreateDate = new javax.swing.JComboBox<>();
         btnExportToCSV = new javax.swing.JButton();
         btnSalaryCaculation = new javax.swing.JButton();
+        txtCreateDate = new javax.swing.JTextField();
+        txtViewDate = new javax.swing.JTextField();
 
         tblPatientShiftNotes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -277,15 +279,11 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel5.setText("Create New Shift Note:");
 
-        CmbViewDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
-
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("View Patient Shift Notes");
 
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel14.setText("Date:");
-
-        CmbCreateDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
 
         btnExportToCSV.setText("Export to csv");
         btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
@@ -322,9 +320,9 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
                                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(81, 81, 81)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(CmbCreateDate, 0, 172, Short.MAX_VALUE)
-                                            .addComponent(txtCreateContactEmail)))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtCreateContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtCreateDate, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -345,9 +343,9 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
                                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGap(81, 81, 81)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(CmbViewDate, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtViewContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtViewContactEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtViewDate, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(81, 81, 81)
@@ -400,7 +398,7 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(CmbCreateDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtCreateDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
@@ -418,7 +416,7 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel14)
-                            .addComponent(CmbViewDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtViewDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel16)
@@ -434,8 +432,8 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-        layout.previous(userProcessContainer);
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.show(userProcessContainer, "HospitalDoctorWorkAreaPanel");
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
@@ -446,7 +444,7 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
         try {
             String nurseName = txtCreateNurseName.getText().trim();
             String contactEmail = txtCreateContactEmail.getText().trim();
-            String date = (String) CmbCreateDate.getSelectedItem();
+            String date = txtCreateDate.getText().trim();
             String notes = txtCreateNotes.getText().trim();
 
             // Use today's date if date field is empty or invalid
@@ -674,8 +672,6 @@ private String escapeCSV(String value) {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CmbCreateDate;
-    private javax.swing.JComboBox<String> CmbViewDate;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
@@ -697,9 +693,11 @@ private String escapeCSV(String value) {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblPatientShiftNotes;
     private javax.swing.JTextField txtCreateContactEmail;
+    private javax.swing.JTextField txtCreateDate;
     private javax.swing.JTextField txtCreateNotes;
     private javax.swing.JTextField txtCreateNurseName;
     private javax.swing.JTextField txtViewContactEmail;
+    private javax.swing.JTextField txtViewDate;
     private javax.swing.JTextField txtViewNotes;
     private javax.swing.JTextField txtViewNurseName;
     // End of variables declaration//GEN-END:variables

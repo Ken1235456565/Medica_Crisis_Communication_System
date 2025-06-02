@@ -4,6 +4,7 @@
  */
 package ui.HospitalDoctor;
 
+import Model.EcoSystem;
 import Model.Employee.Employee;
 import Model.Organization.Organization;
 import Model.Personnel.Doctor;
@@ -11,10 +12,12 @@ import Model.Patient.PatientDirectory;
 import Model.Supplies.SupplyItemCatalog;
 import Model.Supplies.ICUbedCatalog;
 import Model.Employee.EmployeeDirectory;
+import Model.Enterprise.Enterprise;
 import Model.Organization.ClinicalServicesUnit;
 import Model.Organization.SupplyChainManagementUnit;
 import Model.Patient.Patient;
 import Model.User.UserAccount;
+import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
 import java.util.List;
@@ -25,83 +28,65 @@ import java.util.List;
  */
 public class HospitalDoctorWorkAreaPanel extends javax.swing.JPanel {
 
+
     private JPanel userProcessContainer;
-    private Organization organization;
+    private ClinicalServicesUnit clinicalOrg;
     private UserAccount userAccount;
-    private Doctor doctor; // The logged-in doctor
+    private Enterprise enterprise;
+    private EcoSystem ecoSystem;
+    private final java.util.Set<String> addedPanels = new java.util.HashSet<>();
+
+public HospitalDoctorWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+    this.userProcessContainer = userProcessContainer;
+    this.clinicalOrg = (ClinicalServicesUnit) organization;
+    this.userAccount = userAccount;
+    this.enterprise = (Enterprise) organization.getEnterprise();
+    this.ecoSystem = ecoSystem;    
+
+    initComponents();
     
-    private CardLayout cardLayout;
-    private JPanel contentPanel;
-
-    public HospitalDoctorWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
-        this.userProcessContainer = userProcessContainer;
-        this.organization = organization;
-        this.userAccount = userAccount;
-        Employee doctor = userAccount.getEmployee(); 
-        initComponents();
-        initContentPanel();
-    }
-    
-private void initContentPanel() {
-    contentPanel = new JPanel(new CardLayout());
-    this.cardLayout = (CardLayout) contentPanel.getLayout();
-
-    //强制转换成具体类型 ClinicalServicesUnit
-    if (organization instanceof ClinicalServicesUnit) {
-        ClinicalServicesUnit clinicalOrg = (ClinicalServicesUnit) organization;
-
-        // 从子类获取数据结构
-        PatientDirectory patientDirectory = clinicalOrg.getPatientDirectory();
-        SupplyItemCatalog supplyCatalog = clinicalOrg.getSupplyItemCatalog();
-        ICUbedCatalog icuBedCatalog = clinicalOrg.getICUbedCatalog();
-        EmployeeDirectory employeeDirectory = clinicalOrg.getEmployeeDirectory(); // 父类字段
-
-        //添加子页面（以统一 clinicalOrg 传入，逻辑更清晰）
-        contentPanel.add("ManagePatientList", new ManagePatientList(userProcessContainer, clinicalOrg, userAccount, patientDirectory));
-        contentPanel.add("ManageICURequest", new ManageICURequest(userProcessContainer, clinicalOrg, userAccount, patientDirectory, icuBedCatalog));
-        contentPanel.add("ManageMedicalRequest", new ManageMedicalRequest(userProcessContainer, clinicalOrg, userAccount, patientDirectory, supplyCatalog));
-        contentPanel.add("ViewOnDutyHistory", new ViewOnDutyHistory(userProcessContainer, clinicalOrg, userAccount, employeeDirectory));
-    } else {
-        throw new IllegalArgumentException("Organization is not a ClinicalServicesUnit.");
+    // 确保主面板被添加到CardLayout中
+    if (!addedPanels.contains("HospitalDoctorWorkAreaPanel")) {
+        userProcessContainer.add("HospitalDoctorWorkAreaPanel", this);
+        addedPanels.add("HospitalDoctorWorkAreaPanel");
     }
 }
-
-
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        btnViewPatientList = new javax.swing.JButton();
-        btnSubmitICURequest = new javax.swing.JButton();
-        btnSubmitMedicalOrder = new javax.swing.JButton();
+        btnPatientList = new javax.swing.JButton();
+        btnICURequest = new javax.swing.JButton();
+        btnMedicalRequest = new javax.swing.JButton();
         btnDutyHistory = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Hospital Doctor WorkArea");
 
-        btnViewPatientList.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnViewPatientList.setText("Manage Patient List");
-        btnViewPatientList.addActionListener(new java.awt.event.ActionListener() {
+        btnPatientList.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnPatientList.setText("Manage Patient List");
+        btnPatientList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewPatientListActionPerformed(evt);
+                btnPatientListActionPerformed(evt);
             }
         });
 
-        btnSubmitICURequest.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnSubmitICURequest.setText("Manage ICU Request");
-        btnSubmitICURequest.addActionListener(new java.awt.event.ActionListener() {
+        btnICURequest.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnICURequest.setText("Manage ICU Request");
+        btnICURequest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitICURequestActionPerformed(evt);
+                btnICURequestActionPerformed(evt);
             }
         });
 
-        btnSubmitMedicalOrder.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btnSubmitMedicalOrder.setText("Manage Medical Order");
-        btnSubmitMedicalOrder.addActionListener(new java.awt.event.ActionListener() {
+        btnMedicalRequest.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnMedicalRequest.setText("Manage Medical Order");
+        btnMedicalRequest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitMedicalOrderActionPerformed(evt);
+                btnMedicalRequestActionPerformed(evt);
             }
         });
 
@@ -125,11 +110,11 @@ private void initContentPanel() {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnDutyHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSubmitICURequest, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnICURequest, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnViewPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(92, 92, 92)
-                                .addComponent(btnSubmitMedicalOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnMedicalRequest, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(361, 361, 361)
                         .addComponent(jLabel1)))
@@ -142,46 +127,55 @@ private void initContentPanel() {
                 .addComponent(jLabel1)
                 .addGap(77, 77, 77)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnViewPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSubmitMedicalOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnPatientList, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMedicalRequest, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(79, 79, 79)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSubmitICURequest, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnICURequest, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDutyHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(231, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnViewPatientListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPatientListActionPerformed
-        // Navigate to ManagePatientList
-        userProcessContainer.add("ManagePatientList", contentPanel.getComponent(0)); 
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
-    }//GEN-LAST:event_btnViewPatientListActionPerformed
+    private void btnPatientListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPatientListActionPerformed
+    PatientDirectory patientDirectory = clinicalOrg.getPatientDirectory();
+    ManagePatientList panel = new ManagePatientList(userProcessContainer, clinicalOrg, userAccount, patientDirectory);
+    switchToPanel("ManagePatientList", panel);
+    }//GEN-LAST:event_btnPatientListActionPerformed
 
-    private void btnSubmitICURequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitICURequestActionPerformed
-        // Navigate to ManageICURequest
-        userProcessContainer.add("ManageICURequest", contentPanel.getComponent(1)); 
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
-    }//GEN-LAST:event_btnSubmitICURequestActionPerformed
+    private void btnICURequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnICURequestActionPerformed
+    PatientDirectory patientDirectory = clinicalOrg.getPatientDirectory();
+    ICUbedCatalog icuBedCatalog = clinicalOrg.getICUbedCatalog();
+    ManageICURequest panel = new ManageICURequest(userProcessContainer, clinicalOrg, userAccount, patientDirectory, icuBedCatalog);
+    switchToPanel("ManageICURequest", panel);
+    }//GEN-LAST:event_btnICURequestActionPerformed
 
-    private void btnSubmitMedicalOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitMedicalOrderActionPerformed
-        // Navigate to ManageMedicalRequest
-        userProcessContainer.add("ManageMedicalOrder", contentPanel.getComponent(2)); 
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
-    }//GEN-LAST:event_btnSubmitMedicalOrderActionPerformed
+    private void btnMedicalRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMedicalRequestActionPerformed
+    PatientDirectory patientDirectory = clinicalOrg.getPatientDirectory();
+    SupplyItemCatalog supplyCatalog = clinicalOrg.getSupplyItemCatalog();
+    ManageMedicalRequest panel = new ManageMedicalRequest(userProcessContainer, clinicalOrg, userAccount, patientDirectory, supplyCatalog);
+    switchToPanel("ManageMedicalRequest", panel);
+    }//GEN-LAST:event_btnMedicalRequestActionPerformed
 
     private void btnDutyHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDutyHistoryActionPerformed
-        // Navigate to ViewOnDutyHistory
-        userProcessContainer.add("ViewOnDutyHistory", contentPanel.getComponent(3)); 
-        ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
+    EmployeeDirectory employeeDirectory = clinicalOrg.getEmployeeDirectory();
+    ViewOnDutyHistory panel = new ViewOnDutyHistory(userProcessContainer, clinicalOrg, userAccount, employeeDirectory);
+    switchToPanel("ViewOnDutyHistory", panel);
     }//GEN-LAST:event_btnDutyHistoryActionPerformed
+private void switchToPanel(String panelName, JPanel panel) {
+    if (!addedPanels.contains(panelName)) {
+        userProcessContainer.add(panelName, panel);
+        addedPanels.add(panelName);
+    }
+    ((CardLayout) userProcessContainer.getLayout()).show(userProcessContainer, panelName);
+}
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDutyHistory;
-    private javax.swing.JButton btnSubmitICURequest;
-    private javax.swing.JButton btnSubmitMedicalOrder;
-    private javax.swing.JButton btnViewPatientList;
+    private javax.swing.JButton btnICURequest;
+    private javax.swing.JButton btnMedicalRequest;
+    private javax.swing.JButton btnPatientList;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

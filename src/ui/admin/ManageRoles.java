@@ -53,42 +53,66 @@ public class ManageRoles extends javax.swing.JPanel {
         }
     }
 
-    private void populateComboBoxes() {
-        cmbcreateRoleOrganization.removeAllItems();
-        cmbcreateRoleOrganization.addItem("Select Organization");
-        if (enterprise != null) {
-            for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
-                cmbcreateRoleOrganization.addItem(org.getOrganizationName());
-            }
-        }
-        
-        cmbcreateRoleEnterprise.removeAllItems();
-        cmbcreateRoleEnterprise.addItem("Select Enterprise");
-        if (enterprise != null) {
-            cmbcreateRoleEnterprise.addItem(enterprise.getName());
-            cmbcreateRoleEnterprise.setSelectedItem(enterprise.getName());
-        }
-
-        cmbSearch.removeAllItems();
-        cmbSearch.addItem("All");
-        cmbSearch.addItem("Last 3 days");
-        cmbSearch.addItem("Last 7 days");
-        cmbSearch.addItem("Last 30 days");
-
-        cmbViewRoleOrganization.removeAllItems();
-        cmbViewRoleOrganization.addItem("Select Organization");
-        if (enterprise != null) {
-            for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
-                cmbViewRoleOrganization.addItem(org.getOrganizationName());
-            }
-        }
-
-        cmbViewRoleEnterprise.removeAllItems();
-        cmbViewRoleEnterprise.addItem("Select Enterprise");
-        if (enterprise != null) {
-            cmbViewRoleEnterprise.addItem(enterprise.getName());
+private void populateComboBoxes() {
+    // 填充预定义角色到创建角色下拉框
+    cmbcreateRoleOrganization.removeAllItems();
+    cmbcreateRoleOrganization.addItem("Select Organization");
+    if (enterprise != null) {
+        for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
+            cmbcreateRoleOrganization.addItem(org.getOrganizationName());
         }
     }
+    
+    cmbcreateRoleEnterprise.removeAllItems();
+    cmbcreateRoleEnterprise.addItem("Select Enterprise");
+    if (enterprise != null) {
+        cmbcreateRoleEnterprise.addItem(enterprise.getName());
+        cmbcreateRoleEnterprise.setSelectedItem(enterprise.getName());
+    }
+
+    cmbSearch.removeAllItems();
+    cmbSearch.addItem("All");
+    cmbSearch.addItem("Last 3 days");
+    cmbSearch.addItem("Last 7 days");
+    cmbSearch.addItem("Last 30 days");
+
+    cmbViewRoleOrganization.removeAllItems();
+    cmbViewRoleOrganization.addItem("Select Organization");
+    if (enterprise != null) {
+        for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
+            cmbViewRoleOrganization.addItem(org.getOrganizationName());
+        }
+    }
+
+    cmbViewRoleEnterprise.removeAllItems();
+    cmbViewRoleEnterprise.addItem("Select Enterprise");
+    if (enterprise != null) {
+        cmbViewRoleEnterprise.addItem(enterprise.getName());
+    }
+    
+    // 添加预定义角色到系统中
+    initializePredefinedRoles();
+}
+
+private void initializePredefinedRoles() {
+    String[] predefinedRoles = {
+        "System Admin", "Doctor", "Nurse", "Payroll Staff", 
+        "Resource Analyst", "Dispatcher", "Responder", 
+        "Logistics Manager", "Delivery Staff", "Donation Coordinator", 
+        "Supply Chain Manager", "Donor"
+    };
+    
+    for (String roleName : predefinedRoles) {
+        // 检查角色是否已存在，避免重复添加
+        if (roleDirectory.findRoleByName(roleName) == null) {
+            String roleId = "ROLE_" + roleName.replace(" ", "_").toUpperCase();
+            boolean isAdmin = "System Admin".equals(roleName);
+            String description = "Predefined role: " + roleName;
+            
+            roleDirectory.createRole(roleId, roleName, description, isAdmin);
+        }
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
