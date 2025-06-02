@@ -43,7 +43,7 @@ public class EquipmentStatusChart extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblDataOverview1 = new javax.swing.JTable();
+        tblTechnicianWorkHistory = new javax.swing.JTable();
         btnBack = new javax.swing.JButton();
         btnSalaryCaculation = new javax.swing.JButton();
 
@@ -52,17 +52,17 @@ public class EquipmentStatusChart extends javax.swing.JPanel {
 
         tblDataOverview.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Region", "Total Patients", "Discharged", "Hospitalized", "Deaths", "Average length of stay"
+                "Equipment ID", "Equipment", "Total Requests Amount", "In Progress", "Completed"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -72,31 +72,31 @@ public class EquipmentStatusChart extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblDataOverview);
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel1.setText("Equipment Status Char");
+        jLabel1.setText("Equipment Status Chart");
 
         jLabel18.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel18.setText("Technician Work History:");
 
-        tblDataOverview1.setModel(new javax.swing.table.DefaultTableModel(
+        tblTechnicianWorkHistory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Region", "Total Patients", "Discharged", "Hospitalized", "Deaths", "Average length of stay"
+                "Technician ID", "Technician", "Assigned Requests Amount", "In Progress", "Completed"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(tblDataOverview1);
+        jScrollPane2.setViewportView(tblTechnicianWorkHistory);
 
         btnBack.setText("Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -125,12 +125,15 @@ public class EquipmentStatusChart extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel18)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnSalaryCaculation, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(80, 80, 80))))
+                        .addGap(694, 694, 694))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,6 +174,6 @@ public class EquipmentStatusChart extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblDataOverview;
-    private javax.swing.JTable tblDataOverview1;
+    private javax.swing.JTable tblTechnicianWorkHistory;
     // End of variables declaration//GEN-END:variables
 }
