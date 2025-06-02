@@ -131,7 +131,7 @@ private <T extends Organization> T findOrCreateOrganization(Enterprise enterpris
     }
 
     if (type == ClinicalServicesUnit.class) {
-        ICUbedCatalog icuBedCatalog = new ICUbedCatalog(); // ✅ 重要修复
+        ICUbedCatalog icuBedCatalog = new ICUbedCatalog(); // ✅ 创建 ICU 床位目录
         ClinicalServicesUnit org = new ClinicalServicesUnit(name, icuBedCatalog, true);
         enterprise.addOrganization(org);
         return (T) org;
@@ -156,8 +156,8 @@ private <T extends Organization> T findOrCreateOrganization(Enterprise enterpris
     }
 
     if (type == SupplyChainManagementUnit.class) {
-        SupplyItemCatalog itemCatalog = new SupplyItemCatalog();   // ✅ 修复
-        DeliveryCatalog deliveryCatalog = new DeliveryCatalog();   // ✅ 修复
+        SupplyItemCatalog itemCatalog = new SupplyItemCatalog();   // ✅ 创建物品目录
+        DeliveryCatalog deliveryCatalog = new DeliveryCatalog();   // ✅ 创建配送目录
         SupplyChainManagementUnit org = new SupplyChainManagementUnit(name, itemCatalog, deliveryCatalog);
         enterprise.addOrganization(org);
         return (T) org;
@@ -165,13 +165,13 @@ private <T extends Organization> T findOrCreateOrganization(Enterprise enterpris
 
     if (type == DonationManagementUnit.class) {
         DonationManagementUnit org = new DonationManagementUnit();
+        org.setOrganizationName(name); // ✅ 设置组织名称
         enterprise.addOrganization(org);
         return (T) org;
     }
 
     if (type == OperationsSupportUnit.class) {
-        OperationsSupportUnit org = new OperationsSupportUnit(name, new ArrayList<>(), "2025"); // ✅ 修复 payrolls
-        org.setStaffList(new ArrayList<>()); // ✅ 补充 staffList
+        OperationsSupportUnit org = new OperationsSupportUnit(name, new ArrayList<>(), "2025"); // ✅ 修复构造函数参数
         enterprise.addOrganization(org);
         return (T) org;
     }

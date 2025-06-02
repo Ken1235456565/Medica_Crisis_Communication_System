@@ -2,6 +2,7 @@ package Model.Organization;
 
 import Model.Employee.Employee;
 import Model.Employee.PayrollRecord;
+import Model.Enterprise.Enterprise;
 import Model.Organization.Organization;
 import Model.Personnel.Admin;
 import Model.WorkQueue.PayrollRequest;
@@ -59,6 +60,9 @@ public class OperationsSupportUnit extends Organization {
         this.performanceReports = new ArrayList<>();
         this.analysisTasks = new ArrayList<>();
     }
+    
+
+
 
     // Optional: constructor with operationalYear too
     public OperationsSupportUnit(String unitName, Admin admin, String fiscalYear, String operationalYear) {

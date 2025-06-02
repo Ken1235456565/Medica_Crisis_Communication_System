@@ -1,5 +1,6 @@
 package Model.Enterprise;
 
+import Model.Organization.OperationsSupportUnit;
 import Model.Organization.Organization;
 import Model.Organization.OrganizationDirectory;
 import Model.Person.ContactInfo;
@@ -80,6 +81,20 @@ public abstract class Enterprise {
     public OrganizationDirectory getOrganizations() {
         return organizations;
     }
+    
+public OperationsSupportUnit getOrCreateOperationsSupportUnit() {
+    for (Organization org : organizations.getOrganizationList()) {
+        if (org instanceof OperationsSupportUnit) {
+            return (OperationsSupportUnit) org;
+        }
+    }
+
+    // 如果没有，创建并加入组织目录
+    OperationsSupportUnit newOps = new OperationsSupportUnit("Operations Support");
+    organizations.getOrganizationList().add(newOps);
+    return newOps; // ✅ 一定要 return
+}
+
 
     public void setOrganizations(OrganizationDirectory organizations) {
         this.organizations = organizations;

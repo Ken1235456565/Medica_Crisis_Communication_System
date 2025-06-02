@@ -10,6 +10,8 @@ import Model.User.UserAccount;
 import Model.Employee.Employee;
 import Model.Employee.EmployeeDirectory;
 import Model.Employee.PayrollRecord;
+import Model.Enterprise.Enterprise;
+import Model.Organization.OrganizationDirectory;
 import Model.WorkQueue.PayrollRequest;
 import Model.WorkQueue.Report;
 import javax.swing.JPanel;
@@ -30,10 +32,12 @@ import java.text.SimpleDateFormat;
 public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
-    private Organization organization;
+    private OrganizationDirectory organizationDirectory;
     private UserAccount userAccount;
     private OperationsSupportUnit operationsUnit;
     private EmployeeDirectory employeeDirectory;
+    private Enterprise enterprise;
+
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
@@ -42,12 +46,12 @@ public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
     private Map<String, Double> monthlyPayrollCosts;
     private Map<String, Integer> payrollRequestCounts;
 
-    public PayrollOfficerWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+    public PayrollOfficerWorkAreaPanel(JPanel userProcessContainer, Enterprise enterprise, UserAccount userAccount) {
+        this.enterprise = enterprise;
         this.userProcessContainer = userProcessContainer;
-        this.organization = organization;
         this.userAccount = userAccount;
-        this.operationsUnit = findOperationsSupportUnit();
-        this.employeeDirectory = organization.getEmployeeDirectory();
+this.operationsUnit = enterprise.getOrCreateOperationsSupportUnit();
+this.employeeDirectory = operationsUnit.getEmployeeDirectory();
         this.monthlyPayrollCosts = new HashMap<>();
         this.payrollRequestCounts = new HashMap<>();
 
@@ -57,22 +61,22 @@ public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
         populateTimeSpanComboBox();
     }
 
-    private OperationsSupportUnit findOperationsSupportUnit() {
-        for (Organization org : organization.getOrganizations().getOrganizationList()) {
+    private OperationsSupportUnit findOperationsSupportUnit(Enterprise enterprise) {
+        for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
             if (org instanceof OperationsSupportUnit) {
                 return (OperationsSupportUnit) org;
             }
         }
         return null;
     }
-
     private void initContentPanel() {
         contentPanel = new JPanel(new CardLayout());
         this.cardLayout = (CardLayout) contentPanel.getLayout();
 
         // 添加子面板到contentPanel
-        contentPanel.add("GeneratePayrolls", new GeneratePayrolls(userProcessContainer, organization, userAccount, employeeDirectory));
-        contentPanel.add("ManageEmployeeSalary", new ManageEmployeeSalary(userProcessContainer, organization, userAccount, employeeDirectory));
+        this.enterprise = enterprise;
+        contentPanel.add("GeneratePayrolls", new GeneratePayrolls(userProcessContainer, this.enterprise, userAccount));
+        contentPanel.add("ManageEmployeeSalary", new ManageEmployeeSalary(userProcessContainer, this.enterprise, userAccount));
     }
 
     private void initializePayrollData() {
@@ -358,9 +362,8 @@ public class PayrollOfficerWorkAreaPanel extends javax.swing.JPanel {
             Report report = operationsUnit.generatePerformanceReport(
                 "Payroll Cost Analysis", 
                 "Financial", 
-                new Date(), 
-                getStartOfYear(), 
-                new Date(),
+                getStartOfYear(),        // start date
+                new Date(),              // end date (now)
                 createPayrollMetrics(totalYearCost, maxMonthlyCost, minMonthlyCost)
             );
         }

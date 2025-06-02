@@ -211,14 +211,16 @@ public MainJFrame() {
 
         UserAccount authenticatedUser = null;
         Organization currentOrg = null;
+        Enterprise enterprise = null;
 
         // Try to authenticate the user across all organizations' user account directories
         for (Network network : system.getNetworkDirectory().getNetworkList()) {
-            for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
-                for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
+            for (Enterprise ent : network.getEnterpriseDirectory().getEnterpriseList()) {
+                for (Organization org : ent.getOrganizations().getOrganizationList()) {
                     authenticatedUser = org.getUserAccountDirectory().authenticateUser(username, password);
                     if (authenticatedUser != null) {
                         currentOrg = org;
+                        enterprise = ent; // ✅ 一旦找到 org，也记录它所在的 enterprise
                         break;
                     }
                 }
@@ -243,6 +245,7 @@ public MainJFrame() {
 
         Role role = authenticatedUser.getRole();
         JPanel workAreaPanel = null;
+        
 
         // Route to the appropriate work area based on the role
         if (role instanceof AdminRole) {
@@ -262,10 +265,10 @@ public MainJFrame() {
         } else if (role instanceof DonationCoordinatorRole) {
         workAreaPanel = new DonationCoordinatorWorkAreaPanel(userProcessContainer, system, authenticatedUser, (DonationManagementUnit) currentOrg);
         } else if (role instanceof PayrollStaffRole) {
-            workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser);
+            workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, enterprise, authenticatedUser);
         } else if (role instanceof ResourceAnalystRole) {
             // Assuming ResourceAnalyst also has a work area panel, replace with actual
-            workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser); // Placeholder
+            workAreaPanel = new PayrollOfficerWorkAreaPanel(userProcessContainer, enterprise, authenticatedUser); // Placeholder
         } else if (role instanceof SupplychainManagerRole) {
             // Assuming SupplychainManager also has a work area panel, replace with actual
             workAreaPanel = new SupplyOfficerWorkAreaPanel(userProcessContainer, currentOrg, authenticatedUser); // Placeholder

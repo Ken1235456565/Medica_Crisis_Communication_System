@@ -9,6 +9,8 @@ import Model.Organization.OperationsSupportUnit;
 import Model.Employee.Employee;
 import Model.Employee.EmployeeDirectory;
 import Model.Employee.PayrollRecord;
+import Model.Enterprise.Enterprise;
+import Model.Organization.OrganizationDirectory;
 import Model.User.UserAccount;
 import Model.WorkQueue.PayrollRequest;
 import javax.swing.JPanel;
@@ -32,7 +34,7 @@ import java.util.HashMap;
 public class ManageEmployeeSalary extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
-    private Organization organization;
+    private OrganizationDirectory organizationDirectory;
     private UserAccount userAccount;
     private EmployeeDirectory employeeDirectory;
     private OperationsSupportUnit operationsUnit;
@@ -40,29 +42,31 @@ public class ManageEmployeeSalary extends javax.swing.JPanel {
     private DefaultTableModel tableModel;
     private Map<String, List<PayrollRecord>> historicalPayrolls; // 历史薪资记录
 
-    public ManageEmployeeSalary(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
+    public ManageEmployeeSalary(JPanel userProcessContainer, Enterprise enterprise, UserAccount userAccount) {
         this.userProcessContainer = userProcessContainer;
-        this.organization = organization;
         this.userAccount = userAccount;
-        this.employeeDirectory = employeeDirectory;
-        this.operationsUnit = findOperationsSupportUnit();
+        this.operationsUnit = findOperationsSupportUnit(enterprise);
+        this.employeeDirectory = operationsUnit.getEmployeeDirectory();  // 假设一定非 null
+
         this.payrollRecords = new ArrayList<>();
         this.historicalPayrolls = new HashMap<>();
-        
+
         initComponents();
         initializeTable();
         populateEmployeeData();
         loadHistoricalData();
     }
 
-    private OperationsSupportUnit findOperationsSupportUnit() {
-        for (Organization org : organization.getOrganizations().getOrganizationList()) {
+
+    private OperationsSupportUnit findOperationsSupportUnit(Enterprise enterprise) {
+        for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
             if (org instanceof OperationsSupportUnit) {
                 return (OperationsSupportUnit) org;
             }
         }
         return null;
     }
+
 
     private void initializeTable() {
         tableModel = new DefaultTableModel();

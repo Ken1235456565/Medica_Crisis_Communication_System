@@ -34,7 +34,7 @@ public class ClinicalServicesUnit extends Organization {
 public ClinicalServicesUnit() {
     super("Clinical Services");
     this.unitName = "Clinical Services";
-    this.ICUbedCatalog = new ICUbedCatalog(); // ✅ 防止 null
+    this.ICUbedCatalog = new ICUbedCatalog(); // ✅ 确保初始化
     this.emergencyReady = true;
     this.medicalStaff = new ArrayList<>();
     this.patientList = new ArrayList<>();
@@ -44,46 +44,45 @@ public ClinicalServicesUnit() {
     this.supplyItemCatalog = new SupplyItemCatalog();
 }
 
-
-
-    // Constructor with unit name
-    public ClinicalServicesUnit(String unitName) {
-        super(unitName);
-        this.unitName = unitName;
-        this.medicalStaff = new ArrayList<>();
-        this.patientList = new ArrayList<>();
-        this.appointmentSchedule = new AppointmentSchedule(); // Initialize AppointmentSchedule
-        this.activeRequests = new ArrayList<>();
-        this.emergencyReady = false;
-    }
-
-    // Constructor with detailed info
-    public ClinicalServicesUnit(String unitName, Admin admin, boolean emergencyReady) {
-        super(unitName, admin);
-        this.unitName = unitName;
-        this.medicalStaff = new ArrayList<>();
-        this.patientList = new ArrayList<>();
-        this.appointmentSchedule = new AppointmentSchedule(); // Initialize AppointmentSchedule
-        this.activeRequests = new ArrayList<>();
-        this.emergencyReady = emergencyReady;
-    }
-    
-public ClinicalServicesUnit(String unitName, ICUbedCatalog icuBedCatalog, boolean emergencyReady) {
-    super(unitName); // 调用父类 Organization 的构造函数
+// 修改带单位名称的构造函数
+public ClinicalServicesUnit(String unitName) {
+    super(unitName);
     this.unitName = unitName;
-    this.ICUbedCatalog = icuBedCatalog; // ✅ 正确使用传进来的参数
-    this.emergencyReady = emergencyReady;
-
-    // 初始化其余字段以避免 NPE
+    this.ICUbedCatalog = new ICUbedCatalog(); // ✅ 添加初始化
     this.medicalStaff = new ArrayList<>();
     this.patientList = new ArrayList<>();
     this.appointmentSchedule = new AppointmentSchedule();
     this.activeRequests = new ArrayList<>();
+    this.emergencyReady = false;
     this.patientDirectory = new PatientDirectory();
     this.supplyItemCatalog = new SupplyItemCatalog();
 }
 
+// 修改带详细信息的构造函数
+public ClinicalServicesUnit(String unitName, Admin admin, boolean emergencyReady) {
+    super(unitName, admin);
+    this.unitName = unitName;
+    this.ICUbedCatalog = new ICUbedCatalog(); // ✅ 添加初始化
+    this.medicalStaff = new ArrayList<>();
+    this.patientList = new ArrayList<>();
+    this.appointmentSchedule = new AppointmentSchedule();
+    this.activeRequests = new ArrayList<>();
+    this.emergencyReady = emergencyReady;
+    this.patientDirectory = new PatientDirectory();
+    this.supplyItemCatalog = new SupplyItemCatalog();
+}
 
+public ClinicalServicesUnit(String unitName, ICUbedCatalog ICUbedCatalog, boolean emergencyReady) {
+    this.unitName = unitName;
+    this.ICUbedCatalog = new ICUbedCatalog(); // ✅ 添加初始化
+    this.medicalStaff = new ArrayList<>();
+    this.patientList = new ArrayList<>();
+    this.appointmentSchedule = new AppointmentSchedule();
+    this.activeRequests = new ArrayList<>();
+    this.emergencyReady = emergencyReady;
+    this.patientDirectory = new PatientDirectory();
+    this.supplyItemCatalog = new SupplyItemCatalog();
+}
 
     // Getters and setters
     @Override

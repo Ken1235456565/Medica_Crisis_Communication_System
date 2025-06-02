@@ -9,6 +9,8 @@ import Model.Organization.OperationsSupportUnit;
 import Model.Employee.Employee;
 import Model.Employee.EmployeeDirectory;
 import Model.Employee.PayrollRecord;
+import Model.Enterprise.Enterprise;
+import Model.Organization.OrganizationDirectory;
 import Model.User.UserAccount;
 import Model.WorkQueue.PayrollRequest;
 import javax.swing.JPanel;
@@ -30,28 +32,31 @@ import java.util.ArrayList;
 public class GeneratePayrolls extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
-    private Organization organization;
+    private OrganizationDirectory organizationDirectory;
     private UserAccount userAccount;
     private EmployeeDirectory employeeDirectory;
     private OperationsSupportUnit operationsUnit;
     private List<PayrollRecord> payrollRecords;
     private DefaultTableModel tableModel;
 
-    public GeneratePayrolls(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
-        this.userProcessContainer = userProcessContainer;
-        this.organization = organization;
-        this.userAccount = userAccount;
-        this.employeeDirectory = employeeDirectory;
-        this.operationsUnit = findOperationsSupportUnit();
-        this.payrollRecords = new ArrayList<>();
-        
-        initComponents();
-        initializeTable();
-        populateEmployeeData();
+public GeneratePayrolls(JPanel userProcessContainer, Enterprise enterprise, UserAccount userAccount) {
+    this.userProcessContainer = userProcessContainer;
+    this.userAccount = userAccount;
+    this.operationsUnit = findOperationsSupportUnit(enterprise);
+    if (this.operationsUnit != null) {
+        this.employeeDirectory = operationsUnit.getEmployeeDirectory();
+    } else {
+        System.err.println("OperationsSupportUnit not found.");
     }
+    this.payrollRecords = new ArrayList<>();
 
-    private OperationsSupportUnit findOperationsSupportUnit() {
-        for (Organization org : organization.getOrganizations().getOrganizationList()) {
+    initComponents();
+    initializeTable();
+    populateEmployeeData();
+}
+    
+        private OperationsSupportUnit findOperationsSupportUnit(Enterprise enterprise) {
+        for (Organization org : enterprise.getOrganizations().getOrganizationList()) {
             if (org instanceof OperationsSupportUnit) {
                 return (OperationsSupportUnit) org;
             }
