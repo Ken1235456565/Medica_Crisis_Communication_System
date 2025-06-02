@@ -7,6 +7,7 @@ import Model.Person.ContactInfo;
 import Model.Personnel.Admin;
 import Model.Employee.EmployeeDirectory;
 import Model.Role.RoleDirectory;
+import Model.Supplies.EquipmentsCatalog;
 import Model.User.UserAccount;
 import Model.User.UserAccountDirectory;
 import Model.WorkQueue.WorkRequest;
@@ -26,6 +27,7 @@ public abstract class Organization {
     protected RoleDirectory roleDirectory;
     protected UserAccountDirectory userAccountDirectory;
     protected Admin admin;
+    
     
     
     // Static ID counter

@@ -20,6 +20,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
+import java.awt.CardLayout;
+import java.util.ArrayList;
 
 /**
  *
@@ -32,23 +34,22 @@ public class GeneratePayrolls extends javax.swing.JPanel {
     private UserAccount userAccount;
     private EmployeeDirectory employeeDirectory;
     private OperationsSupportUnit operationsUnit;
+    private List<PayrollRecord> payrollRecords;
+    private DefaultTableModel tableModel;
 
-    // Constructor (already exists)
     public GeneratePayrolls(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.employeeDirectory = employeeDirectory;
-        
-        // 获取OperationsSupportUnit
         this.operationsUnit = findOperationsSupportUnit();
+        this.payrollRecords = new ArrayList<>();
         
         initComponents();
         initializeTable();
         populateEmployeeData();
     }
 
-    // 查找OperationsSupportUnit
     private OperationsSupportUnit findOperationsSupportUnit() {
         for (Organization org : organization.getOrganizations().getOrganizationList()) {
             if (org instanceof OperationsSupportUnit) {
@@ -56,6 +57,73 @@ public class GeneratePayrolls extends javax.swing.JPanel {
             }
         }
         return null;
+    }
+
+    private void initializeTable() {
+        tableModel = new DefaultTableModel();
+        tableModel.setColumnIdentifiers(new String[]{"Employee ID", "Employee Name", "Role", "Total Cost"});
+        tblDonationHistory.setModel(tableModel);
+    }
+
+    private void populateEmployeeData() {
+        // 填充员工下拉框
+        cmbCreateEmployeeName.removeAllItems();
+        cmbViewEmployeeName.removeAllItems();
+        cmbSearch.removeAllItems();
+        
+        cmbCreateEmployeeName.addItem("-- Select Employee --");
+        cmbViewEmployeeName.addItem("-- Select Employee --");
+        cmbSearch.addItem("-- Search by Employee --");
+        
+        for (Employee emp : employeeDirectory.getEmployeeList()) {
+            String empInfo = emp.getId() + " - " + emp.getName();
+            cmbCreateEmployeeName.addItem(empInfo);
+            cmbViewEmployeeName.addItem(empInfo);
+            cmbSearch.addItem(empInfo);
+        }
+        
+        refreshPayrollTable();
+    }
+
+    private void refreshPayrollTable() {
+        tableModel.setRowCount(0);
+        
+        // 获取所有薪资记录
+        if (operationsUnit != null) {
+            for (Employee emp : employeeDirectory.getEmployeeList()) {
+                PayrollRecord record = findOrCreatePayrollRecord(emp);
+                if (record != null) {
+                    double totalCost = record.calculateNetSalary();
+                    tableModel.addRow(new Object[]{
+                        emp.getId(),
+                        emp.getName(),
+                        emp.getPosition(),
+                        totalCost
+                    });
+                }
+            }
+        }
+    }
+
+    private PayrollRecord findOrCreatePayrollRecord(Employee employee) {
+        // 首先查找现有记录
+        for (PayrollRecord record : payrollRecords) {
+            if (record.getEmployee().getId().equals(employee.getId())) {
+                return record;
+            }
+        }
+        
+        // 如果没有找到，创建新记录
+        PayrollRecord newRecord = new PayrollRecord(employee);
+        // 设置默认值
+        newRecord.setBaseSalary(50000.0); // 默认基础工资
+        newRecord.setBonus(0.0);
+        newRecord.setDeductions(5000.0); // 默认扣除
+        
+        payrollRecords.add(newRecord);
+        employee.setPayrollRecord(newRecord);
+        
+        return newRecord;
     }
 
     /**
@@ -370,12 +438,13 @@ public class GeneratePayrolls extends javax.swing.JPanel {
                 .addGap(3, 3, 3)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(cmbSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnSearch)))
+                                .addComponent(btnSearch))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel19)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -467,29 +536,253 @@ public class GeneratePayrolls extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblDonationHistory.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a payroll record to delete.", 
+                                        "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String employeeId = (String) tableModel.getValueAt(selectedRow, 0);
+        String employeeName = (String) tableModel.getValueAt(selectedRow, 1);
+        
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to delete payroll record for " + employeeName + "?",
+            "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+            
+        if (confirm == JOptionPane.YES_OPTION) {
+            // 删除薪资记录
+            payrollRecords.removeIf(record -> record.getEmployee().getId().equals(employeeId));
+            
+            // 从员工记录中移除
+            Employee emp = employeeDirectory.findEmployeeById(employeeId);
+            if (emp != null) {
+                emp.setPayrollRecord(null);
+            }
+            
+            refreshPayrollTable();
+            clearViewFields();
+            
+            JOptionPane.showMessageDialog(this, "Payroll record deleted successfully!", 
+                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        // TODO add your handling code here:
+        String selectedEmployee = (String) cmbCreateEmployeeName.getSelectedItem();
+        if (selectedEmployee == null || selectedEmployee.startsWith("--")) {
+            JOptionPane.showMessageDialog(this, "Please select an employee first.", 
+                                        "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // 解析选中的员工
+            String employeeId = selectedEmployee.split(" - ")[0];
+            Employee employee = employeeDirectory.findEmployeeById(employeeId);
+            
+            if (employee == null) {
+                JOptionPane.showMessageDialog(this, "Employee not found.", 
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 获取或创建薪资记录
+            PayrollRecord record = findOrCreatePayrollRecord(employee);
+            
+            // 从表单获取数据并验证
+            double basicSalary = parseDoubleField(txtCreateBasicSalary.getText(), "Basic Salary");
+            double allowances = parseDoubleField(txtCreateAllowances.getText(), "Allowances");
+            double deductions = parseDoubleField(txtCreateDeductions.getText(), "Deductions");
+            double healthInsurance = parseDoubleField(txtCreateHealthInsurance.getText(), "Health Insurance");
+            double unemploymentTax = parseDoubleField(txtCreateUnemploymentTax.getText(), "Unemployment Tax");
+            
+            // 更新薪资记录
+            record.setBaseSalary(basicSalary);
+            record.setBonus(allowances);
+            record.setDeductions(deductions + healthInsurance + unemploymentTax);
+            
+            // 计算总成本
+            double totalCost = basicSalary + allowances + healthInsurance + unemploymentTax;
+            txtCreateTotalCost.setText(String.format("%.2f", totalCost));
+            
+            // 如果是Operations Support Unit，创建薪资请求
+            if (operationsUnit != null) {
+                Calendar cal = Calendar.getInstance();
+                Date payStart = cal.getTime();
+                cal.add(Calendar.MONTH, 1);
+                Date payEnd = cal.getTime();
+                cal.add(Calendar.WEEK_OF_MONTH, 1);
+                Date payDate = cal.getTime();
+                
+                PayrollRequest request = operationsUnit.createPayrollRequest(employee, payStart, payEnd, payDate);
+                request.setStatus("Updated");
+            }
+            
+            refreshPayrollTable();
+            JOptionPane.showMessageDialog(this, "Payroll record updated successfully!", 
+                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                                        
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid number format: " + e.getMessage(), 
+                                        "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error updating payroll: " + e.getMessage(), 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnModifyActionPerformed
 
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
-        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Payroll Data as CSV");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV files", "csv"));
+        fileChooser.setSelectedFile(new java.io.File("payroll_data_" + 
+            new java.text.SimpleDateFormat("yyyyMMdd").format(new Date()) + ".csv"));
+        
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                exportToCSV(fileChooser.getSelectedFile().getAbsolutePath());
+                JOptionPane.showMessageDialog(this, "Data exported successfully!", 
+                                            "Export Complete", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error exporting data: " + e.getMessage(), 
+                                            "Export Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
     private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
-        // TODO add your handling code here:
+       int selectedRow = tblDonationHistory.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a payroll record to view.", 
+                                        "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String employeeId = (String) tableModel.getValueAt(selectedRow, 0);
+        Employee employee = employeeDirectory.findEmployeeById(employeeId);
+        
+        if (employee == null) {
+            JOptionPane.showMessageDialog(this, "Employee not found.", 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 更新查看区域的员工下拉框
+        String empInfo = employee.getId() + " - " + employee.getName();
+        cmbViewEmployeeName.setSelectedItem(empInfo);
+        
+        // 显示员工详细信息
+        displayEmployeeDetails(employee);
     }//GEN-LAST:event_btnViewDetailsActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSearchActionPerformed
+        String searchCriteria = (String) cmbSearch.getSelectedItem();
+        if (searchCriteria == null || searchCriteria.startsWith("--")) {
+            refreshPayrollTable(); // 显示所有记录
+            return;
+        }
 
+        // 过滤表格数据
+        tableModel.setRowCount(0);
+        
+        String employeeId = searchCriteria.split(" - ")[0];
+        Employee employee = employeeDirectory.findEmployeeById(employeeId);
+        
+        if (employee != null) {
+            PayrollRecord record = findOrCreatePayrollRecord(employee);
+            if (record != null) {
+                double totalCost = record.calculateNetSalary();
+                tableModel.addRow(new Object[]{
+                    employee.getId(),
+                    employee.getName(),
+                    employee.getPosition(),
+                    totalCost
+                });
+            }
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+    private void displayEmployeeDetails(Employee employee) {
+        PayrollRecord record = findOrCreatePayrollRecord(employee);
+        
+        if (record != null) {
+            txtViewCreateRole.setText(employee.getPosition() != null ? employee.getPosition() : "");
+            txtViewCreateDepartment.setText(employee.getDepartment() != null ? employee.getDepartment() : "");
+            txtViewCreateBasicSalary.setText(String.format("%.2f", record.getBaseSalary()));
+            txtViewCreateAllowances.setText(String.format("%.2f", record.getBonus()));
+            txtViewDeductions.setText(String.format("%.2f", record.getDeductions()));
+            
+            // 计算分项数据（假设）
+            double healthInsurance = record.getDeductions() * 0.3; // 30%
+            double unemploymentTax = record.getDeductions() * 0.2; // 20%
+            double totalCost = record.getBaseSalary() + record.getBonus() + healthInsurance + unemploymentTax;
+            
+            txtViewHealthInsurance.setText(String.format("%.2f", healthInsurance));
+            txtViewUnemploymentTax.setText(String.format("%.2f", unemploymentTax));
+            txtViewTotalCost.setText(String.format("%.2f", totalCost));
+        } else {
+            clearViewFields();
+        }
+    }
+
+    private void clearViewFields() {
+        txtViewCreateRole.setText("");
+        txtViewCreateDepartment.setText("");
+        txtViewCreateBasicSalary.setText("");
+        txtViewCreateAllowances.setText("");
+        txtViewDeductions.setText("");
+        txtViewHealthInsurance.setText("");
+        txtViewUnemploymentTax.setText("");
+        txtViewTotalCost.setText("");
+    }
+
+    private double parseDoubleField(String text, String fieldName) throws NumberFormatException {
+        if (text == null || text.trim().isEmpty()) {
+            return 0.0;
+        }
+        try {
+            return Double.parseDouble(text.trim());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException(fieldName + " must be a valid number");
+        }
+    }
+
+    private void exportToCSV(String filePath) throws IOException {
+        FileWriter writer = new FileWriter(filePath);
+        
+        // 写入标题行
+        writer.append("Employee ID,Employee Name,Role,Department,Basic Salary,Allowances,Deductions,Health Insurance,Unemployment Tax,Total Cost\n");
+        
+        // 写入数据行
+        for (Employee emp : employeeDirectory.getEmployeeList()) {
+            PayrollRecord record = findOrCreatePayrollRecord(emp);
+            if (record != null) {
+                double healthInsurance = record.getDeductions() * 0.3;
+                double unemploymentTax = record.getDeductions() * 0.2;
+                double totalCost = record.getBaseSalary() + record.getBonus() + healthInsurance + unemploymentTax;
+                
+                writer.append(String.format("%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
+                    emp.getId(),
+                    emp.getName().replace(",", ";"), // 避免CSV冲突
+                    emp.getPosition() != null ? emp.getPosition().replace(",", ";") : "",
+                    emp.getDepartment() != null ? emp.getDepartment().replace(",", ";") : "",
+                    record.getBaseSalary(),
+                    record.getBonus(),
+                    record.getDeductions(),
+                    healthInsurance,
+                    unemploymentTax,
+                    totalCost
+                ));
+            }
+        }
+        
+        writer.close();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

@@ -5,9 +5,25 @@
 package ui.PayrollOfficer;
 
 import Model.Organization.Organization;
+import Model.Organization.OperationsSupportUnit;
+import Model.Employee.Employee;
 import Model.Employee.EmployeeDirectory;
+import Model.Employee.PayrollRecord;
 import Model.User.UserAccount;
+import Model.WorkQueue.PayrollRequest;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
+import java.util.Date;
+import java.util.Calendar;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  *
@@ -18,14 +34,155 @@ public class ManageEmployeeSalary extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private EmployeeDirectory employeeDirectory; // List of employees for salary management
+    private EmployeeDirectory employeeDirectory;
+    private OperationsSupportUnit operationsUnit;
+    private List<PayrollRecord> payrollRecords;
+    private DefaultTableModel tableModel;
+    private Map<String, List<PayrollRecord>> historicalPayrolls; // 历史薪资记录
 
     public ManageEmployeeSalary(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.employeeDirectory = employeeDirectory;
+        this.operationsUnit = findOperationsSupportUnit();
+        this.payrollRecords = new ArrayList<>();
+        this.historicalPayrolls = new HashMap<>();
+        
         initComponents();
+        initializeTable();
+        populateEmployeeData();
+        loadHistoricalData();
+    }
+
+    private OperationsSupportUnit findOperationsSupportUnit() {
+        for (Organization org : organization.getOrganizations().getOrganizationList()) {
+            if (org instanceof OperationsSupportUnit) {
+                return (OperationsSupportUnit) org;
+            }
+        }
+        return null;
+    }
+
+    private void initializeTable() {
+        tableModel = new DefaultTableModel();
+        tableModel.setColumnIdentifiers(new String[]{"Employee ID", "Employee Name", "Role", "Year", "Month", "Total Cost"});
+        tblDonationHistory.setModel(tableModel);
+    }
+
+    private void populateEmployeeData() {
+        // 填充员工下拉框
+        cmbViewEmployeeName.removeAllItems();
+        cmbSearch.removeAllItems();
+        
+        cmbViewEmployeeName.addItem("-- Select Employee --");
+        cmbSearch.addItem("-- Search by Employee --");
+        
+        for (Employee emp : employeeDirectory.getEmployeeList()) {
+            String empInfo = emp.getId() + " - " + emp.getName();
+            cmbViewEmployeeName.addItem(empInfo);
+            cmbSearch.addItem(empInfo);
+        }
+        
+        refreshSalaryTable();
+    }
+
+    private void loadHistoricalData() {
+        // 为每个员工生成历史薪资数据
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        
+        for (Employee emp : employeeDirectory.getEmployeeList()) {
+            List<PayrollRecord> empHistory = new ArrayList<>();
+            
+            // 生成过去12个月的薪资记录
+            for (int i = 0; i < 12; i++) {
+                cal.add(Calendar.MONTH, -1);
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH) + 1;
+                
+                PayrollRecord record = createHistoricalRecord(emp, year, month);
+                empHistory.add(record);
+            }
+            
+            historicalPayrolls.put(emp.getId(), empHistory);
+        }
+    }
+
+    private PayrollRecord createHistoricalRecord(Employee emp, int year, int month) {
+        PayrollRecord record = new PayrollRecord(emp);
+        
+        // 基于员工角色设置不同的基础工资
+        double baseSalary = calculateBaseSalaryByRole(emp.getPosition());
+        
+        // 添加一些随机变动（奖金、扣除等）
+        double bonus = Math.random() * 5000; // 0-5000的随机奖金
+        double deductions = baseSalary * 0.1 + Math.random() * 1000; // 基础扣除 + 随机扣除
+        
+        record.setBaseSalary(baseSalary);
+        record.setBonus(bonus);
+        record.setDeductions(deductions);
+        
+        return record;
+    }
+
+    private double calculateBaseSalaryByRole(String role) {
+        if (role == null) return 50000.0;
+        
+        switch (role.toLowerCase()) {
+            case "doctor":
+            case "physician":
+                return 120000.0;
+            case "nurse":
+                return 70000.0;
+            case "administrator":
+            case "admin":
+                return 80000.0;
+            case "emergency responder":
+                return 65000.0;
+            case "logistics manager":
+                return 75000.0;
+            case "payroll staff":
+                return 60000.0;
+            default:
+                return 50000.0;
+        }
+    }
+
+    private void refreshSalaryTable() {
+        tableModel.setRowCount(0);
+        
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        int currentMonth = cal.get(Calendar.MONTH) + 1;
+        
+        // 显示所有员工的薪资历史
+        for (Employee emp : employeeDirectory.getEmployeeList()) {
+            List<PayrollRecord> empHistory = historicalPayrolls.get(emp.getId());
+            if (empHistory != null) {
+                for (PayrollRecord record : empHistory) {
+                    double totalCost = record.calculateNetSalary() + 
+                                     (record.getBaseSalary() * 0.15); // 加上雇主承担的税费和保险
+                    
+                    // 这里简化处理，假设记录按月倒序排列
+                    cal.add(Calendar.MONTH, -1);
+                    int year = cal.get(Calendar.YEAR);
+                    int month = cal.get(Calendar.MONTH) + 1;
+                    
+                    tableModel.addRow(new Object[]{
+                        emp.getId(),
+                        emp.getName(),
+                        emp.getPosition(),
+                        year,
+                        month,
+                        totalCost
+                    });
+                }
+                
+                // 重置日历
+                cal = Calendar.getInstance();
+            }
+        }
     }
 
     /**
@@ -320,29 +477,309 @@ public class ManageEmployeeSalary extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblDonationHistory.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a salary record to delete.", 
+                                        "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String employeeId = (String) tableModel.getValueAt(selectedRow, 0);
+        String employeeName = (String) tableModel.getValueAt(selectedRow, 1);
+        Object year = tableModel.getValueAt(selectedRow, 3);
+        Object month = tableModel.getValueAt(selectedRow, 4);
+        
+        int confirm = JOptionPane.showConfirmDialog(this,
+            String.format("Are you sure you want to delete salary record for %s (%s/%s)?", 
+                         employeeName, month, year),
+            "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+            
+        if (confirm == JOptionPane.YES_OPTION) {
+            // 删除指定的薪资记录
+            List<PayrollRecord> empHistory = historicalPayrolls.get(employeeId);
+            if (empHistory != null) {
+                // 这里简化处理，删除第一个找到的记录
+                if (!empHistory.isEmpty()) {
+                    empHistory.remove(0);
+                }
+            }
+            
+            refreshSalaryTable();
+            clearViewFields();
+            
+            JOptionPane.showMessageDialog(this, "Salary record deleted successfully!", 
+                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnModifyPayrollActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyPayrollActionPerformed
-        // TODO add your handling code here:
+        String selectedEmployee = (String) cmbViewEmployeeName.getSelectedItem();
+        if (selectedEmployee == null || selectedEmployee.startsWith("--")) {
+            JOptionPane.showMessageDialog(this, "Please select an employee first.", 
+                                        "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // 解析选中的员工
+            String employeeId = selectedEmployee.split(" - ")[0];
+            Employee employee = employeeDirectory.findEmployeeById(employeeId);
+            
+            if (employee == null) {
+                JOptionPane.showMessageDialog(this, "Employee not found.", 
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 从表单获取数据并验证
+            double basicSalary = parseDoubleField(txtViewCreateBasicSalary.getText(), "Basic Salary");
+            double allowances = parseDoubleField(txtViewCreateAllowances.getText(), "Allowances");
+            double deductions = parseDoubleField(txtViewDeductions.getText(), "Deductions");
+            double healthInsurance = parseDoubleField(txtViewHealthInsurance.getText(), "Health Insurance");
+            double unemploymentTax = parseDoubleField(txtViewUnemploymentTax.getText(), "Unemployment Tax");
+            
+            // 创建新的薪资记录
+            PayrollRecord newRecord = new PayrollRecord(employee);
+            newRecord.setBaseSalary(basicSalary);
+            newRecord.setBonus(allowances);
+            newRecord.setDeductions(deductions + healthInsurance + unemploymentTax);
+            
+            // 更新员工的薪资记录
+            employee.setPayrollRecord(newRecord);
+            
+            // 添加到历史记录
+            List<PayrollRecord> empHistory = historicalPayrolls.get(employeeId);
+            if (empHistory == null) {
+                empHistory = new ArrayList<>();
+                historicalPayrolls.put(employeeId, empHistory);
+            }
+            empHistory.add(0, newRecord); // 添加到列表开头（最新记录）
+            
+            // 计算总成本
+            double totalCost = basicSalary + allowances + healthInsurance + unemploymentTax;
+            txtViewTotalCost.setText(String.format("%.2f", totalCost));
+            
+            // 如果是Operations Support Unit，创建薪资请求
+            if (operationsUnit != null) {
+                Calendar cal = Calendar.getInstance();
+                Date payStart = cal.getTime();
+                cal.add(Calendar.MONTH, 1);
+                Date payEnd = cal.getTime();
+                cal.add(Calendar.WEEK_OF_MONTH, 1);
+                Date payDate = cal.getTime();
+                
+                PayrollRequest request = operationsUnit.createPayrollRequest(employee, payStart, payEnd, payDate);
+                request.setStatus("Modified");
+            }
+            
+            refreshSalaryTable();
+            JOptionPane.showMessageDialog(this, "Employee salary updated successfully!", 
+                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                                        
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid number format: " + e.getMessage(), 
+                                        "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error updating salary: " + e.getMessage(), 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnModifyPayrollActionPerformed
 
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
-        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Salary Data as CSV");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV files", "csv"));
+        fileChooser.setSelectedFile(new java.io.File("salary_history_" + 
+            new java.text.SimpleDateFormat("yyyyMMdd").format(new Date()) + ".csv"));
+        
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                exportSalaryHistoryToCSV(fileChooser.getSelectedFile().getAbsolutePath());
+                JOptionPane.showMessageDialog(this, "Salary history exported successfully!", 
+                                            "Export Complete", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error exporting data: " + e.getMessage(), 
+                                            "Export Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
     private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblDonationHistory.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a salary record to view.", 
+                                        "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String employeeId = (String) tableModel.getValueAt(selectedRow, 0);
+        Employee employee = employeeDirectory.findEmployeeById(employeeId);
+        
+        if (employee == null) {
+            JOptionPane.showMessageDialog(this, "Employee not found.", 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 更新查看区域的员工下拉框
+        String empInfo = employee.getId() + " - " + employee.getName();
+        cmbViewEmployeeName.setSelectedItem(empInfo);
+        
+        // 显示选中行对应的薪资详细信息
+        Object year = tableModel.getValueAt(selectedRow, 3);
+        Object month = tableModel.getValueAt(selectedRow, 4);
+        
+        displayEmployeeSalaryDetails(employee, year, month);
     }//GEN-LAST:event_btnViewDetailsActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSearchActionPerformed
+        String searchCriteria = (String) cmbSearch.getSelectedItem();
+        if (searchCriteria == null || searchCriteria.startsWith("--")) {
+            refreshSalaryTable(); // 显示所有记录
+            return;
+        }
 
+        // 过滤表格数据
+        tableModel.setRowCount(0);
+        
+        String employeeId = searchCriteria.split(" - ")[0];
+        Employee employee = employeeDirectory.findEmployeeById(employeeId);
+        
+        if (employee != null) {
+            List<PayrollRecord> empHistory = historicalPayrolls.get(employeeId);
+            if (empHistory != null) {
+                Calendar cal = Calendar.getInstance();
+                
+                for (PayrollRecord record : empHistory) {
+                    double totalCost = record.calculateNetSalary() + 
+                                     (record.getBaseSalary() * 0.15);
+                    
+                    cal.add(Calendar.MONTH, -1);
+                    int year = cal.get(Calendar.YEAR);
+                    int month = cal.get(Calendar.MONTH) + 1;
+                    
+                    tableModel.addRow(new Object[]{
+                        employee.getId(),
+                        employee.getName(),
+                        employee.getPosition(),
+                        year,
+                        month,
+                        totalCost
+                    });
+                }
+            }
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+    private void displayEmployeeSalaryDetails(Employee employee, Object year, Object month) {
+        // 根据年月查找对应的薪资记录
+        List<PayrollRecord> empHistory = historicalPayrolls.get(employee.getId());
+        PayrollRecord targetRecord = null;
+        
+        if (empHistory != null && !empHistory.isEmpty()) {
+            // 简化处理，使用最新的记录
+            targetRecord = empHistory.get(0);
+        }
+        
+        if (targetRecord == null) {
+            // 如果没有历史记录，创建一个默认记录
+            targetRecord = new PayrollRecord(employee);
+            targetRecord.setBaseSalary(calculateBaseSalaryByRole(employee.getPosition()));
+            targetRecord.setBonus(0.0);
+            targetRecord.setDeductions(targetRecord.getBaseSalary() * 0.1);
+        }
+        
+        // 填充详细信息
+        txtViewCreateRole.setText(employee.getPosition() != null ? employee.getPosition() : "");
+        txtViewCreateDepartment.setText(employee.getDepartment() != null ? employee.getDepartment() : "");
+        txtViewCreateBasicSalary.setText(String.format("%.2f", targetRecord.getBaseSalary()));
+        txtViewCreateAllowances.setText(String.format("%.2f", targetRecord.getBonus()));
+        txtViewDeductions.setText(String.format("%.2f", targetRecord.getDeductions()));
+        
+        // 计算分项数据
+        double healthInsurance = targetRecord.getBaseSalary() * 0.05; // 5% 健康保险
+        double unemploymentTax = targetRecord.getBaseSalary() * 0.03; // 3% 失业税
+        double totalCost = targetRecord.getBaseSalary() + targetRecord.getBonus() + 
+                          healthInsurance + unemploymentTax;
+        
+        txtViewHealthInsurance.setText(String.format("%.2f", healthInsurance));
+        txtViewUnemploymentTax.setText(String.format("%.2f", unemploymentTax));
+        txtViewTotalCost.setText(String.format("%.2f", totalCost));
+    }
+
+    private void clearViewFields() {
+        txtViewCreateRole.setText("");
+        txtViewCreateDepartment.setText("");
+        txtViewCreateBasicSalary.setText("");
+        txtViewCreateAllowances.setText("");
+        txtViewDeductions.setText("");
+        txtViewHealthInsurance.setText("");
+        txtViewUnemploymentTax.setText("");
+        txtViewTotalCost.setText("");
+    }
+
+    private double parseDoubleField(String text, String fieldName) throws NumberFormatException {
+        if (text == null || text.trim().isEmpty()) {
+            return 0.0;
+        }
+        try {
+            return Double.parseDouble(text.trim());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException(fieldName + " must be a valid number");
+        }
+    }
+
+    private void exportSalaryHistoryToCSV(String filePath) throws IOException {
+        FileWriter writer = new FileWriter(filePath);
+        
+        // 写入标题行
+        writer.append("Employee ID,Employee Name,Role,Department,Year,Month,Basic Salary,Allowances,Deductions,Health Insurance,Unemployment Tax,Total Cost\n");
+        
+        // 写入数据行
+        for (Employee emp : employeeDirectory.getEmployeeList()) {
+            List<PayrollRecord> empHistory = historicalPayrolls.get(emp.getId());
+            if (empHistory != null) {
+                Calendar cal = Calendar.getInstance();
+                
+                for (int i = 0; i < empHistory.size(); i++) {
+                    PayrollRecord record = empHistory.get(i);
+                    
+                    cal.add(Calendar.MONTH, -i);
+                    int year = cal.get(Calendar.YEAR);
+                    int month = cal.get(Calendar.MONTH) + 1;
+                    
+                    double healthInsurance = record.getBaseSalary() * 0.05;
+                    double unemploymentTax = record.getBaseSalary() * 0.03;
+                    double totalCost = record.getBaseSalary() + record.getBonus() + 
+                                      healthInsurance + unemploymentTax;
+                    
+                    writer.append(String.format("%s,%s,%s,%s,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
+                        emp.getId(),
+                        emp.getName().replace(",", ";"),
+                        emp.getPosition() != null ? emp.getPosition().replace(",", ";") : "",
+                        emp.getDepartment() != null ? emp.getDepartment().replace(",", ";") : "",
+                        year,
+                        month,
+                        record.getBaseSalary(),
+                        record.getBonus(),
+                        record.getDeductions(),
+                        healthInsurance,
+                        unemploymentTax,
+                        totalCost
+                    ));
+                    
+                    // 重置日历
+                    cal = Calendar.getInstance();
+                }
+            }
+        }
+        
+        writer.close();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

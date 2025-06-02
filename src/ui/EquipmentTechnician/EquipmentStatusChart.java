@@ -6,8 +6,19 @@ package ui.EquipmentTechnician;
 
 import Model.Organization.Organization;
 import Model.Supplies.EquipmentsCatalog;
+import Model.Supplies.Equipments;
 import Model.User.UserAccount;
+import Model.WorkQueue.RepairRequest;
+import Model.WorkQueue.WorkRequest;
+import Model.Employee.Employee;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -18,14 +29,176 @@ public class EquipmentStatusChart extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private EquipmentsCatalog equipmentsCatalog; // Catalog of equipment to chart
+    private EquipmentsCatalog equipmentsCatalog;
 
-    public EquipmentStatusChart(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EquipmentsCatalog equipmentsCatalog) {
+    public EquipmentStatusChart(JPanel userProcessContainer, Organization organization, 
+                               UserAccount userAccount, EquipmentsCatalog equipmentsCatalog) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.equipmentsCatalog = equipmentsCatalog;
+        
         initComponents();
+        loadStatusData();
+        loadTechnicianWorkHistory();
+    }
+
+    private void loadStatusData() {
+        DefaultTableModel model = (DefaultTableModel) tblDataOverview.getModel();
+        model.setRowCount(0); // 清空表格
+
+        // 获取所有设备
+        List<Equipments> equipmentsList = equipmentsCatalog.getEquipmentsList();
+        
+        // 获取所有工作请求来统计每个设备的请求数量
+        List<WorkRequest> allRequests = organization.getWorkQueue();
+        
+        for (Equipments equipment : equipmentsList) {
+            // 统计该设备相关的请求
+            Map<String, Integer> statusCounts = getRequestStatusCounts(equipment, allRequests);
+            
+            Object[] row = {
+                equipment.getEquipmentId(),
+                equipment.getName(),
+                statusCounts.get("total"),
+                statusCounts.get("inProgress"),
+                statusCounts.get("completed")
+            };
+            model.addRow(row);
+        }
+
+        // 如果没有设备，显示示例数据
+        if (equipmentsList.isEmpty()) {
+            addSampleEquipmentData(model);
+        }
+    }
+
+    private Map<String, Integer> getRequestStatusCounts(Equipments equipment, List<WorkRequest> allRequests) {
+        Map<String, Integer> counts = new HashMap<>();
+        counts.put("total", 0);
+        counts.put("inProgress", 0);
+        counts.put("completed", 0);
+
+        for (WorkRequest request : allRequests) {
+            if (request instanceof RepairRequest) {
+                RepairRequest repairRequest = (RepairRequest) request;
+                if (repairRequest.getEquipment() != null && 
+                    repairRequest.getEquipment().equals(equipment)) {
+                    
+                    counts.put("total", counts.get("total") + 1);
+                    
+                    String status = repairRequest.getStatus();
+                    if ("In Progress".equals(status) || "Assigned".equals(status)) {
+                        counts.put("inProgress", counts.get("inProgress") + 1);
+                    } else if ("Completed".equals(status)) {
+                        counts.put("completed", counts.get("completed") + 1);
+                    }
+                }
+            }
+        }
+
+        return counts;
+    }
+
+    private void addSampleEquipmentData(DefaultTableModel model) {
+        Object[][] sampleData = {
+            {"EQP001", "MRI Machine", 5, 2, 3},
+            {"EQP002", "X-Ray Machine", 3, 1, 2},
+            {"EQP003", "CT Scanner", 7, 3, 4},
+            {"EQP004", "Ultrasound", 2, 0, 2}
+        };
+
+        for (Object[] row : sampleData) {
+            model.addRow(row);
+        }
+    }
+
+    private void loadTechnicianWorkHistory() {
+        DefaultTableModel model = (DefaultTableModel) tblTechnicianWorkHistory.getModel();
+        model.setRowCount(0); // 清空表格
+
+        // 获取所有员工并筛选技术员
+        List<Employee> technicians = getTechnicians();
+        
+        for (Employee technician : technicians) {
+            Map<String, Integer> workStats = getTechnicianWorkStats(technician);
+            
+            Object[] row = {
+                technician.getId(),
+                technician.getName(),
+                workStats.get("assigned"),
+                workStats.get("inProgress"),
+                workStats.get("completed")
+            };
+            model.addRow(row);
+        }
+
+        // 如果没有技术员，显示示例数据
+        if (technicians.isEmpty()) {
+            addSampleTechnicianData(model);
+        }
+    }
+
+    private List<Employee> getTechnicians() {
+        List<Employee> technicians = new ArrayList<>();
+        List<Employee> allEmployees = organization.getEmployeeDirectory().getEmployeeList();
+        
+        for (Employee employee : allEmployees) {
+            if (employee.getPosition() != null && 
+                employee.getPosition().toLowerCase().contains("technician")) {
+                technicians.add(employee);
+            }
+        }
+
+        // 添加当前用户（如果是技术员）
+        if (userAccount.getEmployee() != null && 
+            !technicians.contains(userAccount.getEmployee())) {
+            technicians.add(userAccount.getEmployee());
+        }
+
+        return technicians;
+    }
+
+    private Map<String, Integer> getTechnicianWorkStats(Employee technician) {
+        Map<String, Integer> stats = new HashMap<>();
+        stats.put("assigned", 0);
+        stats.put("inProgress", 0);
+        stats.put("completed", 0);
+
+        List<WorkRequest> allRequests = organization.getWorkQueue();
+        
+        for (WorkRequest request : allRequests) {
+            if (request instanceof RepairRequest) {
+                RepairRequest repairRequest = (RepairRequest) request;
+                if (repairRequest.getAssignedTechnician() != null && 
+                    repairRequest.getAssignedTechnician().equals(technician)) {
+                    
+                    stats.put("assigned", stats.get("assigned") + 1);
+                    
+                    String status = repairRequest.getStatus();
+                    if ("In Progress".equals(status)) {
+                        stats.put("inProgress", stats.get("inProgress") + 1);
+                    } else if ("Completed".equals(status)) {
+                        stats.put("completed", stats.get("completed") + 1);
+                    }
+                }
+            }
+        }
+
+        return stats;
+    }
+
+    private void addSampleTechnicianData(DefaultTableModel model) {
+        Object[][] sampleData = {
+            {"TECH001", "张三", 8, 3, 5},
+            {"TECH002", "李四", 6, 2, 4},
+            {"TECH003", "王五", 10, 4, 6},
+            {userAccount.getId(), userAccount.getName(), 5, 2, 3}
+        };
+
+        for (Object[] row : sampleData) {
+            model.addRow(row);
+        }
     }
 
     /**
@@ -157,13 +330,84 @@ public class EquipmentStatusChart extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // 返回到技术员工作区主页面
+        try {
+            EquipmentTechnicianWorkAreaPanel mainPanel = new EquipmentTechnicianWorkAreaPanel(
+                userProcessContainer, organization, userAccount);
+            
+            userProcessContainer.removeAll();
+            userProcessContainer.add(mainPanel, "TechnicianWorkArea");
+            userProcessContainer.revalidate();
+            userProcessContainer.repaint();
+            
+            CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+            layout.show(userProcessContainer, "TechnicianWorkArea");
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "返回主页面时出错: " + e.getMessage(), 
+                "错误", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSalaryCaculationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalaryCaculationActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSalaryCaculationActionPerformed
+        // 计算技术员薪资
+        try {
+            if (userAccount.getEmployee() != null) {
+                double salary = calculateTechnicianSalary();
+                
+                String salaryInfo = String.format(
+                    "技术员薪资计算\n\n" +
+                    "员工: %s\n" +
+                    "职位: %s\n" +
+                    "部门: %s\n" +
+                    "计算薪资: $%.2f\n\n" +
+                    "计算基于:\n" +
+                    "- 基础薪资\n" +
+                    "- 完成的维修任务奖金\n" +
+                    "- 绩效评估",
+                    userAccount.getName(),
+                    userAccount.getEmployee().getPosition(),
+                    userAccount.getEmployee().getDepartment(),
+                    salary
+                );
 
+                JOptionPane.showMessageDialog(this, 
+                    salaryInfo, 
+                    "薪资计算", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "无法获取员工信息", 
+                    "错误", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "计算薪资时出错: " + e.getMessage(), 
+                "错误", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSalaryCaculationActionPerformed
+    private double calculateTechnicianSalary() {
+        double baseSalary = 5000.0; // 基础薪资
+        double bonusPerRepair = 100.0; // 每个维修任务的奖金
+        
+        // 统计当前技术员完成的维修任务数量
+        Map<String, Integer> workStats = getTechnicianWorkStats(userAccount.getEmployee());
+        int completedRepairs = workStats.get("completed");
+        
+        // 计算总薪资
+        double totalSalary = baseSalary + (completedRepairs * bonusPerRepair);
+        
+        // 根据技能等级调整（如果员工有技能等级属性）
+        if (userAccount.getEmployee().getPayrollRecord() != null) {
+            totalSalary = userAccount.getEmployee().getPayrollRecord().calculateNetSalary();
+        }
+        
+        return totalSalary;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

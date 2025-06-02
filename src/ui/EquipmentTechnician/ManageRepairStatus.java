@@ -6,8 +6,20 @@ package ui.EquipmentTechnician;
 
 import Model.Organization.Organization;
 import Model.Supplies.EquipmentsCatalog;
+import Model.Supplies.Equipments;
 import Model.User.UserAccount;
+import Model.WorkQueue.RepairRequest;
+import Model.Employee.Employee;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.awt.CardLayout;
 
 /**
  *
@@ -18,14 +30,107 @@ public class ManageRepairStatus extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Organization organization;
     private UserAccount userAccount;
-    private EquipmentsCatalog equipmentsCatalog; // Catalog of equipment to manage repair status
+    private EquipmentsCatalog equipmentsCatalog;
+    private List<RepairRequest> repairRequests;
+    private RepairRequest selectedRepairRequest;
 
     public ManageRepairStatus(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EquipmentsCatalog equipmentsCatalog) {
         this.userProcessContainer = userProcessContainer;
         this.organization = organization;
         this.userAccount = userAccount;
         this.equipmentsCatalog = equipmentsCatalog;
+        this.repairRequests = new ArrayList<>();
+        
         initComponents();
+        initializeData();
+        setupTableListener();
+        populateTable();
+    }
+
+    private void initializeData() {
+        // 创建示例维修请求
+        createSampleRepairRequests();
+    }
+
+    private void createSampleRepairRequests() {
+        // 获取一些设备来创建维修请求
+        List<Equipments> equipmentsList = equipmentsCatalog.getEquipmentsList();
+        
+        if (!equipmentsList.isEmpty()) {
+            RepairRequest request1 = new RepairRequest(
+                equipmentsList.get(0), "张三", "Hardware", 3, 2, "zhangsan@example.com"
+            );
+            request1.setStatus("Pending");
+            repairRequests.add(request1);
+
+            if (equipmentsList.size() > 1) {
+                RepairRequest request2 = new RepairRequest(
+                    equipmentsList.get(1), "李四", "Software", 2, 1, "lisi@example.com"
+                );
+                request2.setStatus("In Progress");
+                request2.setAssignedTechnician(userAccount.getEmployee());
+                repairRequests.add(request2);
+            }
+        }
+
+        // 创建一个通用的维修请求
+        RepairRequest request3 = new RepairRequest(
+            null, "王五", "Maintenance", 1, 3, "wangwu@example.com"
+        );
+        request3.setStatus("Completed");
+        repairRequests.add(request3);
+    }
+
+    private void setupTableListener() {
+        tblDataOverview.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    selectRepairRequest();
+                }
+            }
+        });
+    }
+
+    private void selectRepairRequest() {
+        int selectedRow = tblDataOverview.getSelectedRow();
+        if (selectedRow >= 0 && selectedRow < repairRequests.size()) {
+            selectedRepairRequest = repairRequests.get(selectedRow);
+            populateViewFields();
+        }
+    }
+
+    private void populateViewFields() {
+        if (selectedRepairRequest != null) {
+            txtViewEquipment.setText(selectedRepairRequest.getEquipment() != null ? 
+                selectedRepairRequest.getEquipment().getName() : "未指定设备");
+            txtViewReporterName.setText(selectedRepairRequest.getReporterName());
+            CmbViewIssueCategory.setSelectedItem(selectedRepairRequest.getIssueCategory());
+            txtViewSeverityLevel.setText(String.valueOf(selectedRepairRequest.getSeverityLevel()));
+            txtViewPriorityLevel.setText(String.valueOf(selectedRepairRequest.getPriorityLevel()));
+            txtViewStatus.setText(selectedRepairRequest.getStatus());
+        }
+    }
+
+    private void populateTable() {
+        DefaultTableModel model = (DefaultTableModel) tblDataOverview.getModel();
+        model.setRowCount(0); // 清空表格
+
+        for (RepairRequest request : repairRequests) {
+            String technicianName = request.getAssignedTechnician() != null ? 
+                request.getAssignedTechnician().getName() : "未分配";
+            String equipmentName = request.getEquipment() != null ? 
+                request.getEquipment().getName() : "未指定";
+            
+            Object[] row = {
+                request.getRepairRequestId(),
+                equipmentName,
+                technicianName,
+                request.getContactEmail(),
+                request.getStatus()
+            };
+            model.addRow(row);
+        }
     }
 
     /**
@@ -354,29 +459,279 @@ public class ManageRepairStatus extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCreateActionPerformed
+        try {
+            // 验证输入
+            if (!validateCreateInput()) {
+                return;
+            }
 
+            // 从表单获取数据
+            String equipmentName = txtCreateEquipment.getText().trim();
+            String reporterName = txtCreateReporterName.getText().trim();
+            String issueCategory = (String) CmbCreateIssueCategory.getSelectedItem();
+            int severityLevel = Integer.parseInt(txtCreateSeverityLevel.getText().trim());
+            int priorityLevel = Integer.parseInt(txtCreatePriorityLevel.getText().trim());
+            String status = txtCreateStatus.getText().trim();
+
+            // 查找对应的设备
+            Equipments equipment = findEquipmentByName(equipmentName);
+            
+            // 创建新的维修请求
+            RepairRequest newRequest = new RepairRequest(
+                equipment, reporterName, issueCategory, priorityLevel, severityLevel, ""
+            );
+            newRequest.setStatus(status.isEmpty() ? "Pending" : status);
+            newRequest.setSender(userAccount);
+
+            // 如果是当前用户创建的，可以自动分配给自己
+            if (userAccount.getRole().getName().contains("Technician")) {
+                newRequest.setAssignedTechnician(userAccount.getEmployee());
+            }
+
+            // 添加到列表
+            repairRequests.add(newRequest);
+
+            // 添加到组织的工作队列
+            organization.addWorkRequest(newRequest);
+
+            // 刷新表格
+            populateTable();
+
+            // 清空输入字段
+            clearCreateFields();
+
+            JOptionPane.showMessageDialog(this, 
+                "维修请求创建成功！请求ID: " + newRequest.getRepairRequestId(), 
+                "成功", 
+                JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, 
+                "严重等级和优先级必须是数字", 
+                "输入错误", 
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "创建维修请求时出错: " + e.getMessage(), 
+                "错误", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnCreateActionPerformed
+    private boolean validateCreateInput() {
+        if (txtCreateEquipment.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "请输入设备名称", "输入错误", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (txtCreateReporterName.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "请输入报告人姓名", "输入错误", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (txtCreateSeverityLevel.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "请输入严重等级", "输入错误", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (txtCreatePriorityLevel.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "请输入优先级", "输入错误", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        try {
+            int severity = Integer.parseInt(txtCreateSeverityLevel.getText().trim());
+            int priority = Integer.parseInt(txtCreatePriorityLevel.getText().trim());
+            if (severity < 1 || severity > 5 || priority < 1 || priority > 5) {
+                JOptionPane.showMessageDialog(this, "严重等级和优先级必须在1-5之间", "输入错误", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "严重等级和优先级必须是数字", "输入错误", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    private Equipments findEquipmentByName(String name) {
+        for (Equipments equipment : equipmentsCatalog.getEquipmentsList()) {
+            if (equipment.getName().equalsIgnoreCase(name)) {
+                return equipment;
+            }
+        }
+        return null; // 如果找不到设备，返回null
+    }
+
+    private void clearCreateFields() {
+        txtCreateEquipment.setText("");
+        txtCreateReporterName.setText("");
+        CmbCreateIssueCategory.setSelectedIndex(0);
+        txtCreateSeverityLevel.setText("");
+        txtCreatePriorityLevel.setText("");
+        txtCreateStatus.setText("");
+    }
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // 返回到技术员工作区主页面
+        try {
+            EquipmentTechnicianWorkAreaPanel mainPanel = new EquipmentTechnicianWorkAreaPanel(
+                userProcessContainer, organization, userAccount);
+            
+            userProcessContainer.removeAll();
+            userProcessContainer.add(mainPanel, "TechnicianWorkArea");
+            userProcessContainer.revalidate();
+            userProcessContainer.repaint();
+            
+            CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+            layout.show(userProcessContainer, "TechnicianWorkArea");
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "返回主页面时出错: " + e.getMessage(), 
+                "错误", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        // TODO add your handling code here:
+        if (selectedRepairRequest == null) {
+            JOptionPane.showMessageDialog(this, "请先选择一个维修请求", "提示", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // 从查看字段获取修改后的数据
+            String equipmentName = txtViewEquipment.getText().trim();
+            selectedRepairRequest.setEquipment(findEquipmentByName(equipmentName));
+            selectedRepairRequest.setReporterName(txtViewReporterName.getText().trim());
+            selectedRepairRequest.setIssueCategory((String) CmbViewIssueCategory.getSelectedItem());
+            selectedRepairRequest.setSeverityLevel(Integer.parseInt(txtViewSeverityLevel.getText().trim()));
+            selectedRepairRequest.setPriorityLevel(Integer.parseInt(txtViewPriorityLevel.getText().trim()));
+            selectedRepairRequest.setStatus(txtViewStatus.getText().trim());
+
+            // 如果状态改为"In Progress"，开始维修
+            if ("In Progress".equals(selectedRepairRequest.getStatus()) && 
+                selectedRepairRequest.getAssignedTechnician() == null) {
+                selectedRepairRequest.setAssignedTechnician(userAccount.getEmployee());
+                selectedRepairRequest.startRepair();
+            }
+
+            // 如果状态改为"Completed"，完成维修
+            if ("Completed".equals(selectedRepairRequest.getStatus())) {
+                selectedRepairRequest.completeRepair();
+            }
+
+            // 刷新表格
+            populateTable();
+
+            JOptionPane.showMessageDialog(this, "维修请求修改成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "严重等级和优先级必须是数字", "输入错误", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "修改维修请求时出错: " + e.getMessage(), 
+                "错误", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnModifyActionPerformed
 
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
-        // TODO add your handling code here:
+        try {
+            String fileName = "repair_requests_" + System.currentTimeMillis() + ".csv";
+            FileWriter writer = new FileWriter(fileName);
+
+            // 写入CSV头
+            writer.append("Request ID,Equipment,Technician,Contact Email,Status,Reporter,Category,Severity,Priority\n");
+
+            // 写入数据
+            for (RepairRequest request : repairRequests) {
+                String technicianName = request.getAssignedTechnician() != null ? 
+                    request.getAssignedTechnician().getName() : "未分配";
+                String equipmentName = request.getEquipment() != null ? 
+                    request.getEquipment().getName() : "未指定";
+                
+                writer.append(String.format("%s,%s,%s,%s,%s,%s,%s,%d,%d\n",
+                    request.getRepairRequestId(),
+                    equipmentName,
+                    technicianName,
+                    request.getContactEmail(),
+                    request.getStatus(),
+                    request.getReporterName(),
+                    request.getIssueCategory(),
+                    request.getSeverityLevel(),
+                    request.getPriorityLevel()
+                ));
+            }
+
+            writer.flush();
+            writer.close();
+
+            JOptionPane.showMessageDialog(this, 
+                "数据已导出到文件: " + fileName, 
+                "导出成功", 
+                JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, 
+                "导出CSV文件时出错: " + e.getMessage(), 
+                "导出错误", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
     private void btnSendEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendEmailActionPerformed
-        // TODO add your handling code here:
+        if (selectedRepairRequest == null) {
+            JOptionPane.showMessageDialog(this, "请先选择一个维修请求", "提示", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 模拟发送邮件
+        String emailContent = String.format(
+            "维修请求状态更新\n\n" +
+            "请求ID: %s\n" +
+            "设备名称: %s\n" +
+            "当前状态: %s\n" +
+            "分配技术员: %s\n" +
+            "优先级: %d\n\n" +
+            "感谢您的耐心等待。",
+            selectedRepairRequest.getRepairRequestId(),
+            selectedRepairRequest.getEquipment() != null ? selectedRepairRequest.getEquipment().getName() : "未指定",
+            selectedRepairRequest.getStatus(),
+            selectedRepairRequest.getAssignedTechnician() != null ? 
+                selectedRepairRequest.getAssignedTechnician().getName() : "未分配",
+            selectedRepairRequest.getPriorityLevel()
+        );
+
+        JOptionPane.showMessageDialog(this, 
+            "邮件发送模拟:\n收件人: " + selectedRepairRequest.getContactEmail() + "\n\n" + emailContent, 
+            "邮件发送", 
+            JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnSendEmailActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDeleteActionPerformed
+        if (selectedRepairRequest == null) {
+            JOptionPane.showMessageDialog(this, "请先选择一个维修请求", "提示", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        int choice = JOptionPane.showConfirmDialog(this, 
+            "确定要删除维修请求 " + selectedRepairRequest.getRepairRequestId() + " 吗？", 
+            "确认删除", 
+            JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            repairRequests.remove(selectedRepairRequest);
+            selectedRepairRequest = null;
+            populateTable();
+            clearViewFields();
+            JOptionPane.showMessageDialog(this, "维修请求删除成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+    private void clearViewFields() {
+        txtViewEquipment.setText("");
+        txtViewReporterName.setText("");
+        CmbViewIssueCategory.setSelectedIndex(0);
+        txtViewSeverityLevel.setText("");
+        txtViewPriorityLevel.setText("");
+        txtViewStatus.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CmbCreateIssueCategory;
