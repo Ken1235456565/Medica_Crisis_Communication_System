@@ -21,18 +21,19 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnManageOrganization" min="-2" pref="284" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="btnManageRoles" min="-2" pref="284" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btnManageUserAccounts" min="-2" pref="284" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btnNetworkAdminReports" min="-2" pref="284" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="144" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
                               <Component id="btnManageNetwork" min="-2" pref="284" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btnManageEnterprise" min="-2" pref="284" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnManageOrganization" min="-2" pref="284" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -54,12 +55,13 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnManageNetwork" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
                   <Component id="btnManageEnterprise" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnManageOrganization" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnNetworkAdminReports" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
                   <Component id="btnManageUserAccounts" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Component id="btnManageOrganization" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="btnManageRoles" alignment="3" min="-2" pref="138" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="287" max="32767" attributes="0"/>
           </Group>
@@ -128,6 +130,17 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageEnterpriseActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnManageRoles">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Helvetica Neue" size="18" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Manage User Roles"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageRolesActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

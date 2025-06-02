@@ -50,44 +50,50 @@ public class ManageEnterprise extends javax.swing.JPanel {
     }
     
     // Method to populate comboboxes with data
-    private void populateComboBoxes() {
-        cmbcreateType.removeAllItems();
-        for (Enterprise.EnterpriseType type : Enterprise.EnterpriseType.values()) {
-            cmbcreateType.addItem(type.name());
-        }
-
-        cmbcreateManager.removeAllItems();
-        cmbcreateManager.addItem("Select Manager");
-        cmbcreateManager.addItem("Manager A");
-        cmbcreateManager.addItem("Manager B");
-
-        cmbcreateNetworkBelong.removeAllItems();
-        if (network != null) {
-            cmbcreateNetworkBelong.addItem(network.getName());
-            cmbcreateNetworkBelong.setSelectedItem(network.getName());
-        }
-
-        cmbSearch.removeAllItems();
-        cmbSearch.addItem("All");
-        cmbSearch.addItem("Last 3 days");
-        cmbSearch.addItem("Last 7 days");
-        cmbSearch.addItem("Last 30 days");
-
-        cmbviewType.removeAllItems();
-        for (Enterprise.EnterpriseType type : Enterprise.EnterpriseType.values()) {
-            cmbviewType.addItem(type.name());
-        }
-
-        cmbViewManager.removeAllItems();
-        cmbViewManager.addItem("Select Manager");
-        cmbViewManager.addItem("Manager A");
-        cmbViewManager.addItem("Manager B");
-
-        cmbViewNetworkBelong.removeAllItems();
-        if (network != null) {
-            cmbViewNetworkBelong.addItem(network.getName());
-        }
+private void populateComboBoxes() {
+    cmbcreateType.removeAllItems();
+    for (Enterprise.EnterpriseType type : Enterprise.EnterpriseType.values()) {
+        cmbcreateType.addItem(type.name());
     }
+
+    cmbcreateManager.removeAllItems();
+    cmbcreateManager.addItem("Select Manager");
+    cmbcreateManager.addItem("Manager A");
+    cmbcreateManager.addItem("Manager B");
+
+    // ✅ 修改这部分：从 EcoSystem 获取所有 Network
+    cmbcreateNetworkBelong.removeAllItems();
+    EcoSystem system = EcoSystem.getInstance();
+    for (Network net : system.getNetworkDirectory().getNetworkList()) {
+        cmbcreateNetworkBelong.addItem(net.getName());
+    }
+    // 设置当前 Network 为默认选中
+    if (network != null) {
+        cmbcreateNetworkBelong.setSelectedItem(network.getName());
+    }
+
+    cmbSearch.removeAllItems();
+    cmbSearch.addItem("All");
+    cmbSearch.addItem("Last 3 days");
+    cmbSearch.addItem("Last 7 days");
+    cmbSearch.addItem("Last 30 days");
+
+    cmbviewType.removeAllItems();
+    for (Enterprise.EnterpriseType type : Enterprise.EnterpriseType.values()) {
+        cmbviewType.addItem(type.name());
+    }
+
+    cmbViewManager.removeAllItems();
+    cmbViewManager.addItem("Select Manager");
+    cmbViewManager.addItem("Manager A");
+    cmbViewManager.addItem("Manager B");
+
+    // ✅ 修改这部分：同样从 EcoSystem 获取所有 Network
+    cmbViewNetworkBelong.removeAllItems();
+    for (Network net : system.getNetworkDirectory().getNetworkList()) {
+        cmbViewNetworkBelong.addItem(net.getName());
+    }
+}
     
 
     /**

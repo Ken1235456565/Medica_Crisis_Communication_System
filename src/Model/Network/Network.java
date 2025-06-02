@@ -26,11 +26,13 @@ public class Network {
     private ContactInfo contactInfo;
     private EnterpriseDirectory enterpriseDirectory;
     private Admin admin; // 网络管理员账号
+    private static int counter = 1;
 
     // 默认构造函数
     public Network() {
         this.contactInfo = new ContactInfo();
         this.enterpriseDirectory = new EnterpriseDirectory();
+        this.id = "NETWORK_" + counter++;
     }
 
     // 带参数构造函数

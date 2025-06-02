@@ -62,7 +62,7 @@ public class MainJFrame extends javax.swing.JFrame {
 public MainJFrame() {
     initComponents();  // NetBeans 自动生成
     this.setResizable(false);
-    this.setSize(1200, 800);
+    this.setSize(1400, 1000);
 
     system = ConfigureASystem.configure();
 
@@ -70,10 +70,10 @@ public MainJFrame() {
     RightPanel.setLayout(new CardLayout());
     this.userProcessContainer = RightPanel;
 
-    // ❗ 设定为右侧组件（你忘记这句就永远不会显示）
+    // 设定为右侧组件
     splitPanel.setRightComponent(userProcessContainer);
 
-    // ❗ 显示 LoginPanel（注意你 NetBeans 那个 panel 要设置 name 为 LoginPanel）
+    // LoginPanel
     ((CardLayout) userProcessContainer.getLayout()).show(userProcessContainer, "LoginPanel");
 }
 

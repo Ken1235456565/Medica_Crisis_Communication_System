@@ -9,6 +9,8 @@ import Model.Network.Network;
 import Model.Enterprise.Enterprise;
 import Model.Organization.Organization;
 import Model.Role.Role;
+import java.awt.CardLayout;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 public class NetworkAdminReports extends javax.swing.JPanel {
     private EcoSystem system;
@@ -342,7 +344,9 @@ public class NetworkAdminReports extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+    JPanel parent = (JPanel) this.getParent();
+    CardLayout layout = (CardLayout) parent.getLayout();
+    layout.previous(parent);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnExportAllToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportAllToCSVActionPerformed
