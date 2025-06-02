@@ -20,7 +20,7 @@ public class SupplyChainManagementUnit extends Organization {
     private Date lastAuditDate;
     private String warehouseLocation;
     private Map<String, Double> itemThresholds; // Reorder thresholds
-    private SupplyItemCatalog lowStockItems; // Items below threshold
+    private SupplyItemCatalog itemCatalog; // Items below threshold
     DeliveryCatalog deliveryCatalog;
     
     // Default constructor
@@ -30,7 +30,7 @@ public class SupplyChainManagementUnit extends Organization {
         this.itemQuantityMap = new HashMap<>();
         this.lastAuditDate = new Date();
         this.itemThresholds = new HashMap<>();
-        this.lowStockItems = new SupplyItemCatalog();
+        this.itemCatalog = new SupplyItemCatalog();
     }
     
     // Constructor with warehouse location
@@ -41,8 +41,20 @@ public class SupplyChainManagementUnit extends Organization {
         this.lastAuditDate = new Date();
         this.warehouseLocation = warehouseLocation;
         this.itemThresholds = new HashMap<>();
-        this.lowStockItems = new SupplyItemCatalog();
+        this.itemCatalog = new SupplyItemCatalog();
     }
+    
+public SupplyChainManagementUnit(String name, SupplyItemCatalog itemCatalog, DeliveryCatalog deliveryCatalog) {
+    super(name);
+    this.itemCatalog = itemCatalog != null ? itemCatalog : new SupplyItemCatalog();
+    this.deliveryCatalog = deliveryCatalog != null ? deliveryCatalog : new DeliveryCatalog();
+    this.inventoryList = new ArrayList<>();
+    this.itemQuantityMap = new HashMap<>();
+    this.lastAuditDate = new Date();
+    this.itemThresholds = new HashMap<>();
+    this.warehouseLocation = "Default Location"; // 可选设置默认值
+}
+
     
     // Getters and setters
     public List<SupplyItem> getInventoryList() {
@@ -74,7 +86,7 @@ public class SupplyChainManagementUnit extends Organization {
     }
     
     public SupplyItemCatalog getSupplyItemCatalog() {
-        return lowStockItems;
+        return itemCatalog;
     }
 
     public DeliveryCatalog getDeliveryCatalog() {
@@ -175,7 +187,7 @@ private void updateLowStockStatus(String itemName) {
         double threshold = itemThresholds.get(itemName);
         if (item.getQuantity() <= threshold) {
             if (findLowStockItem(itemName) == null) {
-                lowStockItems.add(item);
+                itemCatalog.add(item);
             }
         } else {
             removeLowStockItem(itemName);
@@ -186,7 +198,7 @@ private void updateLowStockStatus(String itemName) {
     
     // Find item in low stock list
 private SupplyItem findLowStockItem(String itemName) {
-    for (SupplyItem item : lowStockItems.getAllItems()) {
+    for (SupplyItem item : itemCatalog.getAllItems()) {
         if (item.getName().equals(itemName)) {
             return item;
         }
@@ -198,13 +210,13 @@ private SupplyItem findLowStockItem(String itemName) {
 private void removeLowStockItem(String itemName) {
     SupplyItem item = findLowStockItem(itemName);
     if (item != null) {
-        lowStockItems.remove(item);
+        itemCatalog.remove(item);
     }
 }
     
     // Update all low stock statuses
 public void updateAllLowStockStatuses() {
-    lowStockItems.clear();
+    itemCatalog.clear();
     for (SupplyItem item : inventoryList) {
         updateLowStockStatus(item.getName());
     }
@@ -257,7 +269,7 @@ public void updateAllLowStockStatuses() {
     public String toString() {
         return "Inventory Manager - " + warehouseLocation + 
                " [Items: " + inventoryList.size() + 
-               ", Low Stock: " + lowStockItems.size() +
+               ", Low Stock: " + itemCatalog.size() +
                ", Last Audit: " + lastAuditDate + "]";
     }
 }

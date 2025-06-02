@@ -27,6 +27,7 @@ public class OperationsSupportUnit extends Organization {
     private List<Report> performanceReports;
     private List<WorkRequest> analysisTasks;
     private Date lastPayrollDate;
+    
 
     // Default constructor
     public OperationsSupportUnit() {
@@ -70,6 +71,18 @@ public class OperationsSupportUnit extends Organization {
         this.performanceReports = new ArrayList<>();
         this.analysisTasks = new ArrayList<>();
     }
+    
+    public OperationsSupportUnit(String unitName, List<PayrollRecord> payrolls, String fiscalYear) {
+    super(unitName); // 调用父类 Organization 的构造器
+    this.unitName = unitName;
+    this.payrolls = payrolls != null ? payrolls : new ArrayList<>();
+    this.staffList = new ArrayList<>(); // 默认空列表，避免 NPE
+    this.performanceReports = new ArrayList<>();
+    this.analysisTasks = new ArrayList<>();
+    this.lastPayrollDate = null;
+    this.fiscalYear = fiscalYear;
+}
+
 
     // ==================== Getters / Setters ====================
 
@@ -121,6 +134,10 @@ public class OperationsSupportUnit extends Organization {
     public void setLastPayrollDate(Date lastPayrollDate) {
         this.lastPayrollDate = lastPayrollDate;
     }
+    
+    public void setStaffList(List<Employee> staffList) {
+    this.staffList = staffList;
+}
 
     // ==================== Core Functional Methods ====================
 

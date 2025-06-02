@@ -28,7 +28,7 @@ public class ManageNetwork extends javax.swing.JPanel {
     public ManageNetwork(JPanel userProcessContainer, EcoSystem ecoSystem) {
         this.userProcessContainer = userProcessContainer;
         this.ecoSystem = ecoSystem;
-        // initComponents() would be called here in the actual GUI code
+        initComponents(); 
         populateTable();
         populateComboBoxes();
     }
@@ -541,28 +541,30 @@ public class ManageNetwork extends javax.swing.JPanel {
     }//GEN-LAST:event_btnViewDetailsActionPerformed
 
     private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
-        String searchFilter = (String) cmbSearch.getSelectedItem();
-        DefaultTableModel model = (DefaultTableModel) tblManageNetwork.getModel();
-        model.setRowCount(0);
-        
-        for (Network network : ecoSystem.getNetworkDirectory().getNetworkList()) {
-            boolean shouldInclude = true;
-            
-            if (searchFilter.equals("Last 3 days") || searchFilter.equals("Last 7 days") || searchFilter.equals("Last 30 days")) {
-                shouldInclude = true;
-            }
-            
-            if (shouldInclude) {
-                Object[] row = {
-                    network.getId(),
-                    network.getName(),
-                    network.getType(),
-                    network.getDescription(),
-                    network.getManager()
-                };
-                model.addRow(row);
-            }
-        }
+String searchFilter = (String) cmbSearch.getSelectedItem();
+if (searchFilter == null) return;
+
+DefaultTableModel model = (DefaultTableModel) tblManageNetwork.getModel();
+model.setRowCount(0);
+
+for (Network network : ecoSystem.getNetworkDirectory().getNetworkList()) {
+    boolean shouldInclude = switch (searchFilter) {
+        case "Last 3 days", "Last 7 days", "Last 30 days" -> true;
+        case "All" -> true;
+        default -> true;
+    };
+
+    if (shouldInclude) {
+        Object[] row = {
+            network.getId(),
+            network.getName(),
+            network.getType(),
+            network.getDescription(),
+            network.getManager()
+        };
+        model.addRow(row);
+    }
+}
     }//GEN-LAST:event_cmbSearchActionPerformed
     private void clearCreateForm() {
         txtcreateNetworkName.setText("");

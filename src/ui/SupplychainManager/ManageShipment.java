@@ -83,7 +83,7 @@ public class ManageShipment extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         btnCreate = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
-        txtDonorName = new javax.swing.JTextField();
+        txtCreateRecipientName = new javax.swing.JTextField();
         txtDonorName1 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -241,7 +241,7 @@ public class ManageShipment extends javax.swing.JPanel {
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtCreateRecipientName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -339,7 +339,7 @@ public class ManageShipment extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
                             .addComponent(txtDonorName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtDonorName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtCreateRecipientName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtContactEmail1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -449,7 +449,7 @@ public class ManageShipment extends javax.swing.JPanel {
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         try {
-            String recipientName = txtDonorName.getText().trim();
+            String recipientName = txtCreateRecipientName.getText().trim();
             String contactInfo = txtContactEmail.getText().trim();
             String deliveryStaff = txtContactEmail2.getText().trim();
             String quantity = txtItemName.getText().trim();
@@ -514,7 +514,7 @@ public class ManageShipment extends javax.swing.JPanel {
     }
 
     private void clearCreateForm() {
-        txtDonorName.setText("");
+        txtCreateRecipientName.setText("");
         txtContactEmail.setText("");
         txtContactEmail2.setText("");
         txtItemName.setText("");
@@ -588,7 +588,7 @@ public class ManageShipment extends javax.swing.JPanel {
     private javax.swing.JTextField txtContactEmail1;
     private javax.swing.JTextField txtContactEmail2;
     private javax.swing.JTextField txtContactEmail3;
-    private javax.swing.JTextField txtDonorName;
+    private javax.swing.JTextField txtCreateRecipientName;
     private javax.swing.JTextField txtDonorName1;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JTextField txtItemName1;

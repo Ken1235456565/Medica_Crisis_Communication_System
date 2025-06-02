@@ -43,7 +43,7 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel2" min="-2" pref="124" max="-2" attributes="0"/>
                                       <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="txtDonorName" min="-2" pref="190" max="-2" attributes="0"/>
+                                      <Component id="txtCreateRecipientName" min="-2" pref="190" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -172,7 +172,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="txtDonorName1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtDonorName" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtCreateRecipientName" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -338,7 +338,7 @@
         <Property name="text" type="java.lang.String" value="Recipient Name:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtDonorName">
+    <Component class="javax.swing.JTextField" name="txtCreateRecipientName">
     </Component>
     <Component class="javax.swing.JTextField" name="txtDonorName1">
     </Component>

@@ -31,15 +31,20 @@ public class ClinicalServicesUnit extends Organization {
     private SupplyItemCatalog supplyItemCatalog = new SupplyItemCatalog();
 
     // Default constructor
-    public ClinicalServicesUnit() {
-        super();
-        this.unitName = "Clinical Services";
-        this.medicalStaff = new ArrayList<>();
-        this.patientList = new ArrayList<>();
-        this.appointmentSchedule = new AppointmentSchedule(); // Initialize AppointmentSchedule
-        this.activeRequests = new ArrayList<>();
-        this.emergencyReady = false;
-    }
+public ClinicalServicesUnit() {
+    super("Clinical Services");
+    this.unitName = "Clinical Services";
+    this.ICUbedCatalog = new ICUbedCatalog(); // ✅ 防止 null
+    this.emergencyReady = true;
+    this.medicalStaff = new ArrayList<>();
+    this.patientList = new ArrayList<>();
+    this.appointmentSchedule = new AppointmentSchedule();
+    this.activeRequests = new ArrayList<>();
+    this.patientDirectory = new PatientDirectory();
+    this.supplyItemCatalog = new SupplyItemCatalog();
+}
+
+
 
     // Constructor with unit name
     public ClinicalServicesUnit(String unitName) {
@@ -62,6 +67,23 @@ public class ClinicalServicesUnit extends Organization {
         this.activeRequests = new ArrayList<>();
         this.emergencyReady = emergencyReady;
     }
+    
+public ClinicalServicesUnit(String unitName, ICUbedCatalog icuBedCatalog, boolean emergencyReady) {
+    super(unitName); // 调用父类 Organization 的构造函数
+    this.unitName = unitName;
+    this.ICUbedCatalog = icuBedCatalog; // ✅ 正确使用传进来的参数
+    this.emergencyReady = emergencyReady;
+
+    // 初始化其余字段以避免 NPE
+    this.medicalStaff = new ArrayList<>();
+    this.patientList = new ArrayList<>();
+    this.appointmentSchedule = new AppointmentSchedule();
+    this.activeRequests = new ArrayList<>();
+    this.patientDirectory = new PatientDirectory();
+    this.supplyItemCatalog = new SupplyItemCatalog();
+}
+
+
 
     // Getters and setters
     @Override
