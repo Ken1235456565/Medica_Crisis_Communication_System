@@ -102,7 +102,7 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
         
         // 设置正确的列标题
         model.setColumnIdentifiers(new String[]{
-            "Nurse ID", "Nurse Name", "Date", "Contact Email", "Notes"
+            "Nurse ID", "Nurse Name", "Date", "Notes"
         });
         
         // 填充交班记录数据
@@ -250,15 +250,11 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel5.setText("Create New Shift Note:");
 
-        CmbDonationType3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
-
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("View Patient Shift Notes");
 
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel14.setText("Date:");
-
-        CmbviewDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
 
         btnExportToCSV.setText("Export to csv");
         btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
@@ -316,7 +312,7 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
                                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(81, 81, 81)
                                     .addComponent(txtviewNurseName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel10)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -576,25 +572,6 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
 
-    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
-        int selectedRow = tblPatientShiftNotes.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, 
-                "请先选择要查看的交班记录", "未选择", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        // 获取选中行的数据并显示在查看区域
-        if (selectedRow < shiftNotesList.size()) {
-            ShiftNote selectedNote = shiftNotesList.get(selectedRow);
-            
-            txtviewNurseName.setText(selectedNote.getNurseName());
-            txtviewContactEmail.setText(selectedNote.getContactEmail());
-            CmbDonationType3.setSelectedItem(selectedNote.getDate());
-            txtviewDate.setText(selectedNote.getNotes());
-        }
-    }//GEN-LAST:event_btnViewDetailsActionPerformed
-
     private void tblPatientShiftNotesAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_tblPatientShiftNotesAncestorAdded
 //        if (evt.getClickCount() == 1) { // 单击显示详情
 //            btnViewDetailsActionPerformed(null);
@@ -630,6 +607,25 @@ public class ViewPatientShiftNotes extends javax.swing.JPanel {
 //            }
 //        }
     }//GEN-LAST:event_tblPatientShiftNotesAncestorAdded
+
+    private void btnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDetailsActionPerformed
+        int selectedRow = tblPatientShiftNotes.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this,
+                "请先选择要查看的交班记录", "未选择", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 获取选中行的数据并显示在查看区域
+        if (selectedRow < shiftNotesList.size()) {
+            ShiftNote selectedNote = shiftNotesList.get(selectedRow);
+
+            txtviewNurseName.setText(selectedNote.getNurseName());
+            txtviewContactEmail.setText(selectedNote.getContactEmail());
+            CmbDonationType3.setSelectedItem(selectedNote.getDate());
+            txtviewDate.setText(selectedNote.getNotes());
+        }
+    }//GEN-LAST:event_btnViewDetailsActionPerformed
     private void clearCreateFields() {
         txtcreateNurseName.setText("");
         txtcreateContactEmail.setText("");

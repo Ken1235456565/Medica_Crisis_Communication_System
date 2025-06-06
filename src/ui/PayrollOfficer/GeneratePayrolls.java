@@ -70,25 +70,38 @@ public GeneratePayrolls(JPanel userProcessContainer, Enterprise enterprise, User
         tblDonationHistory.setModel(tableModel);
     }
 
-    private void populateEmployeeData() {
-        // 填充员工下拉框
-        cmbCreateEmployeeName.removeAllItems();
-        cmbViewEmployeeName.removeAllItems();
-        cmbSearch.removeAllItems();
-        
-        cmbCreateEmployeeName.addItem("-- Select Employee --");
-        cmbViewEmployeeName.addItem("-- Select Employee --");
-        cmbSearch.addItem("-- Search by Employee --");
-        
-        for (Employee emp : employeeDirectory.getEmployeeList()) {
-            String empInfo = emp.getId() + " - " + emp.getName();
-            cmbCreateEmployeeName.addItem(empInfo);
-            cmbViewEmployeeName.addItem(empInfo);
-            cmbSearch.addItem(empInfo);
-        }
-        
-        refreshPayrollTable();
+private void populateEmployeeData() {
+    // 如果员工列表为空，加入一些默认员工
+    if (employeeDirectory.getEmployeeList().isEmpty()) {
+        employeeDirectory.addEmployee(new Employee("E001", "Alice Johnson"));
+        employeeDirectory.addEmployee(new Employee("E002", "Bob Smith"));
+        employeeDirectory.addEmployee(new Employee("E003", "Carol White"));
+        employeeDirectory.addEmployee(new Employee("E004", "David Brown"));
+        employeeDirectory.addEmployee(new Employee("E005", "Eva Green"));
     }
+
+    // 清空旧下拉框内容
+    cmbCreateEmployeeName.removeAllItems();
+    cmbViewEmployeeName.removeAllItems();
+    cmbSearch.removeAllItems();
+
+    // 添加默认提示项
+    cmbCreateEmployeeName.addItem("-- Select Employee --");
+    cmbViewEmployeeName.addItem("-- Select Employee --");
+    cmbSearch.addItem("-- Search by Employee --");
+
+    // 填充员工数据
+    for (Employee emp : employeeDirectory.getEmployeeList()) {
+        String empInfo = emp.getId() + " - " + emp.getName();
+        cmbCreateEmployeeName.addItem(empInfo);
+        cmbViewEmployeeName.addItem(empInfo);
+        cmbSearch.addItem(empInfo);
+    }
+
+    // 更新工资表
+    refreshPayrollTable();
+}
+
 
     private void refreshPayrollTable() {
         tableModel.setRowCount(0);
@@ -190,6 +203,7 @@ public GeneratePayrolls(JPanel userProcessContainer, Enterprise enterprise, User
         txtViewUnemploymentTax = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         cmbSearch = new javax.swing.JComboBox<>();
+        btnSave = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Generate Payrolls");
@@ -329,6 +343,13 @@ public GeneratePayrolls(JPanel userProcessContainer, Enterprise enterprise, User
 
         cmbSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "3 days", "7 days", "30 days" }));
 
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -344,34 +365,39 @@ public GeneratePayrolls(JPanel userProcessContainer, Enterprise enterprise, User
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(52, 52, 52)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtCreateAllowances, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtCreateDeductions, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(81, 81, 81)
-                                        .addComponent(txtCreateBasicSalary, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(81, 81, 81)
-                                        .addComponent(cmbCreateEmployeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addComponent(jLabel5)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(81, 81, 81)
-                                    .addComponent(txtCreateDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(81, 81, 81)
-                                    .addComponent(txtCreateRole, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(52, 52, 52)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(txtCreateAllowances, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(txtCreateDeductions, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(81, 81, 81)
+                                                .addComponent(txtCreateBasicSalary, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(81, 81, 81)
+                                                .addComponent(cmbCreateEmployeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jLabel5)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(81, 81, 81)
+                                            .addComponent(txtCreateDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(81, 81, 81)
+                                            .addComponent(txtCreateRole, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(272, 272, 272)))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel16)
@@ -533,7 +559,9 @@ public GeneratePayrolls(JPanel userProcessContainer, Enterprise enterprise, User
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtViewTotalCost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(btnModify)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnModify)
+                    .addComponent(btnSave))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnBack)
                 .addGap(106, 106, 106))
@@ -712,6 +740,80 @@ public GeneratePayrolls(JPanel userProcessContainer, Enterprise enterprise, User
             }
         }
     }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+    String selectedEmployee = (String) cmbCreateEmployeeName.getSelectedItem();
+    if (selectedEmployee == null || selectedEmployee.startsWith("--")) {
+        JOptionPane.showMessageDialog(this, "Please select an employee first.", 
+                                    "No Selection", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    try {
+        // 解析选中的员工
+        String employeeId = selectedEmployee.split(" - ")[0];
+        Employee employee = employeeDirectory.findEmployeeById(employeeId);
+        
+        if (employee == null) {
+            JOptionPane.showMessageDialog(this, "Employee not found.", 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 如果已存在记录，可提示用户使用“修改”按钮
+        PayrollRecord existing = employee.getPayrollRecord();
+        if (existing != null) {
+            JOptionPane.showMessageDialog(this, "Payroll record already exists. Use Modify instead.", 
+                                        "Already Exists", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 解析表单输入
+        double basicSalary = parseDoubleField(txtCreateBasicSalary.getText(), "Basic Salary");
+        double allowances = parseDoubleField(txtCreateAllowances.getText(), "Allowances");
+        double deductions = parseDoubleField(txtCreateDeductions.getText(), "Deductions");
+        double healthInsurance = parseDoubleField(txtCreateHealthInsurance.getText(), "Health Insurance");
+        double unemploymentTax = parseDoubleField(txtCreateUnemploymentTax.getText(), "Unemployment Tax");
+
+        // 创建薪资记录
+        PayrollRecord record = new PayrollRecord(employee);
+        record.setEmployee(employee);
+        record.setBaseSalary(basicSalary);
+        record.setBonus(allowances);
+        record.setDeductions(deductions + healthInsurance + unemploymentTax);
+        
+        // 关联到员工
+        employee.setPayrollRecord(record);
+
+        // 显示总成本
+        double totalCost = basicSalary + allowances + healthInsurance + unemploymentTax;
+        txtCreateTotalCost.setText(String.format("%.2f", totalCost));
+
+        // 如果属于运营单位，则生成一条请求
+        if (operationsUnit != null) {
+            Calendar cal = Calendar.getInstance();
+            Date payStart = cal.getTime();
+            cal.add(Calendar.MONTH, 1);
+            Date payEnd = cal.getTime();
+            cal.add(Calendar.WEEK_OF_MONTH, 1);
+            Date payDate = cal.getTime();
+            
+            PayrollRequest request = operationsUnit.createPayrollRequest(employee, payStart, payEnd, payDate);
+            request.setStatus("Created");
+        }
+
+        refreshPayrollTable();
+        JOptionPane.showMessageDialog(this, "Payroll record saved successfully!", 
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Invalid number format: " + e.getMessage(), 
+                                    "Input Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error saving payroll: " + e.getMessage(), 
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btnSaveActionPerformed
     private void displayEmployeeDetails(Employee employee) {
         PayrollRecord record = findOrCreatePayrollRecord(employee);
         
@@ -794,6 +896,7 @@ public GeneratePayrolls(JPanel userProcessContainer, Enterprise enterprise, User
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
     private javax.swing.JButton btnModify;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnViewDetails;
     private javax.swing.JComboBox<String> cmbCreateEmployeeName;

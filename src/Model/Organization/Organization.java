@@ -29,7 +29,7 @@ public abstract class Organization {
     protected UserAccountDirectory userAccountDirectory;
     protected Admin admin;
     protected Enterprise enterprise;
-    
+    EquipmentsCatalog equipmentCatalog;
     
     // Static ID counter
     private static int counter = 1;
@@ -79,6 +79,18 @@ public abstract class Organization {
         this.userAccountDirectory = new UserAccountDirectory();
         this.admin = null;  // 可后期 set
     }
+
+    public EquipmentsCatalog getEquipmentCatalog() {
+        return equipmentCatalog;
+    }
+
+    public void setEquipmentCatalog(EquipmentsCatalog equipmentCatalog) {
+        this.equipmentCatalog = equipmentCatalog;
+    }
+
+
+    
+    
 
     private String generateOrganizationId() {
     return "ORG" + (counter++);

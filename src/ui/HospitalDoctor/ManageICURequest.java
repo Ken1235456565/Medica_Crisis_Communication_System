@@ -4,6 +4,7 @@
  */
 package ui.HospitalDoctor;
 
+import Model.Organization.ClinicalServicesUnit;
 import Model.Organization.Organization;
 import Model.Patient.PatientDirectory;
 import Model.Patient.Patient;
@@ -38,6 +39,7 @@ public class ManageICURequest extends javax.swing.JPanel {
     private List<ICURequest> icuRequestList; // List of ICU requests
     private ICURequest selectedRequest; // Currently selected request
     private DefaultTableModel tableModel;
+    private ClinicalServicesUnit clinicalOrg;
 
     public ManageICURequest(JPanel userProcessContainer, Organization organization, UserAccount userAccount, PatientDirectory patientDirectory, ICUbedCatalog icuBedCatalog) {
         this.userProcessContainer = userProcessContainer;
@@ -240,7 +242,7 @@ public class ManageICURequest extends javax.swing.JPanel {
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("ICU Reason:");
 
-        CmbviewUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbviewUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "ugent", "medium", "mild" }));
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel2.setText("Patient Name:");
@@ -292,7 +294,7 @@ public class ManageICURequest extends javax.swing.JPanel {
         jLabel13.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel13.setText("Urgency:");
 
-        CmbcreateUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbcreateUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "ugent", "medium", "mild" }));
 
         btnExportToCSV.setText("Export to csv");
         btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
@@ -481,8 +483,26 @@ public class ManageICURequest extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+    // 1. 清空容器
+    userProcessContainer.removeAll();
+
+    // 2. 重新创建面板
+    HospitalDoctorWorkAreaPanel doctorPanel = new HospitalDoctorWorkAreaPanel(
+        userProcessContainer,
+        clinicalOrg,
+        userAccount
+    );
+
+    // 3. 注册新面板
+    userProcessContainer.add("HospitalDoctorWorkAreaPanel", doctorPanel);
+
+    // 4. 显示该面板
     CardLayout layout = (CardLayout) userProcessContainer.getLayout();
     layout.show(userProcessContainer, "HospitalDoctorWorkAreaPanel");
+System.out.println("当前组件数：" + userProcessContainer.getComponentCount());
+    // 5. 强制刷新 UI（⚠️ 必不可少！）
+    userProcessContainer.revalidate();
+    userProcessContainer.repaint();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed

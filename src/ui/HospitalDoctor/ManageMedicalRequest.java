@@ -254,7 +254,7 @@ private void refreshTable() {
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("Medication:");
 
-        CmbviewUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbviewUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "ugent", "medium", "mild" }));
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel2.setText("Patient Name:");
@@ -306,7 +306,7 @@ private void refreshTable() {
         jLabel13.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel13.setText("Urgency:");
 
-        CmbcreateUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbcreateUrgency.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "ugent", "medium", "mild" }));
         CmbcreateUrgency.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CmbcreateUrgencyActionPerformed(evt);
@@ -508,8 +508,8 @@ private void refreshTable() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-    layout.previous(userProcessContainer);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed

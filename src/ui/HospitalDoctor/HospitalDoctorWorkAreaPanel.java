@@ -168,7 +168,7 @@ private void switchToPanel(String panelName, JPanel panel) {
         addedPanels.add(panelName);
     }
     ((CardLayout) userProcessContainer.getLayout()).show(userProcessContainer, panelName);
-}
+}   //检查逻辑，可能逻辑有问题。每个button不行就hard code, 查lab3
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

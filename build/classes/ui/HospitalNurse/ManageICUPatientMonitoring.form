@@ -275,12 +275,11 @@
     <Component class="javax.swing.JComboBox" name="CmbviewUrgency">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="5">
+          <StringArray count="4">
             <StringItem index="0" value=" "/>
-            <StringItem index="1" value="Medical supplies"/>
-            <StringItem index="2" value="food"/>
-            <StringItem index="3" value="daily necessities"/>
-            <StringItem index="4" value="money"/>
+            <StringItem index="1" value="mild"/>
+            <StringItem index="2" value="medium"/>
+            <StringItem index="3" value="urgent"/>
           </StringArray>
         </Property>
       </Properties>
@@ -365,12 +364,11 @@
     <Component class="javax.swing.JComboBox" name="CmbcreateUrgency">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="5">
+          <StringArray count="4">
             <StringItem index="0" value=" "/>
-            <StringItem index="1" value="Medical supplies"/>
-            <StringItem index="2" value="food"/>
-            <StringItem index="3" value="daily necessities"/>
-            <StringItem index="4" value="money"/>
+            <StringItem index="1" value="mild"/>
+            <StringItem index="2" value="medium"/>
+            <StringItem index="3" value="urgent"/>
           </StringArray>
         </Property>
       </Properties>

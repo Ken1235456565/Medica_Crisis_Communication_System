@@ -379,7 +379,7 @@ public class ManageShipment extends javax.swing.JPanel {
         try {
             int selectedRow = tblDonationHistory.getSelectedRow();
             if (selectedRow == -1) {
-                showWarningMessage("请先选择要删除的货运任务");
+                showWarningMessage("Please select the freight task to be deleted first");
                 return;
             }
             
@@ -387,8 +387,8 @@ public class ManageShipment extends javax.swing.JPanel {
             
             int confirm = JOptionPane.showConfirmDialog(
                 this,
-                "确认删除货运任务 " + shipmentId + "？",
-                "确认删除",
+                "Confirm deletion of freight task " + shipmentId + "？",
+                "Confirm deletion",
                 JOptionPane.YES_NO_OPTION
             );
             
@@ -397,12 +397,12 @@ public class ManageShipment extends javax.swing.JPanel {
                 if (delivery != null) {
                     deliveryCatalog.removeDelivery(delivery);
                     loadShipmentData();
-                    showSuccessMessage("货运任务删除成功");
+                    showSuccessMessage("The freight task was deleted successfully.");
                 }
             }
             
         } catch (Exception e) {
-            showErrorMessage("删除货运失败: " + e.getMessage());
+            showErrorMessage("Fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnBack1ActionPerformed
 
@@ -410,7 +410,7 @@ public class ManageShipment extends javax.swing.JPanel {
         try {
             int selectedRow = tblDonationHistory.getSelectedRow();
             if (selectedRow == -1) {
-                showWarningMessage("请先选择要修改的货运任务");
+                showWarningMessage("Please select the freight task to be modified first");
                 return;
             }
             
@@ -434,16 +434,16 @@ public class ManageShipment extends javax.swing.JPanel {
                     delivery.setDriverName(newStaff);
                 }
                 
-                String updatedNotes = "优先级: " + newPriority + ", 联系方式: " + newContact + 
-                                     " [修改于: " + new Date() + "]";
+                String updatedNotes = "precedence: " + newPriority + ", contact: " + newContact + 
+                                     " [modified date: " + new Date() + "]";
                 delivery.setNotes(updatedNotes);
                 
                 loadShipmentData();
-                showSuccessMessage("货运任务修改成功");
+                showSuccessMessage("successful");
             }
             
         } catch (Exception e) {
-            showErrorMessage("修改货运失败: " + e.getMessage());
+            showErrorMessage("fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnModifyActionPerformed
 
@@ -457,23 +457,23 @@ public class ManageShipment extends javax.swing.JPanel {
             String priority = jTextField6.getText().trim();
             
             if (recipientName.isEmpty() || location.isEmpty()) {
-                showWarningMessage("请填写收件人和配送地点");
+                showWarningMessage("Please fill in the recipient and delivery location");
                 return;
             }
             
             // 创建新配送任务
             Delivery newDelivery = new Delivery(location, new Date());
             newDelivery.setDriverName(deliveryStaff);
-            newDelivery.setNotes("优先级: " + priority + ", 联系方式: " + contactInfo);
+            newDelivery.setNotes("precedence: " + priority + ", contact: " + contactInfo);
             
             deliveryCatalog.addDelivery(newDelivery);
             
             loadShipmentData();
             clearCreateForm();
-            showSuccessMessage("货运任务创建成功");
+            showSuccessMessage("success");
             
         } catch (Exception e) {
-            showErrorMessage("创建货运失败: " + e.getMessage());
+            showErrorMessage("fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnCreateActionPerformed
 
@@ -481,7 +481,7 @@ public class ManageShipment extends javax.swing.JPanel {
         try {
             int selectedRow = tblDonationHistory.getSelectedRow();
             if (selectedRow == -1) {
-                showWarningMessage("请先选择一个货运任务");
+                showWarningMessage("Please select a freight task first");
                 return;
             }
             
@@ -495,7 +495,7 @@ public class ManageShipment extends javax.swing.JPanel {
             }
             
         } catch (Exception e) {
-            showErrorMessage("查看详情失败: " + e.getMessage());
+            showErrorMessage("fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnViewDetailsActionPerformed
 
@@ -503,7 +503,7 @@ public class ManageShipment extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnExportToCSVActionPerformed
     private String getRecipientName(Delivery delivery) {
-        return "收件人"; // 可以从delivery.getDestination()解析
+        return "reciepient"; // 可以从delivery.getDestination()解析
     }
 
     private int getTotalQuantity(Delivery delivery) {
@@ -524,7 +524,7 @@ public class ManageShipment extends javax.swing.JPanel {
 
     private void fillViewForm(Delivery delivery) {
         txtDonorName1.setText(getRecipientName(delivery));
-        txtContactEmail1.setText("联系方式");
+        txtContactEmail1.setText("contact");
         txtContactEmail3.setText(delivery.getDriverName() != null ? delivery.getDriverName() : "");
         txtItemName1.setText(String.valueOf(getTotalQuantity(delivery)));
         txtQuantity3.setText(delivery.getDestination());
@@ -532,29 +532,30 @@ public class ManageShipment extends javax.swing.JPanel {
     }
 
     private void showShipmentDetails(Delivery delivery) {
-        StringBuilder details = new StringBuilder();
-        details.append("货运详情\n================\n");
-        details.append("任务ID: ").append(delivery.getDeliveryId()).append("\n");
-        details.append("目的地: ").append(delivery.getDestination()).append("\n");
-        details.append("状态: ").append(delivery.getStatus()).append("\n");
-        details.append("配送员: ").append(delivery.getDriverName() != null ? delivery.getDriverName() : "未分配").append("\n");
-        details.append("车辆: ").append(delivery.getVehicleUsed() != null ? delivery.getVehicleUsed() : "未分配").append("\n");
-        details.append("配送日期: ").append(delivery.getDeliveryDate() != null ? delivery.getDeliveryDate() : "未设置").append("\n");
-        details.append("备注: ").append(delivery.getNotes() != null ? delivery.getNotes() : "无").append("\n");
-        
-        JOptionPane.showMessageDialog(this, details.toString(), "货运详情", JOptionPane.INFORMATION_MESSAGE);
+StringBuilder details = new StringBuilder();
+details.append("Delivery Details\n====================\n");
+details.append("Delivery ID: ").append(delivery.getDeliveryId()).append("\n");
+details.append("Destination: ").append(delivery.getDestination()).append("\n");
+details.append("Status: ").append(delivery.getStatus()).append("\n");
+details.append("Driver: ").append(delivery.getDriverName() != null ? delivery.getDriverName() : "Unassigned").append("\n");
+details.append("Vehicle: ").append(delivery.getVehicleUsed() != null ? delivery.getVehicleUsed() : "Unassigned").append("\n");
+details.append("Delivery Date: ").append(delivery.getDeliveryDate() != null ? delivery.getDeliveryDate() : "Not Set").append("\n");
+details.append("Notes: ").append(delivery.getNotes() != null ? delivery.getNotes() : "None").append("\n");
+
+JOptionPane.showMessageDialog(this, details.toString(), "Delivery Details", JOptionPane.INFORMATION_MESSAGE);
+
     }
 
     private void showErrorMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "错误", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "error", JOptionPane.ERROR_MESSAGE);
     }
 
     private void showWarningMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "警告", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "warning", JOptionPane.WARNING_MESSAGE);
     }
 
     private void showSuccessMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "成功", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

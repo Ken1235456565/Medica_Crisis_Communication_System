@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>src/ui/HospitalNurse/HospitalNurseWorkArea.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>64</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/PayrollOfficer/PayrollOfficerWorkAreaPanel.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/PayrollOfficer/ManageEmployeeSalary.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/ConfigureASystem.java</file>
-            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/SupplychainManager/ManageShipment.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/HospitalDoctor/ManageICURequest.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/WorkQueue/EmergencyWorkRequest.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/HospitalDoctor/ManageMedicalRequest.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/HospitalDoctor/HospitalDoctorWorkAreaPanel.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/admin/AdminWorkAreaPanel.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/HospitalDoctor/PersonalHistorylinked.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/EmergencyDispatcher/RequestCreate.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/Model/ComponentFactory.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/VisitorDonor/BrowsePublicData.java</file>
+            <file>file:/Users/tiankaining/Desktop/Medica_Crisis_Communication_System/src/ui/HospitalDoctor/ViewOnDutyHistory.java</file>
         </group>
     </open-files>
 </project-private>

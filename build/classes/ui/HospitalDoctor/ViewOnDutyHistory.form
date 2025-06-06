@@ -83,12 +83,10 @@
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="btnBack" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="btnCreate" min="-2" pref="135" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="btnSalaryCaculation" min="-2" pref="135" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="410" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -173,10 +171,7 @@
                   </Group>
               </Group>
               <EmptySpace min="70" pref="70" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnCreate" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnSalaryCaculation" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="btnCreate" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Component id="btnBack" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="131" max="32767" attributes="0"/>
@@ -352,14 +347,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExportToCSVActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnSalaryCaculation">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Salary Caculation"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalaryCaculationActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtCreateDate">

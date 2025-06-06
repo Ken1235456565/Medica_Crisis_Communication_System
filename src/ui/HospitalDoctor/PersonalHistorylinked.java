@@ -653,7 +653,7 @@ public class PersonalHistorylinked extends javax.swing.JFrame {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
     CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-    layout.show(userProcessContainer, "HospitalDoctorWorkAreaPanel");
+    layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private String escapeCSV(String value) {

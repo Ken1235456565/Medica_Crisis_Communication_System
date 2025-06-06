@@ -355,7 +355,7 @@ public class ManageStock extends javax.swing.JPanel {
         try {
             int selectedRow = tblDonationHistory.getSelectedRow();
             if (selectedRow == -1) {
-                showWarningMessage("请先选择要删除的库存项目");
+                showWarningMessage("Please select the inventory item to delete first");
                 return;
             }
             
@@ -363,8 +363,8 @@ public class ManageStock extends javax.swing.JPanel {
             
             int confirm = JOptionPane.showConfirmDialog(
                 this,
-                "确认删除库存项目 " + itemId + "？",
-                "确认删除",
+                "confirm deletion " + itemId + "？",
+                "confirm deletion",
                 JOptionPane.YES_NO_OPTION
             );
             
@@ -431,7 +431,7 @@ public class ManageStock extends javax.swing.JPanel {
             }
             
         } catch (Exception e) {
-            showErrorMessage("修改库存失败: " + e.getMessage());
+            showErrorMessage("fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnMofifyActionPerformed
 
@@ -444,7 +444,7 @@ public class ManageStock extends javax.swing.JPanel {
             String priority = txtQuantity2.getText().trim();
             
             if (itemName.isEmpty()) {
-                showWarningMessage("请输入物品名称");
+                showWarningMessage("name");
                 return;
             }
             
@@ -452,7 +452,7 @@ public class ManageStock extends javax.swing.JPanel {
             try {
                 quantity = Integer.parseInt(quantityStr);
             } catch (NumberFormatException e) {
-                showWarningMessage("请输入有效的数量");
+                showWarningMessage("qauntity");
                 return;
             }
             
@@ -462,10 +462,10 @@ public class ManageStock extends javax.swing.JPanel {
             
             loadStockData();
             clearAddForm();
-            showSuccessMessage("库存项目创建成功");
+            showSuccessMessage("sucess");
             
         } catch (Exception e) {
-            showErrorMessage("创建库存失败: " + e.getMessage());
+            showErrorMessage("fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnViewDetails1ActionPerformed
     private void clearAddForm() {
@@ -488,17 +488,18 @@ public class ManageStock extends javax.swing.JPanel {
     }
     
     private void showItemDetails(SupplyItem item) {
-        StringBuilder details = new StringBuilder();
-        details.append("库存详情\n================\n");
-        details.append("ID: ").append(item.getSupplyId()).append("\n");
-        details.append("名称: ").append(item.getName()).append("\n");
-        details.append("描述: ").append(item.getDescription()).append("\n");
-        details.append("类型: ").append(item.getType()).append("\n");
-        details.append("数量: ").append(item.getQuantity()).append("\n");
-        details.append("单价: $").append(item.getUnitPrice()).append("\n");
-        details.append("总价值: $").append(item.getTotalValue()).append("\n");
-        
-        JOptionPane.showMessageDialog(this, details.toString(), "库存详情", JOptionPane.INFORMATION_MESSAGE);
+StringBuilder details = new StringBuilder();
+details.append("Inventory Details\n====================\n");
+details.append("ID: ").append(item.getSupplyId()).append("\n");
+details.append("Name: ").append(item.getName()).append("\n");
+details.append("Description: ").append(item.getDescription()).append("\n");
+details.append("Type: ").append(item.getType()).append("\n");
+details.append("Quantity: ").append(item.getQuantity()).append("\n");
+details.append("Unit Price: $").append(item.getUnitPrice()).append("\n");
+details.append("Total Value: $").append(item.getTotalValue()).append("\n");
+
+JOptionPane.showMessageDialog(this, details.toString(), "Inventory Details", JOptionPane.INFORMATION_MESSAGE);
+
     }
     
     private void exportStockToCSV() {

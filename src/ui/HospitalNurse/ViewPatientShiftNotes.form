@@ -75,7 +75,7 @@
                                   <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
                                   <Component id="txtviewNurseName" min="-2" pref="172" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="btnViewDetails" alignment="1" min="-2" pref="129" max="-2" attributes="0"/>
+                              <Component id="btnViewDetails" alignment="1" min="-2" pref="4" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -336,13 +336,7 @@
     <Component class="javax.swing.JComboBox" name="CmbDonationType3">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="5">
-            <StringItem index="0" value=" "/>
-            <StringItem index="1" value="Medical supplies"/>
-            <StringItem index="2" value="food"/>
-            <StringItem index="3" value="daily necessities"/>
-            <StringItem index="4" value="money"/>
-          </StringArray>
+          <StringArray count="0"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -374,13 +368,7 @@
     <Component class="javax.swing.JComboBox" name="CmbviewDate">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="5">
-            <StringItem index="0" value=" "/>
-            <StringItem index="1" value="Medical supplies"/>
-            <StringItem index="2" value="food"/>
-            <StringItem index="3" value="daily necessities"/>
-            <StringItem index="4" value="money"/>
-          </StringArray>
+          <StringArray count="0"/>
         </Property>
       </Properties>
       <AuxValues>

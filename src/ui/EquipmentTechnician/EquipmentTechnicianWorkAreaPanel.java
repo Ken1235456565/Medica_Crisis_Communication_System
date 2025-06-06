@@ -37,7 +37,7 @@ public class EquipmentTechnicianWorkAreaPanel extends javax.swing.JPanel {
         this.cardLayout = (CardLayout) contentPanel.getLayout();
 
         // Assuming organization has methods to get its directories/catalogs
-        EquipmentsCatalog equipmentsCatalog = organization.getEquipmentsCatalog(); // Placeholder
+        EquipmentsCatalog equipmentsCatalog = organization.getEquipmentCatalog(); // Placeholder
 
         // Add sub-panels to the contentPanel
         contentPanel.add("ReportIssue", new ReportIssue(userProcessContainer, organization, userAccount, equipmentsCatalog));

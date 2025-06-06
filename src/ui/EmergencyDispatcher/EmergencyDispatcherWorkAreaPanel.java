@@ -9,6 +9,10 @@ import Model.Organization.Organization;
 import Model.User.UserAccount;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
+import java.awt.Font;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -141,7 +145,31 @@ public class EmergencyDispatcherWorkAreaPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRequestCreateActionPerformed
 
     private void btnResponderStatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResponderStatsActionPerformed
-        // TODO add your handling code here:
+    StringBuilder stats = new StringBuilder();
+    stats.append("Emergency Responder Stats\n");
+    stats.append("=============================\n\n");
+
+    stats.append("Responder Type:\n");
+    stats.append("  - Paramedic     | ██████████ 45%\n");
+    stats.append("  - Critical Care | ████████   35%\n");
+    stats.append("  - EMT           | ████       20%\n\n");
+
+    stats.append("Certification Level:\n");
+    stats.append("  - Basic         | ███████    30%\n");
+    stats.append("  - Intermediate  | █████████  50%\n");
+    stats.append("  - Advanced      | ████       20%\n\n");
+
+    stats.append("Vehicle Assigned:\n");
+    stats.append("  - AmbulanceA    | ██████████ 40%\n");
+    stats.append("  - AmbulanceB    | ███████    30%\n");
+    stats.append("  - None          | █████      30%\n");
+
+    JTextArea textArea = new JTextArea(stats.toString());
+    textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+    textArea.setEditable(false);
+    textArea.setBackground(null); // 透明背景
+    JOptionPane.showMessageDialog(this, new JScrollPane(textArea),
+        "Responder Statistics", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnResponderStatsActionPerformed
 
     private void btnRequestManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRequestManagementActionPerformed

@@ -158,7 +158,7 @@ public class SupplyOfficerWorkAreaPanel extends javax.swing.JPanel {
 
     private void btnManageShipmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageShipmentActionPerformed
         // Navigate to SupplyUsageTracking (labeled as Track Applications)
-        userProcessContainer.add("ManageShipment", contentPanel.getComponent(1));
+        userProcessContainer.add("ManageShipment", contentPanel.getComponent(3));
         ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnManageShipmentActionPerformed
 

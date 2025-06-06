@@ -8,10 +8,16 @@ import Model.EcoSystem;
 import Model.Organization.Organization;
 import Model.User.UserAccount;
 import Model.WorkQueue.EmergencyWorkRequest;
+import Model.WorkQueue.FirstAid;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import java.awt.CardLayout;
+import java.awt.Image;
+import java.io.File;
 import java.util.Date;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -23,6 +29,7 @@ public class RequestCreate extends javax.swing.JPanel {
     private Organization organization;
     private UserAccount userAccount;
     private EcoSystem system; // For creating new requests which might be dispatched broadly
+    private String attachedImagePath = null;
 
     public RequestCreate(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EcoSystem system) {
         this.userProcessContainer = userProcessContainer;
@@ -288,44 +295,69 @@ public class RequestCreate extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEmailEmergencyContactActionPerformed
 
     private void btnSaveRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveRequestActionPerformed
-        try {
-            String requestID = txtRequestID.getText();
-            String location = txtLocation.getText();
-            String requester = txtRequester.getText();
-            String phone = txtPhone.getText();
-            String emergencyContact = txtEmergencyContact.getText();
-            String symptomDescription = txtSymptomDescription.getText();
-            String suppliesNeeded = txtSuppliesNeeded.getText();
+    try {
+        String requestID = txtRequestID.getText();
+        String location = txtLocation.getText();
+        String requester = txtRequester.getText();
+        String phone = txtPhone.getText();
+        String emergencyContact = txtEmergencyContact.getText();
+        String symptomDescription = txtSymptomDescription.getText();
+        String suppliesNeeded = txtSuppliesNeeded.getText();
 
-            // 验证必填字段
-            if (location.isEmpty() || requester.isEmpty() || phone.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please fill in all required fields!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // 创建紧急工作请求
-            EmergencyWorkRequest request = new EmergencyWorkRequest("First Aid Request", location, 3, requester);
-            request.setSender(userAccount);
-            request.setMessage(symptomDescription);
-            request.setSuppliesRequired(suppliesNeeded);
-            request.setEmergencyContact(emergencyContact);
-            request.setContactPhone(phone);
-
-            // 添加到组织工作队列
-            organization.addWorkRequest(request);
-
-            JOptionPane.showMessageDialog(this, "Emergency request created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
-            // 清空表单
-            clearForm();
-            
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error creating request: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        // 验证必填字段
+        if (location.isEmpty() || requester.isEmpty() || phone.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all required fields!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        // 创建具体请求对象
+        FirstAid request = new FirstAid("First Aid Request", location, 3, requester);
+        request.setRequestDate(new Date());
+        request.setStatus("Pending");
+
+        // 设置详细信息
+        request.setMessage(symptomDescription);
+        request.setContactPhone(phone); // 你如果有 setPhone 就用
+        request.setEmergencyContact(emergencyContact);
+        request.setSuppliesRequired(suppliesNeeded);
+        request.setAttachedImagePath(attachedImagePath); // ✅ 设置图片路径
+
+        // 加入队列
+        organization.getWorkQueue().add(request);
+
+        JOptionPane.showMessageDialog(this, "Emergency request created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        // 清空表单
+        clearForm();
+
+        // 切换回管理页面（如果你已经提前注册了那个面板）
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.show(userProcessContainer, "RequestManagement");
+
+        // 如果你有 RequestManagement 的引用（比如 requestManagementPanel），可以刷新它
+        // requestManagementPanel.loadRequestData();
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error creating request: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btnSaveRequestActionPerformed
 
     private void btnUploadLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadLocationActionPerformed
-        JOptionPane.showMessageDialog(this, "Location image upload functionality would be implemented here.", "Upload", JOptionPane.INFORMATION_MESSAGE);
+    JFileChooser fileChooser = new JFileChooser();
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "Image Files", "jpg", "jpeg", "png", "gif", "bmp");
+    fileChooser.setFileFilter(filter);
+
+    int result = fileChooser.showOpenDialog(this);
+    if (result == JFileChooser.APPROVE_OPTION) {
+        File selectedFile = fileChooser.getSelectedFile();
+        attachedImagePath = selectedFile.getAbsolutePath(); // 保存路径
+
+        // 可选：预览图片到 JLabel
+        ImageIcon icon = new ImageIcon(attachedImagePath);
+        Image scaled = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        piccreateLocation.setIcon(new ImageIcon(scaled));
+    }
     }//GEN-LAST:event_btnUploadLocationActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed

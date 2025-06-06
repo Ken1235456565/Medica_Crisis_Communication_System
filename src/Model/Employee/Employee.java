@@ -46,6 +46,19 @@ public class Employee extends Person {
         this.payrollRecord = payrollRecord;
         this.role = role;
     }
+    
+    public Employee(String id, String name) {
+    super(); // 如果父类 Person 有默认构造器
+    this.employeeId = id;
+    this.setName(name); // 假设继承自 Person 有 name 字段
+    this.position = "N/A";
+    this.department = "N/A";
+    this.isActive = true;
+    this.contactInfo = new ContactInfo("", "", "");
+    this.payrollRecord = null;
+    this.userAccount = null;
+}
+
 
     
     public Employee(String name, String gender, int age, String dateOfBirth,
@@ -103,6 +116,11 @@ public class Employee extends Person {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    public PayrollRecord getPayrollRecord() {
+        return payrollRecord;
+    }
+    
     
     public void setPayrollRecord(PayrollRecord payrollRecord) {
         this.payrollRecord = payrollRecord;

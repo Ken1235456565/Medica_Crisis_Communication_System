@@ -287,7 +287,7 @@ this.employeeDirectory = operationsUnit.getEmployeeDirectory();
 
     private void btnManageEmployeeSalaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageEmployeeSalaryActionPerformed
         // Navigate to ManageEmployeeSalary
-        userProcessContainer.add("ManageEmployeeSalary", contentPanel.getComponent(1));
+        userProcessContainer.add("ManageEmployeeSalary", contentPanel.getComponent(0));
         ((CardLayout)userProcessContainer.getLayout()).next(userProcessContainer);
     }//GEN-LAST:event_btnManageEmployeeSalaryActionPerformed
 

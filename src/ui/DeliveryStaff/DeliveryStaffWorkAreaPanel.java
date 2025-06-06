@@ -25,14 +25,16 @@ public class DeliveryStaffWorkAreaPanel extends javax.swing.JPanel {
     private CardLayout cardLayout;
     private JPanel contentPanel;
 
-    public DeliveryStaffWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
-        this.userProcessContainer = userProcessContainer;
-        this.organization = organization;
-        this.userAccount = userAccount;
-        
-        initComponents();
-        initContentPanel();
-    }
+public DeliveryStaffWorkAreaPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+    this.userProcessContainer = userProcessContainer;
+    this.organization = organization;
+    this.userAccount = userAccount;
+
+    this.supplyChainManagementUnit = (SupplyChainManagementUnit) organization;
+
+    initComponents();
+    initContentPanel();
+}
     
     private void initContentPanel() {
         contentPanel = new JPanel(new CardLayout());

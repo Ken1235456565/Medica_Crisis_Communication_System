@@ -121,6 +121,13 @@ public class ComponentFactory {
             context.publicHealthEnterprise, "Donation Management", DonationManagementUnit.class);
         context.operationsSupportOrg = findOrCreateOrganization(
             context.publicHealthEnterprise, "Operations Support", OperationsSupportUnit.class);
+        
+        // 物流组织
+context.inventoryManagerOrg = findOrCreateOrganization(
+    context.logisticsEnterprise, "Main Warehouse", SupplyChainManagementUnit.class);
+context.deliveryUnitOrg = findOrCreateOrganization(
+    context.logisticsEnterprise, "Transport", ResourceDispatchUnit.class);
+
     }
     
 @SuppressWarnings("unchecked")

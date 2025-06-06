@@ -16,6 +16,7 @@ public class UserAccount {
     private String organization;
     private Employee employee;
     private Donor donor;
+    Person person;
 
     public UserAccount() {
         // 默认构造器
@@ -96,6 +97,16 @@ public class UserAccount {
     public String getId() {
         return employee != null ? employee.getId() : "unknown";
     }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+    
+    
 
     @Override
     public String toString() {

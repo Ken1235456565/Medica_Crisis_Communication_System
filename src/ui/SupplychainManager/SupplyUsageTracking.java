@@ -42,10 +42,10 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
         
         // 模拟使用活动数据
         String[][] sampleData = {
-            {"ACT001", "医用口罩", "医院急诊科", "Boston", "张医生"},
-            {"ACT002", "防护服", "隔离病房", "Cambridge", "李护士"},
-            {"ACT003", "消毒液", "社区中心", "Somerville", "王管理员"},
-            {"ACT004", "体温计", "检查站", "Newton", "陈工作人员"}
+    {"ACT001", "Medical Masks", "Hospital Emergency Dept.", "Boston", "Dr. Zhang"},
+    {"ACT002", "Protective Suits", "Isolation Ward", "Cambridge", "Nurse Li"},
+    {"ACT003", "Disinfectant", "Community Center", "Somerville", "Manager Wang"},
+    {"ACT004", "Thermometers", "Checkpoint", "Newton", "Staff Chen"}
         };
         
         for (String[] row : sampleData) {
@@ -315,8 +315,8 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
             String staff = (String) tblDonationHistory.getValueAt(selectedRow, 4);
             
             // 填充查看表单
-            txtDonorName1.setText("使用方");
-            txtContactEmail1.setText("联系方式");
+            txtDonorName1.setText("user");
+            txtContactEmail1.setText("contact");
             txtContactEmail3.setText(staff);
             txtItemName1.setText("10"); // 使用数量
             txtQuantity3.setText(location);
@@ -334,20 +334,21 @@ public class SupplyUsageTracking extends javax.swing.JPanel {
         try {
             exportUsageToCSV();
         } catch (Exception e) {
-            showErrorMessage("导出CSV失败: " + e.getMessage());
+            showErrorMessage("fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
     private void showUsageDetails(String activityId, String item, String source, String location, String staff) {
-        StringBuilder details = new StringBuilder();
-        details.append("使用活动详情\n================\n");
-        details.append("活动ID: ").append(activityId).append("\n");
-        details.append("使用物品: ").append(item).append("\n");
-        details.append("来源: ").append(source).append("\n");
-        details.append("使用地点: ").append(location).append("\n");
-        details.append("负责人员: ").append(staff).append("\n");
-        details.append("使用时间: ").append(dateFormat.format(new Date())).append("\n");
-        details.append("使用状态: 已完成\n");
-        details.append("备注: 正常使用，无异常情况\n");
+StringBuilder details = new StringBuilder();
+details.append("Usage Activity Details\n====================\n");
+details.append("Activity ID: ").append(activityId).append("\n");
+details.append("Item Used: ").append(item).append("\n");
+details.append("Source: ").append(source).append("\n");
+details.append("Location: ").append(location).append("\n");
+details.append("Responsible Staff: ").append(staff).append("\n");
+details.append("Usage Time: ").append(dateFormat.format(new Date())).append("\n");
+details.append("Status: Completed\n");
+details.append("Notes: Used normally, no abnormalities\n");
+
         
         JOptionPane.showMessageDialog(this, details.toString(), "使用详情", JOptionPane.INFORMATION_MESSAGE);
     }

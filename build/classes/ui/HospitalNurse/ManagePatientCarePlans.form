@@ -392,12 +392,8 @@
     <Component class="javax.swing.JComboBox" name="CmbcreateResponsibleNurse">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="5">
+          <StringArray count="1">
             <StringItem index="0" value=" "/>
-            <StringItem index="1" value="Medical supplies"/>
-            <StringItem index="2" value="food"/>
-            <StringItem index="3" value="daily necessities"/>
-            <StringItem index="4" value="money"/>
           </StringArray>
         </Property>
       </Properties>
@@ -466,13 +462,7 @@
     <Component class="javax.swing.JComboBox" name="CmbviewResponsibleNurse">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="5">
-            <StringItem index="0" value=" "/>
-            <StringItem index="1" value="Medical supplies"/>
-            <StringItem index="2" value="food"/>
-            <StringItem index="3" value="daily necessities"/>
-            <StringItem index="4" value="money"/>
-          </StringArray>
+          <StringArray count="0"/>
         </Property>
       </Properties>
       <AuxValues>

@@ -57,6 +57,11 @@ public class PayrollRecord {
         return paymentHistory;
     }
 
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    
     /**
      * Calculates the net salary for the current payroll period.
      * This is a simplified calculation; real-world scenarios would be more complex.

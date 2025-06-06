@@ -47,6 +47,7 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
         this.patientDirectory = patientDirectory;
         this.carePlansMap = new HashMap<>();
         
+        
         initComponents();
         initializeData();
     }
@@ -62,6 +63,7 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
             CmbcreateResponsibleNurse.addItem(nurse);
             CmbviewResponsibleNurse.addItem(nurse);
         }
+        
         
         // 填充表格数据
         populateCarePlansTable();
@@ -93,6 +95,14 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
                 plan.getStartDate()
             });
         }
+            // Populate dummy data if the map is empty
+    if (carePlansMap.isEmpty()) {
+        Patient dummyPatient = patientDirectory.createPatient("John Doe", "Male", 35, "2025-06-06");
+        CarePlanData dummyPlan = new CarePlanData(dummyPatient, "2025-06-06", 
+                                                  "Alice Johnson", "High", "Low sodium", "Daily bath");
+        carePlansMap.put(dummyPatient.getPatientId(), dummyPlan);
+    }
+        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -214,7 +224,7 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel3.setText("Care Plan Start Date:");
 
-        CmbcreateResponsibleNurse.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbcreateResponsibleNurse.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
 
         btnExportToCSV.setText("Export to csv");
         btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
@@ -252,8 +262,6 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
 
         jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel11.setText("Care Plan Start Date:");
-
-        CmbviewResponsibleNurse.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -418,32 +426,33 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int selectedRow = tblPatientCarePlans.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, 
-                "请先选择要删除的护理计划", "未选择", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        int choice = JOptionPane.showConfirmDialog(this,
-            "确定要删除选中的护理计划吗？", "确认删除", JOptionPane.YES_NO_OPTION);
-        
-        if (choice == JOptionPane.YES_OPTION) {
-            try {
-                String patientId = (String) tblPatientCarePlans.getValueAt(selectedRow, 0);
-                carePlansMap.remove(patientId);
-                
-                populateCarePlansTable();
-                clearViewFields();
-                
-                JOptionPane.showMessageDialog(this, 
-                    "护理计划删除成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
-                    
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, 
-                    "删除护理计划时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+int selectedRow = tblPatientCarePlans.getSelectedRow();
+if (selectedRow == -1) {
+    JOptionPane.showMessageDialog(this, 
+        "Please select a care plan to delete first.", "No Selection", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+int choice = JOptionPane.showConfirmDialog(this,
+    "Are you sure you want to delete the selected care plan?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+if (choice == JOptionPane.YES_OPTION) {
+    try {
+        String patientId = (String) tblPatientCarePlans.getValueAt(selectedRow, 0);
+        carePlansMap.remove(patientId);
+
+        populateCarePlansTable();
+        clearViewFields();
+
+        JOptionPane.showMessageDialog(this, 
+            "Care plan deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, 
+            "An error occurred while deleting the care plan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -466,106 +475,108 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
                 responsibleNurse == null || responsibleNurse.trim().isEmpty() ||
                 riskLevel.isEmpty() || dietaryNeeds.isEmpty() || hygieneNeeds.isEmpty()) {
                 JOptionPane.showMessageDialog(this, 
-                    "请填写所有必需字段", "输入错误", JOptionPane.ERROR_MESSAGE);
+                    "Please fill in all required fields", "Input error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             
-            // 查找患者
-            Patient patient = patientDirectory.findPatientByName(patientName);
-            if (patient == null) {
-                int choice = JOptionPane.showConfirmDialog(this,
-                    "患者不存在，是否创建新患者？", "确认", JOptionPane.YES_NO_OPTION);
-                if (choice == JOptionPane.YES_OPTION) {
-                    patient = patientDirectory.createPatient(patientName, "Unknown", 0, startDate);
-                } else {
-                    return;
-                }
-            }
-            
-            // 检查患者是否已有护理计划
-            if (carePlansMap.containsKey(patient.getPatientId())) {
-                JOptionPane.showMessageDialog(this, 
-                    "该患者已有护理计划，请使用修改功能", "重复计划", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            
-            // 创建护理计划
-            CarePlanData carePlan = new CarePlanData(patient, startDate, responsibleNurse, 
-                                                   riskLevel, dietaryNeeds, hygieneNeeds);
-            carePlansMap.put(patient.getPatientId(), carePlan);
-            
-            // 刷新表格
-            populateCarePlansTable();
-            
-            // 清空输入字段
-            clearCreateFields();
-            
-            JOptionPane.showMessageDialog(this, 
-                "护理计划创建成功！\n计划ID: " + carePlan.getPlanId(), 
-                "成功", JOptionPane.INFORMATION_MESSAGE);
-                
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "创建护理计划时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
-        }
+            // Find patient
+Patient patient = patientDirectory.findPatientByName(patientName);
+if (patient == null) {
+    int choice = JOptionPane.showConfirmDialog(this,
+        "Patient does not exist. Would you like to create a new patient?", "Confirmation", JOptionPane.YES_NO_OPTION);
+    if (choice == JOptionPane.YES_OPTION) {
+        patient = patientDirectory.createPatient(patientName, "Unknown", 0, startDate);
+    } else {
+        return;
+    }
+}
+
+// Check if patient already has a care plan
+if (carePlansMap.containsKey(patient.getPatientId())) {
+    JOptionPane.showMessageDialog(this, 
+        "This patient already has a care plan. Please use the edit function.", "Duplicate Plan", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+// Create care plan
+CarePlanData carePlan = new CarePlanData(patient, startDate, responsibleNurse, 
+                                         riskLevel, dietaryNeeds, hygieneNeeds);
+carePlansMap.put(patient.getPatientId(), carePlan);
+
+// Refresh table
+populateCarePlansTable();
+
+// Clear input fields
+clearCreateFields();
+
+JOptionPane.showMessageDialog(this, 
+    "Care plan created successfully!\nPlan ID: " + carePlan.getPlanId(), 
+    "Success", JOptionPane.INFORMATION_MESSAGE);
+
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(this, 
+        "An error occurred while creating the care plan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}
+
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        int selectedRow = tblPatientCarePlans.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, 
-                "请先选择要修改的护理计划", "未选择", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        try {
-            // 获取选中患者信息
-            String patientId = (String) tblPatientCarePlans.getValueAt(selectedRow, 0);
-            CarePlanData carePlan = carePlansMap.get(patientId);
-            
-            if (carePlan == null) {
-                JOptionPane.showMessageDialog(this, 
-                    "找不到护理计划信息", "错误", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            // 获取修改后的数据
-            String newStartDate = txtviewCarePlanStartDate.getText().trim();
-            String newResponsibleNurse = (String) CmbviewResponsibleNurse.getSelectedItem();
-            String newRiskLevel = txtviewRiskLevel.getText().trim();
-            String newDietaryNeeds = txtviewDietaryNeeds.getText().trim();
-            String newHygieneNeeds = txtviewHygieneNeeds.getText().trim();
-            
-            // 验证输入
-            if (newStartDate.isEmpty() || newResponsibleNurse == null || 
-                newRiskLevel.isEmpty() || newDietaryNeeds.isEmpty() || newHygieneNeeds.isEmpty()) {
-                JOptionPane.showMessageDialog(this, 
-                    "请填写所有字段", "输入错误", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            // 更新护理计划
-            carePlan.setStartDate(newStartDate);
-            carePlan.setResponsibleNurse(newResponsibleNurse);
-            carePlan.setRiskLevel(newRiskLevel);
-            carePlan.setDietaryNeeds(newDietaryNeeds);
-            carePlan.setHygieneNeeds(newHygieneNeeds);
-            
-            // 刷新表格
-            populateCarePlansTable();
-            
-            JOptionPane.showMessageDialog(this, 
-                "护理计划更新成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
-            
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "修改护理计划时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
-        }
+int selectedRow = tblPatientCarePlans.getSelectedRow();
+if (selectedRow == -1) {
+    JOptionPane.showMessageDialog(this, 
+        "Please select a care plan to modify first", "No Selection", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+try {
+    // Get selected patient info
+    String patientId = (String) tblPatientCarePlans.getValueAt(selectedRow, 0);
+    CarePlanData carePlan = carePlansMap.get(patientId);
+
+    if (carePlan == null) {
+        JOptionPane.showMessageDialog(this, 
+            "Unable to find care plan information", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Get updated input values
+    String newStartDate = txtviewCarePlanStartDate.getText().trim();
+    String newResponsibleNurse = (String) CmbviewResponsibleNurse.getSelectedItem();
+    String newRiskLevel = txtviewRiskLevel.getText().trim();
+    String newDietaryNeeds = txtviewDietaryNeeds.getText().trim();
+    String newHygieneNeeds = txtviewHygieneNeeds.getText().trim();
+
+    // Validate input
+    if (newStartDate.isEmpty() || newResponsibleNurse == null || 
+        newRiskLevel.isEmpty() || newDietaryNeeds.isEmpty() || newHygieneNeeds.isEmpty()) {
+        JOptionPane.showMessageDialog(this, 
+            "Please fill in all fields", "Input Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Update care plan
+    carePlan.setStartDate(newStartDate);
+    carePlan.setResponsibleNurse(newResponsibleNurse);
+    carePlan.setRiskLevel(newRiskLevel);
+    carePlan.setDietaryNeeds(newDietaryNeeds);
+    carePlan.setHygieneNeeds(newHygieneNeeds);
+
+    // Refresh table
+    populateCarePlansTable();
+
+    JOptionPane.showMessageDialog(this, 
+        "Care plan updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(this, 
+        "An error occurred while updating the care plan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}
+
     }//GEN-LAST:event_btnModifyActionPerformed
 
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("保存护理计划CSV文件");
+        fileChooser.setDialogTitle("Save the care plan CSV file");
         fileChooser.setSelectedFile(new java.io.File("care_plans.csv"));
         
         int userChoice = fileChooser.showSaveDialog(this);
@@ -588,11 +599,11 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
                 }
                 
                 JOptionPane.showMessageDialog(this, 
-                    "CSV文件导出成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+                    "CSV file exported successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, 
-                    "导出CSV文件时出错: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+                    "Error while exporting CSV file:" + e.getMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnExportToCSVActionPerformed
@@ -601,7 +612,7 @@ public class ManagePatientCarePlans extends javax.swing.JPanel {
         int selectedRow = tblPatientCarePlans.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, 
-                "请先选择要查看的护理计划", "未选择", JOptionPane.WARNING_MESSAGE);
+                "Please select the care plan you want to view first", "Not selected", JOptionPane.WARNING_MESSAGE);
             return;
         }
         

@@ -212,7 +212,7 @@ public class ManagePatientList extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel1.setText("Manage Patients List");
 
-        CmbcreateBloodGroup.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbcreateBloodGroup.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "A", "B", "AB", "O" }));
 
         btnExportToCSV.setText("Export to csv");
         btnExportToCSV.addActionListener(new java.awt.event.ActionListener() {
@@ -306,7 +306,7 @@ public class ManagePatientList extends javax.swing.JPanel {
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel15.setText("Medical History:");
 
-        CmbviewBloodGroup.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Medical supplies", "food", "daily necessities", "money" }));
+        CmbviewBloodGroup.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "A", "B", "AB", "O" }));
 
         jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel16.setText("Allergies:");
@@ -365,7 +365,7 @@ public class ManagePatientList extends javax.swing.JPanel {
                                         .addGap(76, 76, 76)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(btnExportToCSV, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtcreatePatientName))))))
+                                            .addComponent(txtcreatePatientName, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -490,7 +490,7 @@ public class ManagePatientList extends javax.swing.JPanel {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
     CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-    layout.show(userProcessContainer, "HospitalDoctorWorkAreaPanel");
+    layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed

@@ -39,9 +39,9 @@ public class ManageSupplyRequests extends javax.swing.JPanel {
         
         // 模拟一些供应申请数据
         String[][] sampleData = {
-            {"REQ001", "医院急诊科", "紧急医疗用品申请", "50"},
-            {"REQ002", "社区中心", "防护设备申请", "100"},
-            {"REQ003", "养老院", "日常护理用品", "75"}
+    {"REQ001", "Hospital ER", "Emergency Medical Supplies Request", "50"},
+    {"REQ002", "Community Center", "Protective Equipment Request", "100"},
+    {"REQ003", "Nursing Home", "Daily Care Supplies", "75"}
         };
         
         for (String[] row : sampleData) {
@@ -273,7 +273,7 @@ public class ManageSupplyRequests extends javax.swing.JPanel {
         try {
             int selectedRow = tblDonationHistory.getSelectedRow();
             if (selectedRow == -1) {
-                showWarningMessage("请先选择要删除的申请");
+                showWarningMessage("select");
                 return;
             }
             
@@ -281,19 +281,19 @@ public class ManageSupplyRequests extends javax.swing.JPanel {
             
             int confirm = JOptionPane.showConfirmDialog(
                 this,
-                "确认删除申请 " + requestId + "？",
-                "确认删除",
+                "confirm deletio  " + requestId + "？",
+                "confirm",
                 JOptionPane.YES_NO_OPTION
             );
             
             if (confirm == JOptionPane.YES_OPTION) {
                 DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
                 model.removeRow(selectedRow);
-                showSuccessMessage("申请删除成功");
+                showSuccessMessage("success");
             }
             
         } catch (Exception e) {
-            showErrorMessage("删除申请失败: " + e.getMessage());
+            showErrorMessage("fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnBack1ActionPerformed
 
@@ -301,7 +301,7 @@ public class ManageSupplyRequests extends javax.swing.JPanel {
         try {
             int selectedRow = tblDonationHistory.getSelectedRow();
             if (selectedRow == -1) {
-                showWarningMessage("请先选择一个申请");
+                showWarningMessage("select a application");
                 return;
             }
             
@@ -311,12 +311,12 @@ public class ManageSupplyRequests extends javax.swing.JPanel {
             String quantity = (String) tblDonationHistory.getValueAt(selectedRow, 3);
             
             // 填充查看表单
-            txtDonorName1.setText(recipient);
-            txtContactEmail1.setText("联系方式待填");
-            txtContactEmail3.setText("相关组织");
-            txtItemName1.setText("申请角色");
-            txtQuantity3.setText(quantity);
-            jTextField7.setText("Medium");
+txtDonorName1.setText(recipient);          // Set recipient name
+txtContactEmail1.setText("Contact info pending");  // Contact information to be filled
+txtContactEmail3.setText("Associated Organization"); // Relevant organization
+txtItemName1.setText("Requesting Role");   // Role making the request
+txtQuantity3.setText(quantity);            // Quantity requested
+jTextField7.setText("Medium");             // Priority level or size (assumed "Medium")
             
             showRequestDetails(requestId, recipient, description, quantity);
             
@@ -344,13 +344,13 @@ public class ManageSupplyRequests extends javax.swing.JPanel {
             // 更新表格数据
             DefaultTableModel model = (DefaultTableModel) tblDonationHistory.getModel();
             model.setValueAt(newRecipient, selectedRow, 1);
-            model.setValueAt("已修改的申请描述", selectedRow, 2);
+            model.setValueAt("description", selectedRow, 2);
             model.setValueAt(newQuantity, selectedRow, 3);
             
-            showSuccessMessage("申请修改成功");
+            showSuccessMessage("success");
             
         } catch (Exception e) {
-            showErrorMessage("修改申请失败: " + e.getMessage());
+            showErrorMessage("fail: " + e.getMessage());
         }
     }//GEN-LAST:event_btnViewDetails3ActionPerformed
 
@@ -391,13 +391,14 @@ public class ManageSupplyRequests extends javax.swing.JPanel {
     
     private void showRequestDetails(String requestId, String recipient, String description, String quantity) {
         StringBuilder details = new StringBuilder();
-        details.append("供应申请详情\n================\n");
-        details.append("申请ID: ").append(requestId).append("\n");
-        details.append("申请人: ").append(recipient).append("\n");
-        details.append("申请描述: ").append(description).append("\n");
-        details.append("数量: ").append(quantity).append("\n");
-        details.append("申请时间: ").append(new Date()).append("\n");
-        details.append("状态: 待处理\n");
+details.append("Supply Request Details\n====================\n");
+details.append("Request ID: ").append(requestId).append("\n");
+details.append("Requested By: ").append(recipient).append("\n");
+details.append("Description: ").append(description).append("\n");
+details.append("Quantity: ").append(quantity).append("\n");
+details.append("Request Time: ").append(new Date()).append("\n");
+details.append("Status: Pending\n");
+
         
         JOptionPane.showMessageDialog(this, details.toString(), "申请详情", JOptionPane.INFORMATION_MESSAGE);
     }

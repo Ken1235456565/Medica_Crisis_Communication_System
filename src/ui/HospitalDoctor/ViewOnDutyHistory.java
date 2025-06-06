@@ -7,6 +7,7 @@ package ui.HospitalDoctor;
 import Model.Employee.Employee;
 import Model.Organization.Organization;
 import Model.Employee.EmployeeDirectory;
+import Model.Organization.ClinicalServicesUnit;
 import Model.Patient.ShiftNote;
 import Model.Personnel.Nurse;
 import Model.User.UserAccount;
@@ -24,7 +25,7 @@ import java.awt.CardLayout;
 import java.awt.Container;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-import ui.admin.AdminWorkAreaPanel;
+
 
 /**
  *
@@ -40,6 +41,7 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
     private ShiftNote selectedShiftNote; // Currently selected shift note
     private DefaultTableModel tableModel;
     private Employee employee;
+    private ClinicalServicesUnit clinicalOrg;
 
     public ViewOnDutyHistory(JPanel userProcessContainer, Organization organization, UserAccount userAccount, EmployeeDirectory employeeDirectory) {
         this.userProcessContainer = userProcessContainer;
@@ -196,7 +198,6 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
         jLabel14 = new javax.swing.JLabel();
         txtCreateNotes = new javax.swing.JTextField();
         btnExportToCSV = new javax.swing.JButton();
-        btnSalaryCaculation = new javax.swing.JButton();
         txtCreateDate = new javax.swing.JTextField();
         txtViewDate = new javax.swing.JTextField();
 
@@ -292,13 +293,6 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
             }
         });
 
-        btnSalaryCaculation.setText("Salary Caculation");
-        btnSalaryCaculation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalaryCaculationActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -352,12 +346,10 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
                                     .addComponent(txtViewNurseName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jLabel10)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSalaryCaculation, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(410, 410, 410))
                             .addComponent(jLabel9)
                             .addGroup(layout.createSequentialGroup()
@@ -422,9 +414,7 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
                             .addComponent(jLabel16)
                             .addComponent(txtViewNotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(70, 70, 70)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCreate)
-                    .addComponent(btnSalaryCaculation))
+                .addComponent(btnCreate)
                 .addGap(25, 25, 25)
                 .addComponent(btnBack)
                 .addContainerGap(131, Short.MAX_VALUE))
@@ -432,91 +422,78 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+    // 1. 清空容器
+    userProcessContainer.removeAll();
+
+    // 2. 重新创建 HospitalDoctorWorkAreaPanel（避免访问已清空的旧组件）
+    HospitalDoctorWorkAreaPanel doctorPanel = new HospitalDoctorWorkAreaPanel(
+        userProcessContainer,
+        clinicalOrg,        // 确保这些字段是当前类中已有的
+        userAccount
+    );
+
+    // 3. 重新注册并显示
+    userProcessContainer.add("HospitalDoctorWorkAreaPanel", doctorPanel);
     CardLayout layout = (CardLayout) userProcessContainer.getLayout();
     layout.show(userProcessContainer, "HospitalDoctorWorkAreaPanel");
+
+    // 4. 强制刷新容器
+    userProcessContainer.revalidate();
+    userProcessContainer.repaint();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        if (!validateCreateFields()) {
-            return;
-        }
+DoctorInput input = validateAndGetDoctorInput();
+if (input != null) {
+    System.out.println("Name: " + input.name);
+    System.out.println("Email: " + input.email);
+    System.out.println("Duty: " + input.dutyHours);
+    // 继续创建对象或保存记录
+}
 
-        try {
-            String nurseName = txtCreateNurseName.getText().trim();
-            String contactEmail = txtCreateContactEmail.getText().trim();
-            String date = txtCreateDate.getText().trim();
-            String notes = txtCreateNotes.getText().trim();
-
-            // Use today's date if date field is empty or invalid
-            if (date == null || date.trim().isEmpty() || date.equals(" ")) {
-                date = formatDate(new Date());
-            }
-
-            // Validate date format
-            if (!isValidDate(date)) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid date (yyyy-MM-dd).", "Invalid Date", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Find the employee by name, or create if not found
-            Employee nurse = employeeDirectory.findEmployeeByName(nurseName);
-            if (nurse == null) {
-                int create = JOptionPane.showConfirmDialog(this,
-                        "Nurse not found. Do you want to create a new employee record?",
-                        "Nurse Not Found",
-                        JOptionPane.YES_NO_OPTION);
-                if (create == JOptionPane.YES_OPTION) {
-                    nurse = employeeDirectory.createEmployee("NUR" + (employeeDirectory.getEmployeeList().size() + 1), nurseName, contactEmail);
-                } else {
-                    return;
-                }
-            }
-
-            // Create shift note
-            ShiftNote newNote = new ShiftNote(nurse.getId(), nurseName, contactEmail, date, notes);
-            if (employee instanceof Nurse) {
-                ((Nurse) employee).addShiftNote(selectedShiftNote);
-            }
-
-            allShiftNotes.add(newNote);
-
-            // Refresh table
-            refreshTable();
-            
-            // Clear form
-            clearCreateFields();
-            
-            JOptionPane.showMessageDialog(this, "Shift note created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error creating shift note: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }//GEN-LAST:event_btnCreateActionPerformed
-    private boolean validateCreateFields() {
-        if (txtCreateNurseName.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter nurse name.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        
-        if (txtCreateContactEmail.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter contact email.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        
-        // Validate email format
-        String email = txtCreateContactEmail.getText().trim();
-        if (!email.contains("@") || !email.contains(".")) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid email address.", "Invalid Email", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        
-        if (txtCreateNotes.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter shift notes.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        
-        return true;
+private void showError(String message) {
+    JOptionPane.showMessageDialog(this, message, "Validation Error", JOptionPane.ERROR_MESSAGE);
+}
+
+private static class DoctorInput {
+    String name;
+    String email;
+    String dutyHours;
+
+    DoctorInput(String name, String email, String dutyHours) {
+        this.name = name;
+        this.email = email;
+        this.dutyHours = dutyHours;
     }
+}
+
+
+    
+    private DoctorInput validateAndGetDoctorInput() {
+    String name = txtCreateNurseName.getText().trim();
+    String email = txtCreateContactEmail.getText().trim();
+    String duty = txtCreateNotes.getText().trim();
+
+    if (name.isEmpty()) {
+        showError("Please enter Doctor name.");
+        return null;
+    }
+    if (email.isEmpty() || !email.contains("@") || !email.contains(".")) {
+        showError("Please enter a valid email address.");
+        return null;
+    }
+    if (duty.isEmpty()) {
+        showError("Please enter on duty hours.");
+        return null;
+    }
+
+    return new DoctorInput(name, email, duty);
+}
+
+
+
+
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
        if (selectedShiftNote == null) {
             JOptionPane.showMessageDialog(this, "Please select a shift note to delete.", "No Selection", JOptionPane.WARNING_MESSAGE);
@@ -551,70 +528,6 @@ public class ViewOnDutyHistory extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void btnSalaryCaculationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalaryCaculationActionPerformed
-        showSalaryCalculationDialog();
-    }//GEN-LAST:event_btnSalaryCaculationActionPerformed
-private void showSalaryCalculationDialog() {
-        String nurseId = JOptionPane.showInputDialog(this, "Enter Nurse ID:", "Salary Calculation", JOptionPane.QUESTION_MESSAGE);
-        if (nurseId == null || nurseId.trim().isEmpty()) {
-            return;
-        }
-
-        String hourlyRateStr = JOptionPane.showInputDialog(this, "Enter Hourly Rate ($):", "Salary Calculation", JOptionPane.QUESTION_MESSAGE);
-        if (hourlyRateStr == null || hourlyRateStr.trim().isEmpty()) {
-            return;
-        }
-
-        try {
-            double hourlyRate = Double.parseDouble(hourlyRateStr);
-            double salary = calculateNurseSalary(nurseId.trim(), hourlyRate);
-            
-            if (salary >= 0) {
-                Employee nurse = employeeDirectory.findEmployeeById(nurseId.trim());
-                String nurseName = nurse != null ? nurse.getName() : "Unknown";
-                
-                StringBuilder result = new StringBuilder();
-                result.append("Salary Calculation for: ").append(nurseName).append("\n");
-                result.append("Nurse ID: ").append(nurseId).append("\n");
-                result.append("Hourly Rate: $").append(String.format("%.2f", hourlyRate)).append("\n");
-                result.append("Total Shifts: ").append(getShiftCount(nurseId)).append("\n");
-                result.append("Total Hours: ").append(getShiftCount(nurseId) * 8).append(" (8 hours per shift)\n");
-                result.append("Calculated Salary: $").append(String.format("%.2f", salary));
-                
-                JOptionPane.showMessageDialog(this, result.toString(), "Salary Calculation Result", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Nurse not found with ID: " + nurseId, "Nurse Not Found", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid hourly rate.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    public double calculateNurseSalary(String nurseId, double hourlyRate) {
-        Employee nurse = employeeDirectory.findEmployeeById(nurseId);
-        if (nurse == null) {
-            return -1.0;
-        }
-
-        Nurse nurseObj = (Nurse) nurse;
-        int totalShifts = nurseObj.getShiftNotes() == null ? 0 : nurseObj.getShiftNotes().size();
-        double hoursWorked = totalShifts * 8; // Assuming 8 hours per shift
-        double salary = hoursWorked * hourlyRate;
-        
-        return salary;
-    }
-
-    private int getShiftCount(String nurseId) {
-        Employee nurse = employeeDirectory.findEmployeeById(nurseId);
-        if (nurse instanceof Nurse nurseObj && nurseObj.getShiftNotes() != null) {
-            return nurseObj.getShiftNotes().size();
-        }
-        return 0;
-    }
-    
-    public List<ShiftNote> getAllShiftNotes() {
-        return allShiftNotes;
-    }
     private void btnExportToCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToCSVActionPerformed
         if (allShiftNotes.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No shift notes to export.", "No Data", JOptionPane.WARNING_MESSAGE);
@@ -676,7 +589,6 @@ private String escapeCSV(String value) {
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportToCSV;
-    private javax.swing.JButton btnSalaryCaculation;
     private javax.swing.JButton btnViewDetails;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
